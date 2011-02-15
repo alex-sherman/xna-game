@@ -3,7 +3,7 @@
   <Asset Type="Graphics:NodeContent">
     <Name>Fbx_Root</Name>
     <Identity>
-      <SourceFilename>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\LearningContent\Models\untitled.fbx</SourceFilename>
+      <SourceFilename>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\LearningContent\Models\untitled.fbx</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>1 0 0 0 0 6.123234E-17 1 0 0 -1 6.123234E-17 0 0 0 0 1</Transform>
@@ -31,7 +31,7 @@
     <Resource ID="#Resource1" Type="Graphics:BasicMaterialContent">
       <Name>Material0</Name>
       <Identity>
-        <SourceFilename>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\LearningContent\Models\untitled.fbx</SourceFilename>
+        <SourceFilename>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\LearningContent\Models\untitled.fbx</SourceFilename>
         <SourceTool>FbxImporter</SourceTool>
       </Identity>
       <OpaqueData>

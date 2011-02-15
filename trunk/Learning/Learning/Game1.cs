@@ -49,10 +49,10 @@ namespace Learning
             InitializeEffect();
             Block.InitializeCube(graphics);
 
-            Block.addBlock(new Vector3(1.0f, 0.0f, 0.0f));
-            Block.addBlock(new Vector3(0.0f, -1.0f, 0.0f));
+            Block.addBlock(new Vector3(2.0f, 0.0f, 0.0f));
+            Block.addBlock(new Vector3(0.0f, -2.0f, 0.0f));
             Block.addBlock(new Vector3(0.0f, 0.0f, 0.0f));
-            Block.addBlock(new Vector3(-1.0f, 0.0f, 0.0f));
+            Block.addBlock(new Vector3(-3.0f, 0.0f, 0.0f));
             someBitch = new Player();
             base.Initialize();
         }
