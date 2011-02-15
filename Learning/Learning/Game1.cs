@@ -47,12 +47,18 @@ namespace Learning
             orgMouseState = Mouse.GetState();
             InitializeTransform();
             InitializeEffect();
-            Block.InitializeCube(graphics);
+            Chunk.InitializeCube(graphics);
 
-            Block.addBlock(new Vector3(2.0f, 0.0f, 0.0f));
-            Block.addBlock(new Vector3(0.0f, -2.0f, 0.0f));
-            Block.addBlock(new Vector3(0.0f, 0.0f, 0.0f));
-            Block.addBlock(new Vector3(-3.0f, 0.0f, 0.0f));
+            Chunk.addBlock(new Vector3(2.0f, 0.0f, 0.0f));
+            Chunk.addBlock(new Vector3(0.0f, 0.0f, 0.0f));
+            Chunk.addBlock(new Vector3(4.0f, 0.0f, 0.0f));
+            Chunk.addBlock(new Vector3(-2.0f, 0.0f, 0.0f));
+            Chunk.addBlock(new Vector3(0.0f, 0.0f, -2.0f));
+            Chunk.addBlock(new Vector3(2.0f, 0.0f, -2.0f));
+            Chunk.addBlock(new Vector3(4.0f, 0.0f, -2.0f));
+            Chunk.addBlock(new Vector3(0.0f, 2.0f, -4.0f));
+            Chunk.addBlock(new Vector3(2.0f, 2.0f, -4.0f));
+            Chunk.addBlock(new Vector3(4.0f, 2.0f, -4.0f));
             someBitch = new Player();
             base.Initialize();
         }
@@ -62,7 +68,6 @@ namespace Learning
         /// </summary>
         private void InitializeTransform()
         {
-            float tilt = (float)Math.PI / 8.0f;
            
 
             Matrix view = Matrix.CreateLookAt(new Vector3(0, 2, 10),
@@ -86,7 +91,7 @@ namespace Learning
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
 
             effect.CurrentTechnique = effect.Techniques["TransformTechnique"];
-            Block.effect = effect;
+            Chunk.effect = effect;
         }
 
         /// <summary>
@@ -153,7 +158,7 @@ namespace Learning
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            Block.Draw(GraphicsDevice, someBitch.getCameraMatrix()*worldViewProjection,someBitch.getCameraPos());
+            Chunk.Draw(GraphicsDevice, someBitch.getCameraMatrix()*worldViewProjection,someBitch.getCameraPos());
             
 
             base.Draw(gameTime);

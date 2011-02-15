@@ -8,40 +8,62 @@ namespace Learning
 {
     class Player
     {
-        private Vector3 position = new Vector3(0, 0, 10);
+        public BoundingBox hitBox = new BoundingBox();
+        public BoundingBox fallBox = new BoundingBox();
+        public const float speed = .2f;
+        public Vector3 position = new Vector3(0, 5, 0);
+        private Vector3 velocity = new Vector3(0, 0, 0);
         private Matrix rotation;
+        public Boolean CMR = true;
+        public Boolean CMF = true;
+        public Boolean CMB = true;
+        public Boolean CML = true;
         private int xRotation;
         private int yRotation;
         public void Update(GameTime time, int dx, int dy, KeyboardState keyboard){
+            this.hitBox.Max = this.position + new Vector3(2f, 0, 2f);
+            this.hitBox.Min = this.position - new Vector3(2f, 2, 2f);
+            this.fallBox.Max = this.position + new Vector3(0, 2, 0);
+            this.fallBox.Min = this.position + new Vector3(0, 0, 0);
             this.xRotation -= dx;
             this.yRotation -= dy;
-            this.rotation = Matrix.CreateRotationX(this.yRotation * .01f) * Matrix.CreateRotationY(this.xRotation * .01f);
-            Vector3 toAdd = Vector3.Zero;
+            this.rotation = Matrix.CreateRotationX(this.yRotation * .0035f) * Matrix.CreateRotationY(this.xRotation * .0035f);
+            Boolean[] canMove = Chunk.collisionCheck(this);
+            this.velocity = Vector3.Zero;
             if (keyboard.IsKeyDown(Keys.W))
             {
-                toAdd.Z -= .05f;
+                this.velocity.Z = -1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                toAdd.Z += .05f;
+                this.velocity.Z = 1;
             }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                toAdd.X += .05f;
+                this.velocity.X = 1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                toAdd.X -= .05f;
+                this.velocity.X = -1;
             }
+            this.velocity *= speed;
+
+            Vector3 temp = Vector3.Transform(this.velocity, Matrix.CreateRotationY(this.xRotation * .0035f));
+            if (!canMove[0] && temp.X < 0) { temp.X = 0; }
+            if (!canMove[1] && temp.X > 0) { temp.X = 0; }
+            if (!canMove[2] && temp.Z < 0) { temp.Z = 0; }
+            if (!canMove[3] && temp.Z > 0) { temp.Z = 0; }
+            if (canMove[4]) { temp.Y -= .05f; }
+
             if (keyboard.IsKeyDown(Keys.Space))
             {
-                this.position += Vector3.Up*.05f;
+                temp = Vector3.Up * speed;
             }
             else if (keyboard.IsKeyDown(Keys.LeftControl))
             {
-                this.position -= Vector3.Up*.05f;
+                this.position -= Vector3.Up * speed;
             }
-            this.position += Vector3.Transform(toAdd, this.rotation);
+            this.position += temp;
 
         }
         public Matrix getCameraMatrix()
