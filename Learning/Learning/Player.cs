@@ -35,11 +35,11 @@ namespace Learning
             }
             if (keyboard.IsKeyDown(Keys.Space))
             {
-                toAdd.Y += .05f;
+                this.position += Vector3.Up*.05f;
             }
             else if (keyboard.IsKeyDown(Keys.LeftControl))
             {
-                toAdd.Y -= .05f;
+                this.position -= Vector3.Up*.05f;
             }
             this.position += Vector3.Transform(toAdd, this.rotation);
 

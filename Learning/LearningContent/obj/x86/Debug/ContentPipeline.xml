@@ -2,27 +2,58 @@
 <XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline" xmlns:Framework="Microsoft.Xna.Framework" xmlns:Processors="Microsoft.Xna.Framework.Content.Pipeline.Processors">
   <Asset Type="Pipeline:BuildItemCollection">
     <Item>
-      <Source>wedge_p1_diff_v1.tga</Source>
-      <Name>wedge_p1_diff_v1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\wedge_p1_diff_v1.xnb</Output>
-      <Time>2011-02-14T13:41:17.3483456-06:00</Time>
-    </Item>
-    <Item>
       <Source>Models\p1_wedge.fbx</Source>
       <Name>Models\p1_wedge</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\Models\p1_wedge.xnb</Output>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Models\p1_wedge.xnb</Output>
       <Time>2011-02-14T13:41:02.8285151-06:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\Models\p1_wedge_0.xml</Key>
-        <Value>2011-02-14T13:43:52.9862476-06:00</Value>
+        <Value>2011-02-14T20:17:05.1280427-06:00</Value>
       </Dependency>
-      <Request>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\textures\wedge_p1_diff_v1_0.xnb</Request>
+      <Request>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\textures\wedge_p1_diff_v1_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>Models\untitled.fbx</Source>
+      <Name>Models\untitled</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Models\untitled.xnb</Output>
+      <Time>2011-02-14T15:25:56.8602112-06:00</Time>
+      <Dependency>
+        <Key>obj\x86\Debug\Models\untitled_0.xml</Key>
+        <Value>2011-02-14T20:17:06.0390948-06:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>wedge_p1_diff_v1.tga</Source>
+      <Name>wedge_p1_diff_v1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\wedge_p1_diff_v1.xnb</Output>
+      <Time>2011-02-14T13:41:17.3483456-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Models\GameThumbnail.png</Source>
+      <Name>Models\GameThumbnail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Models\GameThumbnail.xnb</Output>
+      <Time>2011-02-13T22:38:11.856465-06:00</Time>
+    </Item>
+    <Item>
+      <Source>ReallySimpleEffect.fx</Source>
+      <Name>ReallySimpleEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\ReallySimpleEffect.xnb</Output>
+      <Time>2011-02-14T16:01:01.0755049-06:00</Time>
     </Item>
     <Item>
       <Source>Models\p1_wedge.fbx</Source>
@@ -44,21 +75,8 @@
         <Data Key="PremultiplyAlpha" Type="bool">true</Data>
       </Parameters>
       <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\textures\wedge_p1_diff_v1_0.xnb</Output>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\textures\wedge_p1_diff_v1_0.xnb</Output>
       <Time>2011-02-14T13:36:13.8389859-06:00</Time>
-    </Item>
-    <Item>
-      <Source>Models\untitled.fbx</Source>
-      <Name>Models\untitled</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\Models\untitled.xnb</Output>
-      <Time>2011-02-14T15:25:56.8602112-06:00</Time>
-      <Dependency>
-        <Key>obj\x86\Debug\Models\untitled_0.xml</Key>
-        <Value>2011-02-14T15:26:20.1132823-06:00</Value>
-      </Dependency>
     </Item>
     <Item>
       <Source>Models\untitled.fbx</Source>
@@ -67,34 +85,16 @@
       <Output>obj\x86\Debug\Models\untitled_0.xml</Output>
       <Time>2011-02-14T15:25:56.8602112-06:00</Time>
     </Item>
-    <Item>
-      <Source>Models\GameThumbnail.png</Source>
-      <Name>Models\GameThumbnail</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\Models\GameThumbnail.xnb</Output>
-      <Time>2011-02-13T22:38:11.856465-06:00</Time>
-    </Item>
-    <Item>
-      <Source>ReallySimpleEffect.fx</Source>
-      <Name>ReallySimpleEffect</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\ReallySimpleEffect.xnb</Output>
-      <Time>2011-02-14T16:01:01.0755049-06:00</Time>
-    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\LearningContent\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\LearningContent\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\Learning\Learning\Learning\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\LearningContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\LearningContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
