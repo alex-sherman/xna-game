@@ -17,9 +17,9 @@ namespace Learning
             this.hitBox.Min = position - new Vector3(.5f, .5f, .5f);
             this.position = position;
         }
-        public Boolean checkHit(Player player)
+        public Boolean canMove(BoundingBox vBox)
         {
-            return this.hitBox.Intersects(player.hitBox);
+            return this.hitBox.Intersects(vBox);
         }
         public int[] getDirection(Vector3 other)
         {
