@@ -32,6 +32,7 @@ namespace Learning
         MouseState orgMouseState;
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
+        Chunk myChunk;
 
 
         public Game1()
@@ -42,23 +43,39 @@ namespace Learning
         
         protected override void Initialize()
         {
+            int[] pointList = {   2, 0, 0,
+                                    0, 0, 0,
+                                    4, 0, 0,
+                                    -2, 0, 0,
+                                    0, 0, -2,
+                                    2, 0, -2,
+                                    4, 0, -2,
+                                    0, 2, -4,
+                                    2, 2, -4,
+                                    4, 2, -4,
+                                    0, 4, -6,
+                                    2, 4, -6,
+                                    4, 4, -6,
+                                    0, 6, -8,
+                                    2, 6, -8,
+                                    4, 6, -8,
+                                    0, 8, -10,
+                                    2, 8, -10,
+                                    4, 8, -10
+
+                                };
+            
             // TODO: Add your initialization logic here
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             InitializeTransform();
             InitializeEffect();
             Chunk.InitializeCube(graphics);
-
-            Chunk.addBlock(new Vector3(2.0f, 0.0f, 0.0f));
-            Chunk.addBlock(new Vector3(0.0f, 0.0f, 0.0f));
-            Chunk.addBlock(new Vector3(4.0f, 0.0f, 0.0f));
-            Chunk.addBlock(new Vector3(-2.0f, 0.0f, 0.0f));
-            Chunk.addBlock(new Vector3(0.0f, 0.0f, -2.0f));
-            Chunk.addBlock(new Vector3(2.0f, 0.0f, -2.0f));
-            Chunk.addBlock(new Vector3(4.0f, 0.0f, -2.0f));
-            Chunk.addBlock(new Vector3(0.0f, 2.0f, -4.0f));
-            Chunk.addBlock(new Vector3(2.0f, 2.0f, -4.0f));
-            Chunk.addBlock(new Vector3(4.0f, 2.0f, -4.0f));
+            myChunk = new Chunk(new Vector3(0, 0, 0));
+            for (int i = 0; i < pointList.Length; i += 3)
+            {
+                myChunk.addBlock(pointList[i], pointList[i + 1], pointList[i + 2]);
+            }
             someBitch = new Player();
             base.Initialize();
         }
@@ -158,7 +175,7 @@ namespace Learning
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            Chunk.Draw(GraphicsDevice, someBitch.getCameraMatrix()*worldViewProjection,someBitch.getCameraPos());
+            myChunk.Draw(GraphicsDevice, someBitch.getCameraMatrix()*worldViewProjection,someBitch.getCameraPos());
             
 
             base.Draw(gameTime);

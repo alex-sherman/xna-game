@@ -21,7 +21,7 @@ namespace Learning
         private Vector3 position;
         static public Effect effect;
         static float aspectRatio = 0.0f;
-        static private ArrayList BlockList = new ArrayList();
+        private Block[][][] BlockList;
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
 
@@ -31,82 +31,78 @@ namespace Learning
             this.position = position;
         }
 
-        public static void addBlock(Vector3 position)
+        public void addBlock(int x,int y,int z)
         {
-            Block poo = new Block(position);
-            BlockList.Add(poo);
+            Block poo = new Block(new Vector3(x,y,z));
+            this.BlockList[x][y][z] = poo;
         }
-        static public Boolean[] collisionCheck(Player player)
+        public Boolean[] collisionCheck(Player player)
         {
             Vector3 otherVec = player.position;
-            Boolean[] toReturn = { true, true, true, true, true, true };
-            foreach (Block block in Chunk.BlockList)
+            Boolean[] toReturn = { true,true,true };
+            foreach (Block[][] row in this.BlockList)
             {
-                if(block.checkHit(player)){
-                    if (Math.Abs(block.getDirection(otherVec)[0]) > Math.Abs(block.getDirection(otherVec)[1]) && 
-                        Math.Abs(block.getDirection(otherVec)[0]) > Math.Abs(block.getDirection(otherVec)[2]))
+                foreach (Block[] col in row)
+                {
+                    foreach (Block block in col)
                     {
-                        if (block.getDirection(otherVec)[0] > 0)
+                        if (block.canMove(player.vLeft))
                         {
                             toReturn[0] = false;
                         }
-                        else
+                        if (block.canMove(player.fallBox))
                         {
                             toReturn[1] = false;
                         }
-                    }
-                    else if (Math.Abs(block.getDirection(otherVec)[2]) > Math.Abs(block.getDirection(otherVec)[1]))
-                    {
-                        if (block.getDirection(otherVec)[2] > 0)
+                        if (block.canMove(player.vForward))
                         {
                             toReturn[2] = false;
                         }
-                        else
-                        {
-                            toReturn[3] = false;
-                        }
                     }
-                    
-                        if (block.getDirection(otherVec)[1] > 0)
-                        {
-                            toReturn[4] = false;
-                        }
-                        else
-                        {
-                            toReturn[5] = false;
-                        }
                 }
             }
             return toReturn;
         }
-        public static void Draw(GraphicsDevice device,Matrix partialWorld,Vector3 cameraPos){
-            foreach (Block block in Chunk.BlockList)
+        public void Draw(GraphicsDevice device,Matrix partialWorld,Vector3 cameraPos){
+            foreach (Block[][] row in this.BlockList)
             {
-                if (Chunk.aspectRatio == 0.0f)
+                foreach (Block[] col in row)
                 {
-                    Chunk.aspectRatio = device.Viewport.AspectRatio;
-                }
-                Chunk.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
-                foreach (EffectPass pass in Chunk.effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
+                    foreach (Block block in col)
+                    {
+                        if (Chunk.aspectRatio == 0.0f)
+                        {
+                            Chunk.aspectRatio = device.Viewport.AspectRatio;
+                        }
+                        Chunk.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
+                        foreach (EffectPass pass in Chunk.effect.CurrentTechnique.Passes)
+                        {
+                            pass.Apply();
 
-                    device.DrawUserIndexedPrimitives<VertexPositionColor>(
-                        PrimitiveType.TriangleList,
-                        vertices,
-                        0,   // vertex buffer offset to add to each element of the index buffer
-                        24,  // number of vertices to draw
-                        indices,
-                        0,   // first index element to read
-                        12   // number of primitives to draw
-                    );
+                            device.DrawUserIndexedPrimitives<VertexPositionColor>(
+                                PrimitiveType.TriangleList,
+                                vertices,
+                                0,   // vertex buffer offset to add to each element of the index buffer
+                                24,  // number of vertices to draw
+                                indices,
+                                0,   // first index element to read
+                                12   // number of primitives to draw
+                            );
+                        }
+                    }
                 }
             }
         }
         
-        public static void InitializeCube(GraphicsDeviceManager graphics)
+        public void InitializeCube(GraphicsDeviceManager graphics)
         {
-            
+            this.BlockList = new Block[10][][];
+            for(int i = 0;i<10;i++){
+                this.BlockList[i] = new Block[10][];
+                for(int j = 0;j<10;j++){
+                    this.BlockList[i][j]=new Block[10];
+                }
+            }
             vertexDeclaration = new VertexDeclaration(new VertexElement[]
                 {
                     new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
