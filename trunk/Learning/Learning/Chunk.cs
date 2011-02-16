@@ -19,7 +19,7 @@ namespace Learning
         static short[] indices;
         static IndexBuffer indexBuffer;
         private Vector3 position;
-        static public Effect effect;
+        public Effect effect;
         static float aspectRatio = 0.0f;
         private Block[][][] BlockList;
         const int number_of_vertices = 24;
@@ -46,17 +46,20 @@ namespace Learning
                 {
                     foreach (Block block in col)
                     {
-                        if (block.canMove(player.vLeft))
+                        if (block != null)
                         {
-                            toReturn[0] = false;
-                        }
-                        if (block.canMove(player.fallBox))
-                        {
-                            toReturn[1] = false;
-                        }
-                        if (block.canMove(player.vForward))
-                        {
-                            toReturn[2] = false;
+                            if (block.canMove(player.vLeft))
+                            {
+                                toReturn[0] = false;
+                            }
+                            if (block.canMove(player.fallBox))
+                            {
+                                toReturn[1] = false;
+                            }
+                            if (block.canMove(player.vForward))
+                            {
+                                toReturn[2] = false;
+                            }
                         }
                     }
                 }
@@ -74,20 +77,23 @@ namespace Learning
                         {
                             Chunk.aspectRatio = device.Viewport.AspectRatio;
                         }
-                        Chunk.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
-                        foreach (EffectPass pass in Chunk.effect.CurrentTechnique.Passes)
+                        if (block != null)
                         {
-                            pass.Apply();
+                            this.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
+                            foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
+                            {
+                                pass.Apply();
 
-                            device.DrawUserIndexedPrimitives<VertexPositionColor>(
-                                PrimitiveType.TriangleList,
-                                vertices,
-                                0,   // vertex buffer offset to add to each element of the index buffer
-                                24,  // number of vertices to draw
-                                indices,
-                                0,   // first index element to read
-                                12   // number of primitives to draw
-                            );
+                                device.DrawUserIndexedPrimitives<VertexPositionColor>(
+                                    PrimitiveType.TriangleList,
+                                    vertices,
+                                    0,   // vertex buffer offset to add to each element of the index buffer
+                                    24,  // number of vertices to draw
+                                    indices,
+                                    0,   // first index element to read
+                                    12   // number of primitives to draw
+                                );
+                            }
                         }
                     }
                 }

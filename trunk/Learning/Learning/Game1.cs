@@ -46,22 +46,19 @@ namespace Learning
             int[] pointList = {   2, 0, 0,
                                     0, 0, 0,
                                     4, 0, 0,
-                                    -2, 0, 0,
-                                    0, 0, -2,
-                                    2, 0, -2,
-                                    4, 0, -2,
-                                    0, 2, -4,
-                                    2, 2, -4,
-                                    4, 2, -4,
-                                    0, 4, -6,
-                                    2, 4, -6,
-                                    4, 4, -6,
-                                    0, 6, -8,
-                                    2, 6, -8,
-                                    4, 6, -8,
-                                    0, 8, -10,
-                                    2, 8, -10,
-                                    4, 8, -10
+                                    2, 0, 0,
+                                    0, 0, 2,
+                                    2, 0, 2,
+                                    4, 0, 2,
+                                    0, 2, 4,
+                                    2, 2, 4,
+                                    4, 2, 4,
+                                    0, 4, 6,
+                                    2, 4, 6,
+                                    4, 4, 6,
+                                    0, 6, 8,
+                                    2, 6, 8,
+                                    4, 6, 8
 
                                 };
             
@@ -69,14 +66,17 @@ namespace Learning
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             InitializeTransform();
-            InitializeEffect();
-            Chunk.InitializeCube(graphics);
+            
+            
             myChunk = new Chunk(new Vector3(0, 0, 0));
+            myChunk.InitializeCube(graphics);
             for (int i = 0; i < pointList.Length; i += 3)
             {
                 myChunk.addBlock(pointList[i], pointList[i + 1], pointList[i + 2]);
             }
             someBitch = new Player();
+            InitializeEffect(myChunk);
+            someBitch.curChunk = myChunk;
             base.Initialize();
         }
 
@@ -100,7 +100,7 @@ namespace Learning
             worldViewProjection = projection;
         }
 
-        void InitializeEffect()
+        void InitializeEffect(Chunk myChunk)
         {
            
             effect = Content.Load<Effect>("ReallySimpleEffect");
@@ -108,7 +108,7 @@ namespace Learning
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
 
             effect.CurrentTechnique = effect.Techniques["TransformTechnique"];
-            Chunk.effect = effect;
+            myChunk.effect = effect;
         }
 
         /// <summary>
