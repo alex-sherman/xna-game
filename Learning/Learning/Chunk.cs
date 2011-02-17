@@ -13,28 +13,17 @@ namespace Learning
 {
     class Chunk
     {
-        public static Chunk center;
-        private Vector3 position;
+        public Vector3 position;
         private Block[][][] BlockList;
-
+        private World world;
        
-        public Chunk(Vector3 position)
+        public Chunk(Vector3 position,World world)
         {
+            this.world = world;
             this.position = position;
             this.addFloor();
         }
-        public static void drawChunks(Matrix partialWorld, Vector3 cameraPos)
-        {
-            Chunk.center.Draw(partialWorld, cameraPos);
-        }
-        public static Chunk getChunk(Vector3 position)
-        {
-            return Chunk.center;
-        }
-        public static void addChunk(int x, int y, int z)
-        {
-            Chunk.center = new Chunk(new Vector3(x, y, z));
-        }
+        
         public void addBlock(int x,int y,int z)
         {
             Block poo = new Block(new Vector3(x + 10 * this.position.X, y + 10 * this.position.Y, z + 10 * this.position.Z));
@@ -70,7 +59,7 @@ namespace Learning
             }
             return toReturn;
         }
-        public void Draw(Matrix partialWorld, Vector3 cameraPos)
+        public void Draw()
         {
             foreach (Block[][] row in this.BlockList)
             {
@@ -80,7 +69,7 @@ namespace Learning
                     {
                         if (block != null)
                         {
-                            Cube.Draw(block.position, partialWorld, cameraPos);
+                            Cube.Draw(block.position, this.world);
                         }
                     }
                 }

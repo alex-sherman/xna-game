@@ -21,6 +21,7 @@ namespace Learning
         public Chunk curChunk;
         private float xRotation;
         private float yRotation;
+        public World world;
 
         public void Update(GameTime time, int dx, int dy, KeyboardState keyboard){
             if(keyboard.IsKeyDown(Keys.Up)){
@@ -35,7 +36,7 @@ namespace Learning
             if(keyboard.IsKeyDown(Keys.Right)){
                 dx = 5;
             }
-            this.curChunk = Chunk.getChunk(this.position);
+            this.curChunk = world.getChunk(this.position);
             this.hitBox.Max = this.position + new Vector3(2f, 0, 2f);
             this.hitBox.Min = this.position - new Vector3(2f, 4, 2f);
 
@@ -50,10 +51,10 @@ namespace Learning
             }
             this.rotation = Matrix.CreateRotationX(this.yRotation) * Matrix.CreateRotationY(this.xRotation);
             if(keyboard.IsKeyDown(Keys.LeftShift)){
-                speed = .2f;
+                speed = .1f;
             }
             else{
-                speed = .1f;
+                speed = .2f;
             }
             if (keyboard.IsKeyDown(Keys.W))
             {
@@ -105,7 +106,7 @@ namespace Learning
                 this.fallBox.Min = this.position + new Vector3(-.75f, this.toAdd.Y - 4, -.75f);
                 this.fallBox.Max = this.position + new Vector3(.75f, 0, .75f);
             }
-            Boolean[] canMove = curChunk.collisionCheck(this);
+            Boolean[] canMove = world.collisionCheck(this);
             if (canMove[1]) { this.outsideV.Y -= .025f; }
             else { this.outsideV.Y = 0; }
 
@@ -129,10 +130,6 @@ namespace Learning
                    Vector3.Transform(new Vector3(0,0,-1),this.rotation)+this.position, Vector3.Transform(Vector3.Up,this.rotation));
 
 
-        }
-        public Vector3 getCameraPos()
-        {
-            return new Vector3(this.position.X,this.position.Y,this.position.Z);
         }
 
     }
