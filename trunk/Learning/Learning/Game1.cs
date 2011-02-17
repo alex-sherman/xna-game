@@ -30,8 +30,7 @@ namespace Learning
         Matrix worldViewProjection;
         static Effect effect;
         MouseState orgMouseState;
-        const int number_of_vertices = 24;
-        const int number_of_indices = 36;
+        World newWorld = new World();
 
 
         public Game1()
@@ -63,8 +62,13 @@ namespace Learning
             orgMouseState = Mouse.GetState();
             InitializeTransform();
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
-            Chunk.addChunk(0, 0, 0);
+            newWorld.addChunk(0, 0, 0);
+            newWorld.addChunk(1, 0, 0);
+            newWorld.addChunk(-1, 0, 0);
+            newWorld.addChunk(0, 0, -2);
+            newWorld.addChunk(0, 0, -1);
             someBitch = new Player();
+            newWorld.addPlayer(someBitch);
             base.Initialize();
         }
 
@@ -132,6 +136,7 @@ namespace Learning
             
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             someBitch.Update(gameTime, dx,dy, Keyboard.GetState());
+            newWorld.Update(someBitch.getCameraMatrix() * worldViewProjection);
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -157,11 +162,10 @@ namespace Learning
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            newWorld.Draw();
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            Chunk.drawChunks(someBitch.getCameraMatrix() * worldViewProjection, someBitch.getCameraPos());
             
 
             base.Draw(gameTime);
