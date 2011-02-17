@@ -13,9 +13,9 @@ namespace Learning
         public BoundingBox hitBox = new BoundingBox();
         public Block(Vector3 position)
         {
-            this.hitBox.Max = position + new Vector3(1f, 1f, 1f);
-            this.hitBox.Min = position - new Vector3(1f, 1f, 1f);
-            this.position = position;
+            this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(1f, 1f, 1f);
+            this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(1f, 1f, 1f);
+            this.position = 2 * Cube.cubeSize * position;
         }
         public Boolean canMove(BoundingBox vBox)
         {
