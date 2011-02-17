@@ -13,27 +13,66 @@ namespace Learning
 {
     class Chunk
     {
+        static Chunk[][][] chunkList;
         static VertexDeclaration vertexDeclaration;
         static VertexPositionColor[] vertices;
         static VertexBuffer vertexBuffer;
         static short[] indices;
         static IndexBuffer indexBuffer;
         private Vector3 position;
-        public Effect effect;
+        public static Effect effect;
+        private static GraphicsDeviceManager graphics;
         static float aspectRatio = 0.0f;
         private Block[][][] BlockList;
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
 
-
+        public static void InitChunks(GraphicsDeviceManager graphics)
+        {
+            Chunk.graphics = graphics;
+            Chunk.chunkList = new Chunk[10][][];
+            for (int i = 0; i < 10; i++)
+            {
+                Chunk.chunkList[i] = new Chunk[10][];
+                for (int j = 0; j < 10; j++)
+                {
+                    Chunk.chunkList[i][j] = new Chunk[10];
+                }
+            }
+        }
         public Chunk(Vector3 position)
         {
             this.position = position;
+            this.InitializeCube(Chunk.graphics);
+            
         }
-
+        public static void drawChunks(GraphicsDevice device, Matrix partialWorld, Vector3 cameraPos)
+        {
+            foreach(Chunk[][] row in Chunk.chunkList){
+                foreach(Chunk[] col in row){
+                    foreach(Chunk chunk in col){
+                        if(chunk!=null){
+                            chunk.Draw(device, partialWorld, cameraPos);
+                        }
+                    }
+                }
+            }
+        }
+        public static Chunk getChunk(Vector3 position)
+        {
+            int x = (int)position.X/10;
+            int y = (int)position.Y/10;
+            int z = (int)position.Z/10;
+            return Chunk.chunkList[x][y][z];
+        }
+        public static void addChunk(int x, int y, int z)
+        {
+            Chunk chunk = new Chunk(new Vector3(x, y, z));
+            chunkList[x][y][z] = chunk;
+        }
         public void addBlock(int x,int y,int z)
         {
-            Block poo = new Block(new Vector3(x,y,z));
+            Block poo = new Block(new Vector3(x + 10 * this.position.X, y + 10 * this.position.Y, z + 10 * this.position.Z));
             this.BlockList[x][y][z] = poo;
         }
         public Boolean[] collisionCheck(Player player)
@@ -79,8 +118,8 @@ namespace Learning
                         }
                         if (block != null)
                         {
-                            this.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
-                            foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
+                            Chunk.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(block.position) * partialWorld);
+                            foreach (EffectPass pass in Chunk.effect.CurrentTechnique.Passes)
                             {
                                 pass.Apply();
 
@@ -107,6 +146,13 @@ namespace Learning
                 this.BlockList[i] = new Block[10][];
                 for(int j = 0;j<10;j++){
                     this.BlockList[i][j]=new Block[10];
+                }
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                for (int k = 0; k < 10; k++)
+                {
+                    this.addBlock(i, 0, k);
                 }
             }
             vertexDeclaration = new VertexDeclaration(new VertexElement[]

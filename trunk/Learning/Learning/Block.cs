@@ -13,8 +13,8 @@ namespace Learning
         public BoundingBox hitBox = new BoundingBox();
         public Block(Vector3 position)
         {
-            this.hitBox.Max = position + new Vector3(.5f, .5f, .5f);
-            this.hitBox.Min = position - new Vector3(.5f, .5f, .5f);
+            this.hitBox.Max = position + new Vector3(1f, 1f, 1f);
+            this.hitBox.Min = position - new Vector3(1f, 1f, 1f);
             this.position = position;
         }
         public Boolean canMove(BoundingBox vBox)
