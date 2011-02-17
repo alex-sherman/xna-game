@@ -44,6 +44,7 @@ namespace Learning
         
         protected override void Initialize()
         {
+            
             int[] pointList = {   2, 0, 0,
                                     0, 0, 0,
                                     4, 0, 0,
@@ -61,12 +62,8 @@ namespace Learning
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             InitializeTransform();
-            InitializeEffect();
-            Chunk.InitChunks(graphics);
+            Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             Chunk.addChunk(0, 0, 0);
-            Chunk.addChunk(0, 0, 1);
-            Chunk.addChunk(1, 0, 1);
-            Chunk.addChunk(1, 0, 0);
             someBitch = new Player();
             base.Initialize();
         }
@@ -89,7 +86,7 @@ namespace Learning
             worldViewProjection = projection;
         }
 
-        void InitializeEffect()
+        Effect InitializeEffect()
         {
            
             effect = Content.Load<Effect>("ReallySimpleEffect");
@@ -97,7 +94,7 @@ namespace Learning
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
 
             effect.CurrentTechnique = effect.Techniques["TransformTechnique"];
-            Chunk.effect = effect;
+            return effect;
         }
 
         /// <summary>
@@ -164,7 +161,7 @@ namespace Learning
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            Chunk.drawChunks(GraphicsDevice, someBitch.getCameraMatrix() * worldViewProjection, someBitch.getCameraPos());
+            Chunk.drawChunks(someBitch.getCameraMatrix() * worldViewProjection, someBitch.getCameraPos());
             
 
             base.Draw(gameTime);
