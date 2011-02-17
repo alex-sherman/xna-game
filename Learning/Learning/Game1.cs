@@ -32,12 +32,13 @@ namespace Learning
         MouseState orgMouseState;
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
-        Chunk myChunk;
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = 800;
             Content.RootDirectory = "Content";
         }
         
@@ -46,19 +47,13 @@ namespace Learning
             int[] pointList = {   2, 0, 0,
                                     0, 0, 0,
                                     4, 0, 0,
-                                    2, 0, 0,
-                                    0, 0, 2,
-                                    2, 0, 2,
-                                    4, 0, 2,
-                                    0, 2, 4,
-                                    2, 2, 4,
-                                    4, 2, 4,
+                                    0, 4, 4,
+                                    4, 4, 4,
                                     0, 4, 6,
-                                    2, 4, 6,
                                     4, 4, 6,
                                     0, 6, 8,
-                                    2, 6, 8,
-                                    4, 6, 8
+                                    4, 6, 8,
+                                    6,2,2
 
                                 };
             
@@ -66,17 +61,13 @@ namespace Learning
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             InitializeTransform();
-            
-            
-            myChunk = new Chunk(new Vector3(0, 0, 0));
-            myChunk.InitializeCube(graphics);
-            for (int i = 0; i < pointList.Length; i += 3)
-            {
-                myChunk.addBlock(pointList[i], pointList[i + 1], pointList[i + 2]);
-            }
+            InitializeEffect();
+            Chunk.InitChunks(graphics);
+            Chunk.addChunk(0, 0, 0);
+            Chunk.addChunk(0, 0, 1);
+            Chunk.addChunk(1, 0, 1);
+            Chunk.addChunk(1, 0, 0);
             someBitch = new Player();
-            InitializeEffect(myChunk);
-            someBitch.curChunk = myChunk;
             base.Initialize();
         }
 
@@ -85,8 +76,6 @@ namespace Learning
         /// </summary>
         private void InitializeTransform()
         {
-           
-
             Matrix view = Matrix.CreateLookAt(new Vector3(0, 2, 10),
                 Vector3.Zero, Vector3.Up);
 
@@ -100,7 +89,7 @@ namespace Learning
             worldViewProjection = projection;
         }
 
-        void InitializeEffect(Chunk myChunk)
+        void InitializeEffect()
         {
            
             effect = Content.Load<Effect>("ReallySimpleEffect");
@@ -108,7 +97,7 @@ namespace Learning
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
 
             effect.CurrentTechnique = effect.Techniques["TransformTechnique"];
-            myChunk.effect = effect;
+            Chunk.effect = effect;
         }
 
         /// <summary>
@@ -175,7 +164,7 @@ namespace Learning
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            myChunk.Draw(GraphicsDevice, someBitch.getCameraMatrix()*worldViewProjection,someBitch.getCameraPos());
+            Chunk.drawChunks(GraphicsDevice, someBitch.getCameraMatrix() * worldViewProjection, someBitch.getCameraPos());
             
 
             base.Draw(gameTime);
