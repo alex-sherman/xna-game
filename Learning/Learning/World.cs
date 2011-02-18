@@ -12,8 +12,15 @@ namespace Learning
         public Matrix partialWorld;
         public ArrayList chunkList = new ArrayList();
         public ArrayList players = new ArrayList();
+        public ArrayList itemList = new ArrayList();
         public World()
         {
+
+        }
+        public void spawnItem(int type, Vector3 position)
+        {
+            Item poo = new Item(position, type);
+            this.itemList.Add(poo);
         }
         public void addChunk(int x, int y, int z)
         {
@@ -30,15 +37,59 @@ namespace Learning
             this.partialWorld = partialWorld;
 
         }
-
-        public Chunk getChunk(Vector3 position)
+        public void addBlock(Ray lookat)
         {
-            int x = (int)(position.X/20);
-            int y = (int)(position.Y/20);
-            int z = (int)(position.Y/20);
+            Chunk newChunk;
             foreach (Chunk chunk in this.chunkList)
             {
-                if (chunk.position.X == x && chunk.position.Y == y && chunk.position.Z == z)
+                if (lookat.Intersects(chunk.hitBox) != null)
+                {
+                    Block hit = chunk.getBlock(lookat);
+                    if (hit != null )
+                    {
+                        newChunk = this.getChunk(hit.getNormal(lookat) + hit.position);
+                        if (newChunk != null)
+                        {
+                            newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, 0);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        public void destroyBlock(Ray lookat)
+        {
+            foreach (Chunk chunk in this.chunkList)
+            {
+                if (lookat.Intersects(chunk.hitBox) != null)
+                {
+                    chunk.destroyBlock(chunk.getBlock(lookat));
+                }
+            }
+
+        }
+        public Chunk getChunk(float i, float j, float k)
+        {
+            Vector3 point = new Vector3(i, j, k);
+            foreach (Chunk chunk in this.chunkList)
+            {
+                if (chunk.hitBox.Contains(point) == ContainmentType.Contains)
+                {
+                    return chunk;
+                }
+            }
+            return null;
+        }
+        public Chunk getChunk(Vector3 pos)
+        {
+            float i = pos.X;
+            float j = pos.Y;
+            float k = pos.Z;
+            foreach (Chunk chunk in this.chunkList)
+            {
+                if (chunk.position.X + 10 > i && chunk.position.X <= i &&
+                    chunk.position.Y + 10 > j && chunk.position.Y <= j &&
+                    chunk.position.Z + 10 > k && chunk.position.Z <= k)
                 {
                     return chunk;
                 }

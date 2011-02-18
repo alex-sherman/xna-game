@@ -11,7 +11,7 @@ namespace Learning
 
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
-        public const float cubeSize = 1.0f;
+        public const float cubeSize = .5f;
         static VertexDeclaration vertexDeclaration;
         static VertexPositionColor[] vertices;
         static VertexBuffer vertexBuffer;
@@ -19,7 +19,6 @@ namespace Learning
         private static GraphicsDevice device;
         public static Vector3 topLeftFront;
         private static Effect effect;
-
         public static void InitializeCube(GraphicsDevice device, Effect effect)
         {
             Cube.device = device;
@@ -64,28 +63,28 @@ namespace Learning
                 new VertexPositionTexture(topLeftBack,topRight), 
 
                 // Left Surface
-                new VertexPositionTexture(new Vector3(-1.0f, -1.0f, -1.0f),bottomLeft),
-                new VertexPositionTexture(new Vector3(-1.0f, 1.0f, -1.0f),topLeft),
-                new VertexPositionTexture(new Vector3(-1.0f, -1.0f, 1.0f),bottomRight),
+                new VertexPositionTexture(bottomLeftBack,bottomLeft),
+                new VertexPositionTexture(topLeftBack,topLeft),
+                new VertexPositionTexture(bottomLeftFront,bottomRight),
                 new VertexPositionTexture(topLeftFront,topRight),
 
                 // Right Surface
-                new VertexPositionTexture(new Vector3(1.0f, -1.0f, 1.0f),bottomLeft),
-                new VertexPositionTexture(new Vector3(1.0f, 1.0f, 1.0f),topLeft),
-                new VertexPositionTexture(new Vector3(1.0f, -1.0f, -1.0f),bottomRight),
-                new VertexPositionTexture(new Vector3(1.0f, 1.0f, -1.0f),topRight),
+                new VertexPositionTexture(bottomRightFront,bottomLeft),
+                new VertexPositionTexture(topRightFront,topLeft),
+                new VertexPositionTexture(bottomRightBack,bottomRight),
+                new VertexPositionTexture(topRightBack,topRight),
 
                 // Top Surface
                 new VertexPositionTexture(topLeftFront,bottomLeft),
-                new VertexPositionTexture(new Vector3(-1.0f, 1.0f, -1.0f),topLeft),
-                new VertexPositionTexture(new Vector3(1.0f, 1.0f, 1.0f),bottomRight),
-                new VertexPositionTexture(new Vector3(1.0f, 1.0f, -1.0f),topRight),
+                new VertexPositionTexture(topLeftBack,topLeft),
+                new VertexPositionTexture(topRightFront,bottomRight),
+                new VertexPositionTexture(topRightBack,topRight),
 
                 // Bottom Surface
-                new VertexPositionTexture(new Vector3(-1.0f, -1.0f, -1.0f),bottomLeft),
-                new VertexPositionTexture(new Vector3(-1.0f, -1.0f, 1.0f),topLeft),
-                new VertexPositionTexture(new Vector3(1.0f, -1.0f, -1.0f),bottomRight),
-                new VertexPositionTexture(new Vector3(1.0f, -1.0f, 1.0f),topRight),
+                new VertexPositionTexture(bottomLeftBack,bottomLeft),
+                new VertexPositionTexture(bottomLeftFront,topLeft),
+                new VertexPositionTexture(bottomRightBack,bottomRight),
+                new VertexPositionTexture(bottomRightFront,topRight),
             };
             short[] indices = new short[] { 
                 0, 1, 2, 2, 1, 3,   
@@ -105,6 +104,7 @@ namespace Learning
 
         public static void Draw(Vector3 position, World world, Texture2D texture)
         {
+            if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * partialWorld);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
