@@ -61,6 +61,7 @@ namespace Learning
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             InitializeTransform();
+            InitializeTextures();
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             newWorld.addChunk(0, 0, 0);
             newWorld.addChunk(1, 0, 0);
@@ -93,14 +94,18 @@ namespace Learning
         Effect InitializeEffect()
         {
            
-            effect = Content.Load<Effect>("ReallySimpleEffect");
-
+            effect = Content.Load<Effect>("TextureEffect");
+            Texture2D texture = Content.Load<Texture2D>("Texture\\1");
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
-
-            effect.CurrentTechnique = effect.Techniques["TransformTechnique"];
+            effect.Parameters["UserTexture"].SetValue(texture);
+            effect.CurrentTechnique = effect.Techniques["TransformAndTexture"];
             return effect;
         }
-
+        void InitializeTextures()
+        {
+            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\1"), Content.Load<Texture2D>("Texture\\2") };
+            Block.initTextures(textures);
+        }
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
