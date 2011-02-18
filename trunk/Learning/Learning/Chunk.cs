@@ -24,9 +24,9 @@ namespace Learning
             this.addFloor();
         }
         
-        public void addBlock(int x,int y,int z)
+        public void addBlock(int x,int y,int z,int type)
         {
-            Block poo = new Block(new Vector3(x + 10 * this.position.X, y + 10 * this.position.Y, z + 10 * this.position.Z));
+            Block poo = new Block(new Vector3(x + 10 * this.position.X, y + 10 * this.position.Y, z + 10 * this.position.Z),type);
             this.BlockList[x][y][z] = poo;
         }
         public Boolean[] collisionCheck(Player player)
@@ -69,7 +69,7 @@ namespace Learning
                     {
                         if (block != null)
                         {
-                            Cube.Draw(block.position, this.world);
+                            Cube.Draw(block.position, this.world,block.getTexture());
                         }
                     }
                 }
@@ -90,7 +90,7 @@ namespace Learning
             {
                 for (int k = 0; k < 10; k++)
                 {
-                    this.addBlock(i, 0, k);
+                    this.addBlock(i, 0, k,(i+k)%2);
                 }
             }
         }
