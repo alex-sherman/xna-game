@@ -16,19 +16,83 @@ namespace Learning
         public Vector3 position;
         private Block[][][] BlockList;
         private World world;
-       
+        public BoundingBox hitBox;
         public Chunk(Vector3 position,World world)
         {
             this.world = world;
             this.position = position;
+            this.hitBox.Min = position;
+            this.hitBox.Max = position + new Vector3(10, 10, 10);
             this.addFloor();
         }
         
         public void addBlock(int x,int y,int z,int type)
         {
-            Block poo = new Block(new Vector3(x + 10 * this.position.X, y + 10 * this.position.Y, z + 10 * this.position.Z),type);
+            Block poo = new Block(new Vector3(x + this.position.X, y + this.position.Y, z +this.position.Z),type);
             this.BlockList[x][y][z] = poo;
         }
+        public void addBlock(Vector3 position, int type)
+        {
+            Block poo = new Block(position + this.position, type);
+            this.BlockList[(int)position.X][(int)position.Y][(int)position.Z] = poo;
+        }
+        public Block getBlock(Ray lookat)
+        {
+            Block closestBlock = null;
+            float? closestDistance = 100;
+            float? distance;
+            foreach (Block[][] row in this.BlockList)
+            {
+                foreach (Block[] col in row)
+                {
+                    foreach (Block block in col)
+                    {
+                        if (block != null)
+                        {
+                            distance = lookat.Intersects(block.hitBox);
+                            if(distance!=null && distance<closestDistance && distance<=5){
+                                closestBlock = block;
+                                closestDistance = distance;
+                            }
+                        }
+                    }
+                }
+            }
+            return closestBlock;
+        }
+        public bool destroyBlock(Block toDestroy)
+        {
+            if (toDestroy == null) { return false; }
+            Vector3 relation = toDestroy.position - this.position;
+            int i = (int)(relation.X);
+            int j = (int)(relation.Y);
+            int k = (int)(relation.Z);
+            try
+            {
+                if (this.BlockList[i][j][k] == toDestroy)
+                {
+                    this.BlockList[i][j][k] = null;
+                    return true;
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+            return false;
+        }
+        public bool destroyBlock(int i,int j, int k)
+        {
+            if (this.BlockList[i][j][k] !=null)
+            {
+                this.BlockList[i][j][k] = null;
+                return true;
+            }
+
+
+            return false;
+        }
+
         public Boolean[] collisionCheck(Player player)
         {
             Vector3 otherVec = player.position;

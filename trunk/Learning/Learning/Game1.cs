@@ -64,10 +64,12 @@ namespace Learning
             InitializeTextures();
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             newWorld.addChunk(0, 0, 0);
-            newWorld.addChunk(1, 0, 0);
-            newWorld.addChunk(-1, 0, 0);
-            newWorld.addChunk(0, 0, -2);
-            newWorld.addChunk(0, 0, -1);
+            Chunk poo = (Chunk)newWorld.chunkList[0];
+            newWorld.addChunk(10, 0, 0);
+            newWorld.addChunk(-10, 0, 0);
+            newWorld.addChunk(0, 0, -20);
+            newWorld.addChunk(0, 0, -10);
+            newWorld.getChunk(3, 0, -13).destroyBlock(7, 0, 7);
             someBitch = new Player();
             newWorld.addPlayer(someBitch);
             base.Initialize();
