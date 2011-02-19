@@ -93,10 +93,10 @@ namespace Learning
             return false;
         }
 
-        public Boolean[] collisionCheck(Player player)
+        public float[] collisionCheck(Player player)
         {
             Vector3 otherVec = player.position;
-            Boolean[] toReturn = { true,true,true };
+            float[] toReturn = { 0,0,0 };
             foreach (Block[][] row in this.BlockList)
             {
                 foreach (Block[] col in row)
@@ -107,15 +107,38 @@ namespace Learning
                         {
                             if (block.canMove(player.vLeft))
                             {
-                                toReturn[0] = false;
+                                toReturn[0] = block.position.X-player.position.X;
+                                if(toReturn[0]<0){
+                                    toReturn[0]+=Cube.cubeSize+.357f;
+                                }
+                                if (toReturn[0] > 0)
+                                {
+                                    toReturn[0] -= Cube.cubeSize + .357f;
+                                }
                             }
                             if (block.canMove(player.fallBox))
                             {
-                                toReturn[1] = false;
+                                toReturn[1] = block.position.Y - player.position.Y;
+                                if (toReturn[1] < 0)
+                                {
+                                    toReturn[1] += Cube.cubeSize + 1.5f;
+                                }
+                                if (toReturn[1] > 0)
+                                {
+                                    toReturn[1] -= Cube.cubeSize + 1.5f;
+                                }
                             }
                             if (block.canMove(player.vForward))
                             {
-                                toReturn[2] = false;
+                                toReturn[2] = block.position.Z - player.position.Z;
+                                if (toReturn[2] < 0)
+                                {
+                                    toReturn[2] += Cube.cubeSize + .357f;
+                                }
+                                if (toReturn[2] > 0)
+                                {
+                                    toReturn[2] -= Cube.cubeSize + .357f;
+                                }
                             }
                         }
                     }
@@ -154,10 +177,10 @@ namespace Learning
             {
                 for (int k = 0; k < 10; k++)
                 {
-                    this.addBlock(i, 0, k,(i+k)%4);
-                    this.addBlock(i, 1, k, (i + k) % 4);
-                    this.addBlock(i, 2, k, (i + k) % 4);
-                    this.addBlock(i, 3, k, (i + k) % 4);
+                    this.addBlock(i, 0, k,1);
+                    this.addBlock(i, 1, k, 2);
+                    this.addBlock(i, 2, k, 3);
+                    this.addBlock(i, 3, k, 0);
                 }
             }
         }

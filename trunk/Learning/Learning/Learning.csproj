@@ -111,6 +111,7 @@
     <Compile Include="Block.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="GUI.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Player.cs" />

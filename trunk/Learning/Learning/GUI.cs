@@ -16,12 +16,13 @@ namespace Learning
         private static Texture2D crosshair;
         private static Texture2D hotbar;
         private static int lineNumber = 0;
-        public static void Init(SpriteFont font,GraphicsDevice device,Texture2D crosshair,Texture2D hotbar)
+        public static void Init(SpriteFont font,Texture2D crosshair,Texture2D hotbar)
         {
             GUI.hotbar = hotbar;
             GUI.crosshair = crosshair;
-            GUI.device = device;
+            GUI.device = World.device;
             GUI.font = font;
+            GUI.device = World.device;
             GUI.batch = new SpriteBatch(device);
         }
         public static void print(String toPrint)
@@ -41,6 +42,7 @@ namespace Learning
             {
                 GUI.batch.DrawString(GUI.font, (String)GUI.strings[i], new Vector2(100, 20 * i), Color.Black);
             }
+            GUI.batch.DrawString(GUI.font, inventory.player.isWalking.ToString(), new Vector2(10, 500), Color.Black);
             Rectangle curItemRec = new Rectangle();
             curItemRec.Height = 64;
             curItemRec.Width = 65;

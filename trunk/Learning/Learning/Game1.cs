@@ -30,14 +30,15 @@ namespace Learning
         Matrix worldViewProjection;
         static Effect effect;
         MouseState orgMouseState;
-        World newWorld = new World();
-
+        World newWorld;
+        Input inputMethod;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferHeight = 480;
-            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 1500;
+            //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
         }
         
@@ -65,7 +66,8 @@ namespace Learning
             SpriteFont font = Content.Load<SpriteFont>("GUIfont");
             Texture2D crosshair = Content.Load<Texture2D>("Texture\\Crosshair");
             Texture2D hotbar = Content.Load<Texture2D>("Texture\\Hotbar");
-            GUI.Init(font,graphics.GraphicsDevice,crosshair,hotbar);
+            newWorld = new World(graphics.GraphicsDevice);
+            GUI.Init(font,crosshair,hotbar);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             newWorld.addChunk(0, 0, 0);
@@ -76,7 +78,7 @@ namespace Learning
             newWorld.addChunk(0, 0, -10);
 
             someBitch = new Player();
-
+            inputMethod = new Input(someBitch);
             newWorld.addPlayer(someBitch);
             base.Initialize();
         }
@@ -94,25 +96,28 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)GraphicsDevice.Viewport.Width /
                 (float)GraphicsDevice.Viewport.Height,
-                1.0f, 1000.0f);
+                .5f, 1000.0f);
 
             worldViewProjection = projection;
         }
 
-        Effect InitializeEffect()
+        BasicEffect InitializeEffect()
         {
-           
-            effect = Content.Load<Effect>("TextureEffect");
-            effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
-            effect.CurrentTechnique = effect.Techniques["TransformAndTexture"];
+            BasicEffect effect = new BasicEffect(graphics.GraphicsDevice);
+            effect.TextureEnabled = true;
+            effect.LightingEnabled = false;
+            effect.EnableDefaultLighting();
+            effect.DiffuseColor = .6f * (new Vector3(1, 1, 1)) ;
+            //effect.AmbientLightColor = new Vector3(.0f, 0f, 0f);
+            effect.Projection = worldViewProjection;
             return effect;
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\Dirt"),
+            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\Grass"),
                                      Content.Load<Texture2D>("Texture\\Stone"),
-                                     Content.Load<Texture2D>("Texture\\Tree"),
-                                     Content.Load<Texture2D>("Texture\\leaves")
+                                     Content.Load<Texture2D>("Texture\\Wood"),
+                                     Content.Load<Texture2D>("Texture\\Sand")
                                    };
             Block.initTextures(textures);
         }
@@ -145,13 +150,10 @@ namespace Learning
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
-            int dx = Mouse.GetState().X - orgMouseState.X;
-            int dy = Mouse.GetState().Y - orgMouseState.Y;
-            
-            Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-            someBitch.Update(gameTime, dx,dy, Keyboard.GetState());
-            newWorld.Update(someBitch.getCameraMatrix() * worldViewProjection);
+
+            inputMethod.handleInput(gameTime);
+            someBitch.Update();
+            newWorld.Update(someBitch.getCameraMatrix());
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -181,6 +183,7 @@ namespace Learning
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
+            rasterizerState.DepthBias = .01f;
             GraphicsDevice.RasterizerState = rasterizerState;
             newWorld.Draw();
             GUI.Draw(someBitch.inventory);

@@ -34,7 +34,7 @@ namespace Learning
                 item.rotation += .05f;
                 if (item.rotation > Math.PI * 2)
                 {
-                    item.rotation -= (float)Math.PI;
+                    item.rotation -= 2 * (float)Math.PI;
                 }
                 foreach (Player player in world.players)
                 {
