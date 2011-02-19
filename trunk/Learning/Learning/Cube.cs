@@ -138,6 +138,7 @@ namespace Learning
             Cube.effect.World = Matrix.CreateTranslation(position);
             Cube.effect.View = partialWorld;
             Cube.effect.Texture = texture;
+            Cube.effect.DiffuseColor = new Vector3(5, 5, 5) / ((new Vector3(0, 0, -10) + position).Length() + 1) + new Vector3(.2f, .2f, .2f);
             foreach(EffectPass pass in effect.CurrentTechnique.Passes){
                 pass.Apply();
             effect.CurrentTechnique.Passes[0].Apply();
@@ -153,6 +154,7 @@ namespace Learning
             Cube.effect.World = Matrix.CreateScale(scale)*Matrix.CreateRotationY(rotation)*Matrix.CreateTranslation(position);
             Cube.effect.View = partialWorld;
             Cube.effect.Texture = texture;
+            Cube.effect.DiffuseColor = new Vector3(5, 5, 5) / ((new Vector3(0, 0, -10) + position).Length() + 1) + new Vector3(.2f, .2f, .2f);
             effect.CurrentTechnique.Passes[0].Apply();
             Cube.device.SetVertexBuffer(vertexBuffer);
             Cube.device.Indices = indexBuffer;
