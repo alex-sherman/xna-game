@@ -64,8 +64,8 @@ namespace Learning
             InitializeTransform();
             InitializeTextures();
             SpriteFont font = Content.Load<SpriteFont>("GUIfont");
-            Texture2D crosshair = Content.Load<Texture2D>("Texture\\Crosshair");
-            Texture2D hotbar = Content.Load<Texture2D>("Texture\\Hotbar");
+            Texture2D crosshair = Content.Load<Texture2D>("Textures\\Crosshair");
+            Texture2D hotbar = Content.Load<Texture2D>("Textures\\Hotbar");
             newWorld = new World(graphics.GraphicsDevice);
             GUI.Init(font,crosshair,hotbar);
             
@@ -121,10 +121,10 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\Grass"),
-                                     Content.Load<Texture2D>("Texture\\Stone"),
-                                     Content.Load<Texture2D>("Texture\\Wood"),
-                                     Content.Load<Texture2D>("Texture\\Sand")
+            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"),
+                                     Content.Load<Texture2D>("Textures\\Stone"),
+                                     Content.Load<Texture2D>("Textures\\Wood"),
+                                     Content.Load<Texture2D>("Textures\\Sand")
                                    };
             Block.initTextures(textures);
         }
