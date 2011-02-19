@@ -32,11 +32,11 @@ namespace Learning
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))
             {
-                this.player.speed = .05f;
+                this.player.speed = GameConstants.PlayerWalkSpeed;
             }
             else
             {
-                this.player.speed = .1f;
+                this.player.speed = GameConstants.PlayerRunSpeed;
             }
             //Movement
             if (keyboard.IsKeyDown(Keys.W))

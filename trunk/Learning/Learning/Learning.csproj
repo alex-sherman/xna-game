@@ -110,6 +110,7 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Cube.cs" />
+    <Compile Include="GameConstants.cs" />
     <Compile Include="GUI.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Inventory.cs" />
