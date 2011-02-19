@@ -42,7 +42,6 @@ namespace Learning
             {
                 GUI.batch.DrawString(GUI.font, (String)GUI.strings[i], new Vector2(100, 20 * i), Color.Black);
             }
-            GUI.batch.DrawString(GUI.font, inventory.player.isWalking.ToString(), new Vector2(10, 500), Color.Black);
             Rectangle curItemRec = new Rectangle();
             curItemRec.Height = 64;
             curItemRec.Width = 65;
