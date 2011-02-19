@@ -18,6 +18,11 @@ C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Lear
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\obj\x86\Debug\Learning.exe
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\obj\x86\Debug\Learning.pdb
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\TextureEffect.xnb
-C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\1.xnb
-C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\2.xnb
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Untitled.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\GUIFont.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Dirt.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Crosshair.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\leaves.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Stone.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Tree.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Hotbar.xnb

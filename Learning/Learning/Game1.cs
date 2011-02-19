@@ -62,6 +62,11 @@ namespace Learning
             orgMouseState = Mouse.GetState();
             InitializeTransform();
             InitializeTextures();
+            SpriteFont font = Content.Load<SpriteFont>("GUIfont");
+            Texture2D crosshair = Content.Load<Texture2D>("Texture\\Crosshair");
+            Texture2D hotbar = Content.Load<Texture2D>("Texture\\Hotbar");
+            GUI.Init(font,graphics.GraphicsDevice,crosshair,hotbar);
+            
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             newWorld.addChunk(0, 0, 0);
             Chunk poo = (Chunk)newWorld.chunkList[0];
@@ -69,8 +74,9 @@ namespace Learning
             newWorld.addChunk(-10, 0, 0);
             newWorld.addChunk(0, 0, -20);
             newWorld.addChunk(0, 0, -10);
-            newWorld.getChunk(3, 0, -13).destroyBlock(7, 0, 7);
+
             someBitch = new Player();
+
             newWorld.addPlayer(someBitch);
             base.Initialize();
         }
@@ -97,15 +103,17 @@ namespace Learning
         {
            
             effect = Content.Load<Effect>("TextureEffect");
-            Texture2D texture = Content.Load<Texture2D>("Texture\\1");
             effect.Parameters["WorldViewProj"].SetValue(worldViewProjection);
-            effect.Parameters["UserTexture"].SetValue(texture);
             effect.CurrentTechnique = effect.Techniques["TransformAndTexture"];
             return effect;
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\1"), Content.Load<Texture2D>("Texture\\2") };
+            Texture2D[] textures = { Content.Load<Texture2D>("Texture\\Dirt"),
+                                     Content.Load<Texture2D>("Texture\\Stone"),
+                                     Content.Load<Texture2D>("Texture\\Tree"),
+                                     Content.Load<Texture2D>("Texture\\leaves")
+                                   };
             Block.initTextures(textures);
         }
         /// <summary>
@@ -169,12 +177,13 @@ namespace Learning
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            newWorld.Draw();
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            
-
+            newWorld.Draw();
+            GUI.Draw(someBitch.inventory);
             base.Draw(gameTime);
         }
     }

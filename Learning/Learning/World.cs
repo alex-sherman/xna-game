@@ -20,7 +20,6 @@ namespace Learning
         public void spawnItem(int type, Vector3 position)
         {
             Item poo = new Item(position, type);
-            this.itemList.Add(poo);
         }
         public void addChunk(int x, int y, int z)
         {
@@ -34,11 +33,16 @@ namespace Learning
 
         public void Update(Matrix partialWorld)
         {
+            foreach(Player player in this.players){
+                //player.Update();
+            }
+            Item.Update(this);
             this.partialWorld = partialWorld;
 
         }
-        public void addBlock(Ray lookat)
+        public bool addBlock(Ray lookat, int type)
         {
+
             Chunk newChunk;
             foreach (Chunk chunk in this.chunkList)
             {
@@ -50,12 +54,14 @@ namespace Learning
                         newChunk = this.getChunk(hit.getNormal(lookat) + hit.position);
                         if (newChunk != null)
                         {
-                            newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, 0);
-                            return;
+                            
+                            newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, type);
+                            return true;
                         }
                     }
                 }
             }
+            return false;
         }
         public void destroyBlock(Ray lookat)
         {
@@ -63,7 +69,13 @@ namespace Learning
             {
                 if (lookat.Intersects(chunk.hitBox) != null)
                 {
-                    chunk.destroyBlock(chunk.getBlock(lookat));
+                    Block destroyed = chunk.getBlock(lookat);
+                    if (destroyed != null)
+                    {
+                        this.spawnItem(destroyed.type, destroyed.position);
+                        chunk.destroyBlock(destroyed);
+                        return;
+                    }
                 }
             }
 
@@ -101,6 +113,7 @@ namespace Learning
             foreach(Chunk chunk in this.chunkList){
                 chunk.Draw();
             }
+            Item.Draw(this);
         }
         private Boolean[] and(Boolean[] first, Boolean[] second)
         {

@@ -13,6 +13,7 @@ namespace Learning
         public BoundingBox vLeft = new BoundingBox();
         public BoundingBox fallBox = new BoundingBox();
         private float speed = .1f;
+        public Inventory inventory;
         public Vector3 position = new Vector3(0, 7, 0);
         private Vector3 velocity = new Vector3(0, 0, 0);
         private Vector3 outsideV = new Vector3(0, 0, 0);
@@ -23,9 +24,30 @@ namespace Learning
         private float yRotation;
         public Ray lookAt = new Ray();
         public World world;
-
+        public Player(){
+             this.inventory = new Inventory(this);
+        }
         public void Update(GameTime time, int dx, int dy, KeyboardState keyboard){
             this.actionProgress++;
+            if(keyboard.IsKeyDown(Keys.D1)){
+                this.inventory.currentItem = 0;
+            }
+            if (keyboard.IsKeyDown(Keys.D2))
+            {
+                this.inventory.currentItem = 1;
+            }
+            if (keyboard.IsKeyDown(Keys.D3))
+            {
+                this.inventory.currentItem = 2;
+            }
+            if (keyboard.IsKeyDown(Keys.D4))
+            {
+                this.inventory.currentItem = 3;
+            }
+            if (keyboard.IsKeyDown(Keys.D5))
+            {
+                this.inventory.currentItem = 4;
+            }
             if(keyboard.IsKeyDown(Keys.Up)){
                 dy =5;
             }
@@ -60,7 +82,14 @@ namespace Learning
             if (keyboard.IsKeyDown(Keys.Q) && this.actionProgress>=0)
             {
                 this.actionProgress = -20;
-                this.world.addBlock(this.lookAt);
+                Item item = this.inventory.getItem();
+                if (item != null)
+                {
+                    if (this.world.addBlock(this.lookAt, item.type))
+                    {
+                        this.inventory.useItem();
+                    }
+                }
             }
             if(keyboard.IsKeyDown(Keys.LeftShift)){
                 speed = .05f;
