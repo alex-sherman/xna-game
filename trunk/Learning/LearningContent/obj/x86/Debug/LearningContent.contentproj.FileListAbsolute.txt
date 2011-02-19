@@ -1,2 +1,0 @@
-c:\users\n3cr0s1s57\documents\visual studio 2010\Projects\Learning\Learning\LearningContent\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\LearningContent\obj\x86\Debug\ResolveAssemblyReference.cache
