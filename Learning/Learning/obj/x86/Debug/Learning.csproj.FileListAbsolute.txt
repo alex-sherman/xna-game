@@ -26,3 +26,6 @@ C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Lear
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Stone.xnb
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Tree.xnb
 C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Hotbar.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Grass.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Sand.xnb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Wood.xnb

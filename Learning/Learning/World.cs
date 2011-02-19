@@ -13,9 +13,10 @@ namespace Learning
         public ArrayList chunkList = new ArrayList();
         public ArrayList players = new ArrayList();
         public ArrayList itemList = new ArrayList();
-        public World()
+        public static GraphicsDevice device;
+        public World(GraphicsDevice device)
         {
-
+            World.device = device;
         }
         public void spawnItem(int type, Vector3 position)
         {
@@ -115,29 +116,38 @@ namespace Learning
             }
             Item.Draw(this);
         }
-        private Boolean[] and(Boolean[] first, Boolean[] second)
+        private float[] and(float[] first, float[] second)
         {
             
             if (first.Length != second.Length)
             {
                 return first;
             }
-            Boolean[] toReturn = new Boolean[first.Length];
+            float[] toReturn = new float[first.Length];
             first.CopyTo(toReturn, 0);
             for (int i = 0; i < first.Length; i++)
             {
-                toReturn[i] = first[i] && second[i];
+                toReturn[i] = first[i] + second[i];
             }
             return toReturn;
         }
-        public Boolean[] collisionCheck(Player player)
+        public void collisionCheck(Player player)
         {
-            Boolean[] toReturn = { true, true, true};
+            float[] toReturn = { 0, 0, 0};
+
+            
             foreach (Chunk chunk in this.chunkList)
             {
                 toReturn = and(toReturn, chunk.collisionCheck(player));
             }
-            return toReturn;
+            if (Math.Abs(toReturn[1]) == 0) { player.outsideV.Y -= .025f; }
+            else { player.outsideV.Y = 0; }
+
+
+            if (Math.Abs(toReturn[0]) != 0) { player.toAdd.X = 0; player.outsideV.X = 0; }
+            if (Math.Abs(toReturn[2]) != 0) { player.toAdd.Z = 0; player.outsideV.Z = 0; }
+            if (Math.Abs(toReturn[1]) != 0) { player.toAdd.Y = 0; player.outsideV.Y = 0; }
+            player.isWalking = toReturn[1]!=0;
         }
     }
 }

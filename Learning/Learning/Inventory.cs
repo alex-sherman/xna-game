@@ -7,7 +7,7 @@ namespace Learning
 {
     class Inventory
     {
-        private Player player;
+        public Player player;
         public Item[] items;
         public int[] count;
         public int currentItem = 0;

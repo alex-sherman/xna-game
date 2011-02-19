@@ -17,9 +17,8 @@ namespace Learning
         static VertexBuffer vertexBuffer;
         static IndexBuffer indexBuffer;
         private static GraphicsDevice device;
-        public static Vector3 topLeftFront;
-        private static Effect effect;
-        public static void InitializeCube(GraphicsDevice device, Effect effect)
+        private static BasicEffect effect;
+        public static void InitializeCube(GraphicsDevice device, BasicEffect effect)
         {
             Cube.device = device;
             Cube.effect = effect;
@@ -33,7 +32,7 @@ namespace Learning
 
             float size = Cube.cubeSize;
             vertices = new VertexPositionColor[24];
-            topLeftFront = new Vector3(-size, size, size);
+            Vector3 topLeftFront = new Vector3(-size, size, size);
             Vector3 bottomLeftFront = new Vector3(-size, -size, size);
             Vector3 topRightFront = new Vector3(size, size, size);
             Vector3 bottomRightFront = new Vector3(size, -size, size);
@@ -42,51 +41,56 @@ namespace Learning
             Vector3 bottomLeftBack = new Vector3(-size, -size, -size);
             Vector3 bottomRightBack = new Vector3(size, -size, -size);
 
+            Vector2 sideTopLeft = new Vector2(0.0f, 0.0f);
+            Vector2 sideTopRight = new Vector2(.5f, 0.0f);
+            Vector2 sideBottomLeft = new Vector2(0.0f, 1f);
+            Vector2 sideBottomRight = new Vector2(0.5f, 1f);
+            Vector2 TtopLeftBack = new Vector2(0.5f, 0.0f);
+            Vector2 TtopRightBack = new Vector2(1.0f, 0.0f);
+            Vector2 TtopLeftFront = new Vector2(0.5f, 1f);
+            Vector2 TtopRightFront = new Vector2(1.0f, 1f);
 
-            Vector2 topLeft = new Vector2(0.0f, 0.0f);
-            Vector2 topCenter = new Vector2(0.5f, 0.0f);
-            Vector2 topRight = new Vector2(1.0f, 0.0f);
-            Vector2 bottomLeft = new Vector2(0.0f, 1.0f);
-            Vector2 bottomRight = new Vector2(1.0f, 1.0f);
-
-
-            VertexPositionTexture[] boxData = new VertexPositionTexture[]
+            Vector3 frontNormal = new Vector3(0, 0, 1);
+            Vector3 backNormal = new Vector3(0, 0, -1);
+            Vector3 leftNormal = new Vector3(-1, 0, 0);
+            Vector3 rightNormal = new Vector3(1, 0, 0);
+            Vector3 topNormal = new Vector3(0, 1, 0);
+            Vector3 bottomNormal = new Vector3(0, -1, 0);
+            VertexPositionNormalTexture[] boxData = new VertexPositionNormalTexture[]
             {
                 // Front Surface
-                new VertexPositionTexture(bottomLeftFront,bottomLeft),
-                new VertexPositionTexture(topLeftFront ,topLeft), 
-                new VertexPositionTexture(bottomRightFront,bottomRight),
-                new VertexPositionTexture(topRightFront,topRight),  
+                new VertexPositionNormalTexture(bottomLeftFront,frontNormal,sideBottomLeft),
+                new VertexPositionNormalTexture(topLeftFront ,frontNormal,sideTopLeft), 
+                new VertexPositionNormalTexture(bottomRightFront,frontNormal,sideBottomRight),
+                new VertexPositionNormalTexture(topRightFront,frontNormal,sideTopRight),  
 
-                // Front Surface
-                new VertexPositionTexture(bottomRightBack,bottomLeft),
-                new VertexPositionTexture(topRightBack,topLeft), 
-                new VertexPositionTexture(bottomLeftBack,bottomRight),
-                new VertexPositionTexture(topLeftBack,topRight), 
+                // Back Surface
+                new VertexPositionNormalTexture(bottomRightBack,backNormal,sideBottomLeft),
+                new VertexPositionNormalTexture(topRightBack,backNormal,sideTopLeft), 
+                new VertexPositionNormalTexture(bottomLeftBack,backNormal,sideBottomRight),
+                new VertexPositionNormalTexture(topLeftBack,backNormal,sideTopRight), 
 
                 // Left Surface
-                new VertexPositionTexture(bottomLeftBack,bottomLeft),
-                new VertexPositionTexture(topLeftBack,topLeft),
-                new VertexPositionTexture(bottomLeftFront,bottomRight),
-                new VertexPositionTexture(topLeftFront,topRight),
-
+                new VertexPositionNormalTexture(bottomLeftBack,leftNormal,sideBottomRight),
+                new VertexPositionNormalTexture(topLeftBack,leftNormal,sideTopRight),
+                new VertexPositionNormalTexture(bottomLeftFront,leftNormal,sideBottomLeft),
+                new VertexPositionNormalTexture(topLeftFront,leftNormal,sideTopLeft),
                 // Right Surface
-                new VertexPositionTexture(bottomRightFront,bottomLeft),
-                new VertexPositionTexture(topRightFront,topLeft),
-                new VertexPositionTexture(bottomRightBack,bottomRight),
-                new VertexPositionTexture(topRightBack,topRight),
-
+                new VertexPositionNormalTexture(bottomRightFront,rightNormal,sideBottomRight),
+                new VertexPositionNormalTexture(topRightFront,rightNormal,sideTopRight),
+                new VertexPositionNormalTexture(bottomRightBack,rightNormal,sideBottomLeft),
+                new VertexPositionNormalTexture(topRightBack,rightNormal,sideTopLeft),
                 // Top Surface
-                new VertexPositionTexture(topLeftFront,bottomLeft),
-                new VertexPositionTexture(topLeftBack,topLeft),
-                new VertexPositionTexture(topRightFront,bottomRight),
-                new VertexPositionTexture(topRightBack,topRight),
+                new VertexPositionNormalTexture(topLeftFront,topNormal,TtopLeftFront),
+                new VertexPositionNormalTexture(topLeftBack,topNormal,TtopLeftBack),
+                new VertexPositionNormalTexture(topRightFront,topNormal,TtopRightFront),
+                new VertexPositionNormalTexture(topRightBack,topNormal,TtopRightBack),
 
                 // Bottom Surface
-                new VertexPositionTexture(bottomLeftBack,bottomLeft),
-                new VertexPositionTexture(bottomLeftFront,topLeft),
-                new VertexPositionTexture(bottomRightBack,bottomRight),
-                new VertexPositionTexture(bottomRightFront,topRight),
+                new VertexPositionNormalTexture(bottomLeftBack,bottomNormal,TtopLeftBack),
+                new VertexPositionNormalTexture(bottomLeftFront,bottomNormal,TtopLeftFront),
+                new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TtopRightBack),
+                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TtopRightFront),
             };
             short[] indices = new short[] { 
                 0, 1, 2, 2, 1, 3,   
@@ -96,10 +100,10 @@ namespace Learning
                 16, 17, 18, 18, 17, 19,
                 20, 21, 22, 22, 21, 23
             };
-            vertexBuffer = new VertexBuffer(Cube.device, VertexPositionTexture.VertexDeclaration, 24, BufferUsage.WriteOnly);
+            vertexBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 24, BufferUsage.WriteOnly);
             indexBuffer = new IndexBuffer(Cube.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
 
-            vertexBuffer.SetData<VertexPositionTexture>(boxData);
+            vertexBuffer.SetData<VertexPositionNormalTexture>(boxData);
             indexBuffer.SetData<short>(indices);
 
         }
@@ -108,19 +112,24 @@ namespace Learning
         {
             if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
-            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * partialWorld);
-            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Cube.effect.World = Matrix.CreateTranslation(position);
+            Cube.effect.View = partialWorld;
+            Cube.effect.Texture = texture;
+            foreach(EffectPass pass in effect.CurrentTechnique.Passes){
+                pass.Apply();
             effect.CurrentTechnique.Passes[0].Apply();
             Cube.device.SetVertexBuffer(vertexBuffer);
             Cube.device.Indices = indexBuffer;
             Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
+            }
         }
         public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
         {
             if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
-            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale)*Matrix.CreateRotationY(rotation)*Matrix.CreateTranslation(position) * partialWorld );
-            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Cube.effect.World = Matrix.CreateScale(scale)*Matrix.CreateRotationY(rotation)*Matrix.CreateTranslation(position);
+            Cube.effect.View = partialWorld;
+            Cube.effect.Texture = texture;
             effect.CurrentTechnique.Passes[0].Apply();
             Cube.device.SetVertexBuffer(vertexBuffer);
             Cube.device.Indices = indexBuffer;
