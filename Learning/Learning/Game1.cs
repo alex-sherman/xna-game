@@ -105,17 +105,6 @@ namespace Learning
         {
             BasicEffect effect = new BasicEffect(graphics.GraphicsDevice);
             effect.TextureEnabled = true;
-            effect.LightingEnabled = false;
-            effect.DirectionalLight0.Enabled = true;
-            effect.DirectionalLight0.Direction = new Vector3(0, -1, 0);
-            effect.DirectionalLight1.Enabled = true;
-            effect.DirectionalLight1.Direction = new Vector3(-1, -1, -1);
-            effect.DirectionalLight2.Enabled = true;
-            effect.DirectionalLight2.Direction = new Vector3(1, -1, 1);
-            effect.DiffuseColor = .7f*(new Vector3(1, 1, 1));
-            effect.SpecularPower = 2f;
-            effect.SpecularColor = new Vector3(1, 1, 1);
-            effect.AmbientLightColor = new Vector3(1f, 1f, 1f);
             effect.Projection = worldViewProjection;
             return effect;
         }
