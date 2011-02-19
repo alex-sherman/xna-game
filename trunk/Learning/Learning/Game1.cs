@@ -96,7 +96,7 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)GraphicsDevice.Viewport.Width /
                 (float)GraphicsDevice.Viewport.Height,
-                .5f, 1000.0f);
+                0.4f, 2000.0f);
 
             worldViewProjection = projection;
         }
@@ -106,9 +106,16 @@ namespace Learning
             BasicEffect effect = new BasicEffect(graphics.GraphicsDevice);
             effect.TextureEnabled = true;
             effect.LightingEnabled = false;
-            effect.EnableDefaultLighting();
-            effect.DiffuseColor = .6f * (new Vector3(1, 1, 1)) ;
-            //effect.AmbientLightColor = new Vector3(.0f, 0f, 0f);
+            effect.DirectionalLight0.Enabled = true;
+            effect.DirectionalLight0.Direction = new Vector3(0, -1, 0);
+            effect.DirectionalLight1.Enabled = true;
+            effect.DirectionalLight1.Direction = new Vector3(-1, -1, -1);
+            effect.DirectionalLight2.Enabled = true;
+            effect.DirectionalLight2.Direction = new Vector3(1, -1, 1);
+            effect.DiffuseColor = .7f*(new Vector3(1, 1, 1));
+            effect.SpecularPower = 2f;
+            effect.SpecularColor = new Vector3(1, 1, 1);
+            effect.AmbientLightColor = new Vector3(1f, 1f, 1f);
             effect.Projection = worldViewProjection;
             return effect;
         }

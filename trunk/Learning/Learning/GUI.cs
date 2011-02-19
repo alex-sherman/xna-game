@@ -53,7 +53,7 @@ namespace Learning
                 if(inventory.items[i]!=null){
                     curItemRec.X = GUI.device.Viewport.Width/2 + i * 66 - 329;
                     GUI.batch.Draw(Block.textureList[inventory.items[i].type], curItemRec, Color.White);
-                    GUI.batch.DrawString(GUI.font, inventory.count[i].ToString(), new Vector2(GUI.device.Viewport.Width / 2 + i * 66 - 329, GUI.device.Viewport.Height - 64), Color.Pink);
+                    GUI.batch.DrawString(GUI.font, inventory.count[i].ToString(), new Vector2(GUI.device.Viewport.Width / 2 + i * 66 - 329, GUI.device.Viewport.Height - 64), Color.Black);
                 }
             }
             GUI.batch.End();
