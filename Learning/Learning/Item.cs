@@ -13,10 +13,12 @@ namespace Learning
         public int type;
         public static ArrayList itemList = new ArrayList();
         public float rotation = 0f;
+        public int amount;
         public Item(Vector3 position,int type)
         {
             this.type = type;
             this.position = position;
+            this.amount = 1;
             Item.itemList.Add(this);
         }
         public static void Draw(World world)
