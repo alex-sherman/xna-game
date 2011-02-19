@@ -20,24 +20,6 @@
       <Time>2011-02-17T17:45:16.1068963-06:00</Time>
     </Item>
     <Item>
-      <Source>Texture\1.png</Source>
-      <Name>Texture\1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\1.xnb</Output>
-      <Time>2011-02-13T22:38:11.856465-06:00</Time>
-    </Item>
-    <Item>
-      <Source>Texture\2.png</Source>
-      <Name>Texture\2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\2.xnb</Output>
-      <Time>2011-02-17T18:24:25.0592487-06:00</Time>
-    </Item>
-    <Item>
       <Source>Texture\Untitled.tga</Source>
       <Name>Texture\Untitled</Name>
       <Importer>TextureImporter</Importer>
@@ -45,6 +27,69 @@
       <Options>None</Options>
       <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Untitled.xnb</Output>
       <Time>2011-02-14T15:13:34.9242848-06:00</Time>
+    </Item>
+    <Item>
+      <Source>GUIFont.spritefont</Source>
+      <Name>GUIFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\GUIFont.xnb</Output>
+      <Time>2011-02-18T16:53:16.8747602-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\Dirt.png</Source>
+      <Name>Texture\Dirt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Dirt.xnb</Output>
+      <Time>2011-02-18T18:21:08.9053031-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\Crosshair.png</Source>
+      <Name>Texture\Crosshair</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Crosshair.xnb</Output>
+      <Time>2011-02-18T18:36:18.0873054-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\leaves.png</Source>
+      <Name>Texture\leaves</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\leaves.xnb</Output>
+      <Time>2011-02-18T18:24:18.5995618-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\Stone.png</Source>
+      <Name>Texture\Stone</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Stone.xnb</Output>
+      <Time>2011-02-18T19:07:32.7375887-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\Tree.png</Source>
+      <Name>Texture\Tree</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Tree.xnb</Output>
+      <Time>2011-02-18T18:19:53.614095-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Texture\Hotbar.png</Source>
+      <Name>Texture\Hotbar</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\Learning\Learning\bin\x86\Debug\Content\Texture\Hotbar.xnb</Output>
+      <Time>2011-02-18T19:53:25.8880004-06:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

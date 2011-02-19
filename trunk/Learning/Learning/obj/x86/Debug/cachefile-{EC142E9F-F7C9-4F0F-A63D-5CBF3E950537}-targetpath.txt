@@ -1,5 +1,10 @@
 Content\ReallySimpleEffect.xnb
 Content\TextureEffect.xnb
-Content\Texture\1.xnb
-Content\Texture\2.xnb
 Content\Texture\Untitled.xnb
+Content\GUIFont.xnb
+Content\Texture\Dirt.xnb
+Content\Texture\Crosshair.xnb
+Content\Texture\leaves.xnb
+Content\Texture\Stone.xnb
+Content\Texture\Tree.xnb
+Content\Texture\Hotbar.xnb

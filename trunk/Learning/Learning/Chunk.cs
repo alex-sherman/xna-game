@@ -133,7 +133,7 @@ namespace Learning
                     {
                         if (block != null)
                         {
-                            Cube.Draw(block.position, this.world,block.getTexture());
+                            block.Draw(this.world);
                         }
                     }
                 }
@@ -154,7 +154,10 @@ namespace Learning
             {
                 for (int k = 0; k < 10; k++)
                 {
-                    this.addBlock(i, 0, k,(i+k)%2);
+                    this.addBlock(i, 0, k,(i+k)%4);
+                    this.addBlock(i, 1, k, (i + k) % 4);
+                    this.addBlock(i, 2, k, (i + k) % 4);
+                    this.addBlock(i, 3, k, (i + k) % 4);
                 }
             }
         }

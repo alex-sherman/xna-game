@@ -27,6 +27,10 @@ namespace Learning
         {
             return this.hitBox.Intersects(vBox);
         }
+        public void Draw(World world)
+        {
+            Cube.Draw(this.position, world, this.getTexture());
+        }
         public Vector3 getNormal(Ray lookat)
         {
             float? distance = 100;

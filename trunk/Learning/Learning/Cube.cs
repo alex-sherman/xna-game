@@ -48,6 +48,8 @@ namespace Learning
             Vector2 topRight = new Vector2(1.0f, 0.0f);
             Vector2 bottomLeft = new Vector2(0.0f, 1.0f);
             Vector2 bottomRight = new Vector2(1.0f, 1.0f);
+
+
             VertexPositionTexture[] boxData = new VertexPositionTexture[]
             {
                 // Front Surface
@@ -107,6 +109,17 @@ namespace Learning
             if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * partialWorld);
+            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            effect.CurrentTechnique.Passes[0].Apply();
+            Cube.device.SetVertexBuffer(vertexBuffer);
+            Cube.device.Indices = indexBuffer;
+            Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
+        }
+        public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
+        {
+            if (texture == null) { return; }
+            Matrix partialWorld = world.partialWorld;
+            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale)*Matrix.CreateRotationY(rotation)*Matrix.CreateTranslation(position) * partialWorld );
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
             effect.CurrentTechnique.Passes[0].Apply();
             Cube.device.SetVertexBuffer(vertexBuffer);
