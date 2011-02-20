@@ -29,15 +29,7 @@ namespace Learning
         }
         public void Draw(World world)
         {
-            if (type == 4)
-            {
-
-                Cube.Draw(this.position, world, this.getTexture(), .7f);
-            }
-            else
-            {
                 Cube.Draw(this.position, world, this.getTexture());
-            }
         }
         public Vector3 getNormal(Ray lookat)
         {
