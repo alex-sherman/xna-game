@@ -23,7 +23,6 @@ namespace Learning
         {
             Item toReturn;
             toReturn = this.items[this.currentItem];
-            if (toReturn.amount == 0) { return null; }
             return toReturn;
         }
         public void useItem()

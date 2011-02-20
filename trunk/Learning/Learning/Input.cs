@@ -109,68 +109,71 @@ namespace Learning
                 player.velocity = Vector3.Zero;
             }
             //Select items
-            if (keyboard.IsKeyDown(Keys.D1))
+            if (state == IsWalking)
             {
-                this.player.inventory.currentItem = 0;
-            }
-            if (keyboard.IsKeyDown(Keys.D2))
-            {
-                this.player.inventory.currentItem = 1;
-            }
-            if (keyboard.IsKeyDown(Keys.D3))
-            {
-                this.player.inventory.currentItem = 2;
-            }
-            if (keyboard.IsKeyDown(Keys.D4))
-            {
-                this.player.inventory.currentItem = 3;
-            }
-            if (keyboard.IsKeyDown(Keys.D5))
-            {
-                this.player.inventory.currentItem = 4;
-            }
-            if (keyboard.IsKeyDown(Keys.D6))
-            {
-                this.player.inventory.currentItem = 5;
-            }
-            if (keyboard.IsKeyDown(Keys.D7))
-            {
-                this.player.inventory.currentItem = 6;
-            }
-            if (keyboard.IsKeyDown(Keys.D8))
-            {
-                this.player.inventory.currentItem = 7;
-            } 
-            if (keyboard.IsKeyDown(Keys.D9))
-            {
-                this.player.inventory.currentItem = 8;
-            }
-            if (keyboard.IsKeyDown(Keys.D0))
-            {
-                this.player.inventory.currentItem = 9;
-            }
-
-            //Use items and such
-            if (mouse.LeftButton== ButtonState.Pressed&& this.player.actionProgress >= 0)
-            {
-                this.player.actionProgress = -20;
-                this.player.world.destroyBlock(this.player.lookAt);
-            }
-            if (mouse.RightButton == ButtonState.Pressed && this.player.actionProgress >= 0)
-            {
-                this.player.actionProgress = -20;
-                Item item = this.player.inventory.getItem();
-                if (item != null)
+                if (keyboard.IsKeyDown(Keys.D1))
                 {
-                    if (this.player.world.addBlock(this.player.lookAt, item.type))
+                    this.player.inventory.currentItem = 0;
+                }
+                if (keyboard.IsKeyDown(Keys.D2))
+                {
+                    this.player.inventory.currentItem = 1;
+                }
+                if (keyboard.IsKeyDown(Keys.D3))
+                {
+                    this.player.inventory.currentItem = 2;
+                }
+                if (keyboard.IsKeyDown(Keys.D4))
+                {
+                    this.player.inventory.currentItem = 3;
+                }
+                if (keyboard.IsKeyDown(Keys.D5))
+                {
+                    this.player.inventory.currentItem = 4;
+                }
+                if (keyboard.IsKeyDown(Keys.D6))
+                {
+                    this.player.inventory.currentItem = 5;
+                }
+                if (keyboard.IsKeyDown(Keys.D7))
+                {
+                    this.player.inventory.currentItem = 6;
+                }
+                if (keyboard.IsKeyDown(Keys.D8))
+                {
+                    this.player.inventory.currentItem = 7;
+                }
+                if (keyboard.IsKeyDown(Keys.D9))
+                {
+                    this.player.inventory.currentItem = 8;
+                }
+                if (keyboard.IsKeyDown(Keys.D0))
+                {
+                    this.player.inventory.currentItem = 9;
+                }
+
+                //Use items and such
+                if (mouse.LeftButton == ButtonState.Pressed && this.player.actionProgress >= 0)
+                {
+                    this.player.actionProgress = -20;
+                    this.player.world.destroyBlock(this.player.lookAt);
+                }
+                if (mouse.RightButton == ButtonState.Pressed && this.player.actionProgress >= 0)
+                {
+                    this.player.actionProgress = -20;
+                    Item item = this.player.inventory.getItem();
+                    if (item != null)
                     {
-                        this.player.inventory.useItem();
+                        if (this.player.world.addBlock(this.player.lookAt, item.type))
+                        {
+                            this.player.inventory.useItem();
+                        }
                     }
                 }
-            }
-            if (mouse.RightButton == ButtonState.Released && mouse.LeftButton == ButtonState.Released)
-            {
-                this.player.actionProgress = 0;
+                if (mouse.RightButton == ButtonState.Released && mouse.LeftButton == ButtonState.Released)
+                {
+                    this.player.actionProgress = 0;
+                }
             }
         }
         private void handleRotation(GameTime time, MouseState mouse)

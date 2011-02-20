@@ -63,11 +63,7 @@ namespace Learning
             newWorld = new World(graphics.GraphicsDevice);
             InitializeTransform();
             InitializeTextures();
-            SpriteFont font = Content.Load<SpriteFont>("GUIfont");
-            Texture2D crosshair = Content.Load<Texture2D>("Textures\\Crosshair");
-            Texture2D hotbar = Content.Load<Texture2D>("Textures\\Hotbar");
-            Texture2D inventory = Content.Load<Texture2D>("Textures\\Inventory");
-            GUI.Init(font,crosshair,hotbar,inventory);
+            GUI.Init(this);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
 
@@ -116,7 +112,7 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"),
+            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass2"),
                                      Content.Load<Texture2D>("Textures\\Stone"),
                                      Content.Load<Texture2D>("Textures\\Wood"),
                                      Content.Load<Texture2D>("Textures\\Sand"),

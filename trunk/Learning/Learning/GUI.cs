@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Learning
 {
@@ -17,13 +18,14 @@ namespace Learning
         private static Texture2D hotbar;
         private static Texture2D inventory;
         private static int lineNumber = 0;
-        public static void Init(SpriteFont font,Texture2D crosshair,Texture2D hotbar,Texture2D inventory)
+        public static void Init(Game game)
         {
-            GUI.hotbar = hotbar;
-            GUI.inventory = inventory;
-            GUI.crosshair = crosshair;
+
+            GUI.font = game.Content.Load<SpriteFont>("GUIfont");
+            GUI.crosshair = game.Content.Load<Texture2D>("Textures\\Crosshair");
+            GUI.hotbar = game.Content.Load<Texture2D>("Textures\\Hotbar");
+            GUI.inventory = game.Content.Load<Texture2D>("Textures\\Inventory");
             GUI.device = World.device;
-            GUI.font = font;
             GUI.device = World.device;
             GUI.batch = new SpriteBatch(device);
         }
@@ -37,7 +39,6 @@ namespace Learning
         {
             //Draw the cursor in additive mode
             GUI.batch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            GUI.batch.Draw(GUI.crosshair, new Vector2(GUI.device.Viewport.Width / 2-5, GUI.device.Viewport.Height / 2-5), Color.White);
             GUI.batch.End();
 
             //Draw anything we want printed
@@ -54,10 +55,12 @@ namespace Learning
             GUI.batch.Draw(GUI.hotbar, new Vector2(GUI.device.Viewport.Width / 2 - 331, GUI.device.Viewport.Height - 68), Color.White);
             if (inventory.inventoryUp)
             {
+                GUI.batch.Draw(GUI.crosshair, new Vector2(Mouse.GetState().X, Mouse.GetState().Y), Color.White);
                 GUI.batch.Draw(GUI.inventory, new Vector2(GUI.device.Viewport.Width / 2 - 331, GUI.device.Viewport.Height - 331), Color.White);
             }
             else
             {
+                GUI.batch.Draw(GUI.crosshair, new Vector2(GUI.device.Viewport.Width / 2 - 5, GUI.device.Viewport.Height / 2 - 5), Color.White);
                 //Draw any items in it
                 for (int i = 0; i < inventory.items.Length; i++)
                 {
