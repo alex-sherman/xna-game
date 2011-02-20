@@ -128,7 +128,7 @@ namespace Learning
 
             // move the player's camera up a bit
             endAABB.Min.Y -= 1f;
-            endAABB.Max.Y += 1f;
+            endAABB.Max.Y -= 1f;
 
             foreach (Chunk chunk in this.chunkList)
             {
