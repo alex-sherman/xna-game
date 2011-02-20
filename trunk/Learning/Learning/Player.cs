@@ -45,22 +45,22 @@ namespace Learning
             if (this.toAdd.Z > 0)
             {
                 this.vForward.Max = this.position + new Vector3(.3f, 0, this.toAdd.Z + .375f);
-                this.vForward.Min = this.position + new Vector3(-.3f, -1.5f, .375f);
+                this.vForward.Min = this.position + new Vector3(-.3f, -1.5f, .3f);
             }
             else
             {
                 this.vForward.Min = this.position + new Vector3(-.3f, -1.5f, this.toAdd.Z - .375f);
-                this.vForward.Max = this.position + new Vector3(.3f, 0, -.375f);
+                this.vForward.Max = this.position + new Vector3(.3f, 0, -.3f);
             }
             if (this.toAdd.X > 0)
             {
                 this.vLeft.Max = this.position + new Vector3(this.toAdd.X + .375f, 0, .3f);
-                this.vLeft.Min = this.position + new Vector3(.375f, -1.5f, -.3f);
+                this.vLeft.Min = this.position + new Vector3(.3f, -1.5f, -.3f);
             }
             else
             {
                 this.vLeft.Min = this.position + new Vector3(this.toAdd.X - .375f, -1.5f, -.3f);
-                this.vLeft.Max = this.position + new Vector3(-.375f, 0, .3f);
+                this.vLeft.Max = this.position + new Vector3(-.3f, 0, .3f);
             }
 
             if (this.toAdd.Y > 0)
@@ -71,7 +71,7 @@ namespace Learning
             }
             else
             {
-                this.fallBox.Min = this.position + new Vector3(-.3f,this.toAdd.Y - 1.6f, -.3f);
+                this.fallBox.Min = this.position + new Vector3(-.3f,this.toAdd.Y - 1.5f, -.3f);
                 this.fallBox.Max = this.position + new Vector3(.3f, 0, .3f);
             }
 

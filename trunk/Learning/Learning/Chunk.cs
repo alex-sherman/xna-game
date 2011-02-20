@@ -31,10 +31,15 @@ namespace Learning
             Block poo = new Block(new Vector3(x + this.position.X, y + this.position.Y, z + this.position.Z), type);
             this.BlockList[x, y, z] = poo;
         }
-        public void addBlock(Vector3 position, int type)
+        public bool addBlock(Vector3 position, int type)
         {
             Block poo = new Block(position + this.position, type);
-            this.BlockList[(int)position.X, (int)position.Y, (int)position.Z] = poo;
+            if (this.BlockList[(int)position.X, (int)position.Y, (int)position.Z] == null)
+            {
+                this.BlockList[(int)position.X, (int)position.Y, (int)position.Z] = poo;
+                return true;
+            }
+            return false;
         }
         public Block getBlock(Ray lookat)
         {
@@ -157,6 +162,7 @@ namespace Learning
                     this.addBlock(i, 1, k, 2);
                     this.addBlock(i, 2, k, 3);
                     this.addBlock(i, 3, k, 0);
+                    this.addBlock(i, 4, k, 4);
                 }
             }
         }

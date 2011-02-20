@@ -17,8 +17,8 @@ namespace Learning
         static VertexBuffer vertexBuffer;
         static IndexBuffer indexBuffer;
         private static GraphicsDevice device;
-        private static BasicEffect effect;
-        public static void InitializeCube(GraphicsDevice device, BasicEffect effect)
+        private static Effect effect;
+        public static void InitializeCube(GraphicsDevice device, Effect effect)
         {
             Cube.device = device;
             Cube.effect = effect;
@@ -75,7 +75,7 @@ namespace Learning
 
             Vector3 frontNormal = new Vector3(0, 0, 1);
             Vector3 backNormal = new Vector3(0, 0, -1);
-            Vector3 leftNormal = new Vector3(-1, 0, 0);
+            Vector3 leftNormal = new Vector3(1, 0, 0);
             Vector3 rightNormal = new Vector3(1, 0, 0);
             Vector3 topNormal = new Vector3(0, 1, 0);
             Vector3 bottomNormal = new Vector3(0, -1, 0);
@@ -99,10 +99,10 @@ namespace Learning
                 new VertexPositionNormalTexture(bottomLeftFront,leftNormal,leftBottomLeft),
                 new VertexPositionNormalTexture(topLeftFront,leftNormal,leftTopLeft),
                 // Right Surface
-                new VertexPositionNormalTexture(bottomRightFront,rightNormal,rightBottomRight),
-                new VertexPositionNormalTexture(topRightFront,rightNormal,rightTopRight),
-                new VertexPositionNormalTexture(bottomRightBack,rightNormal,rightBottomLeft),
-                new VertexPositionNormalTexture(topRightBack,rightNormal,rightTopLeft),
+                new VertexPositionNormalTexture(bottomRightFront,rightNormal,rightBottomLeft),
+                new VertexPositionNormalTexture(topRightFront,rightNormal,rightTopLeft),
+                new VertexPositionNormalTexture(bottomRightBack,rightNormal,rightBottomRight),
+                new VertexPositionNormalTexture(topRightBack,rightNormal,rightTopRight),
                 // Top Surface
                 new VertexPositionNormalTexture(topLeftFront,topNormal,TtopLeftFront),
                 new VertexPositionNormalTexture(topLeftBack,topNormal,TtopLeftBack),
@@ -110,10 +110,10 @@ namespace Learning
                 new VertexPositionNormalTexture(topRightBack,topNormal,TtopRightBack),
 
                 // Bottom Surface
-                new VertexPositionNormalTexture(bottomLeftBack,bottomNormal,TbottomLeftBack),
-                new VertexPositionNormalTexture(bottomLeftFront,bottomNormal,TbottomLeftFront),
-                new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TbottomRightBack),
-                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomRightFront),
+                new VertexPositionNormalTexture(bottomLeftBack,bottomNormal,TbottomRightBack),
+                new VertexPositionNormalTexture(bottomLeftFront,bottomNormal,TbottomRightFront),
+                new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TbottomLeftBack),
+                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomLeftFront),
             };
             short[] indices = new short[] { 
                 0, 1, 2, 2, 1, 3,   
@@ -135,30 +135,40 @@ namespace Learning
         {
             if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
-            Cube.effect.World = Matrix.CreateTranslation(position);
-            Cube.effect.View = partialWorld;
-            Cube.effect.Texture = texture;
-            Cube.effect.DiffuseColor = new Vector3(5, 5, 5) / ((new Vector3(0, 0, -10) + position).Length() + 1) + new Vector3(.2f, .2f, .2f);
-            foreach(EffectPass pass in effect.CurrentTechnique.Passes){
+            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
+            Cube.effect.Parameters["view"].SetValue(partialWorld);
+            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Cube.device.BlendState = BlendState.Opaque;
+            Draw(Cube.effect);
+        }
+        public static void Draw(Vector3 position, World world, Texture2D texture, float transparency)
+        {
+            if (texture == null) { return; }
+            Matrix partialWorld = world.partialWorld;
+            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
+            Cube.effect.Parameters["view"].SetValue(partialWorld);
+            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Draw(Cube.effect);
+        }
+        public static void Draw(Effect effect)
+        {
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
                 pass.Apply();
-            effect.CurrentTechnique.Passes[0].Apply();
-            Cube.device.SetVertexBuffer(vertexBuffer);
-            Cube.device.Indices = indexBuffer;
-            Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
+                Cube.device.SetVertexBuffer(vertexBuffer);
+                Cube.device.Indices = indexBuffer;
+                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
             }
         }
         public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
         {
             if (texture == null) { return; }
             Matrix partialWorld = world.partialWorld;
-            Cube.effect.World = Matrix.CreateScale(scale)*Matrix.CreateRotationY(rotation)*Matrix.CreateTranslation(position);
-            Cube.effect.View = partialWorld;
-            Cube.effect.Texture = texture;
-            Cube.effect.DiffuseColor = new Vector3(5, 5, 5) / ((new Vector3(0, 0, -10) + position).Length() + 1) + new Vector3(.2f, .2f, .2f);
-            effect.CurrentTechnique.Passes[0].Apply();
-            Cube.device.SetVertexBuffer(vertexBuffer);
-            Cube.device.Indices = indexBuffer;
-            Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
+            Matrix worldMatrix = Matrix.CreateScale(scale) * Matrix.CreateRotationY(rotation) * Matrix.CreateTranslation(position);
+            Cube.effect.Parameters["world"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(position));
+            Cube.effect.Parameters["view"].SetValue(partialWorld);
+            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Draw(Cube.effect);
         }
     }
 }
