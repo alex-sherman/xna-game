@@ -14,7 +14,7 @@ namespace Learning
     class Chunk
     {
         public Vector3 position;
-        private Block[, ,] BlockList;
+        public Block[, ,] BlockList;
         private World world;
         public BoundingBox hitBox;
         public Chunk(Vector3 position, World world)
@@ -93,54 +93,6 @@ namespace Learning
             return false;
         }
 
-        public float[] collisionCheck(Player player)
-        {
-            Vector3 otherVec = player.position;
-            float[] toReturn = { 0, 0, 0 };
-            foreach (Block block in BlockList)
-            {
-                if (block != null)
-                {
-                    if (block.canMove(player.vLeft))
-                    {
-                        toReturn[0] = block.position.X - player.position.X;
-                        if (toReturn[0] < 0)
-                        {
-                            toReturn[0] += Cube.cubeSize + .357f;
-                        }
-                        if (toReturn[0] > 0)
-                        {
-                            toReturn[0] -= Cube.cubeSize + .357f;
-                        }
-                    }
-                    if (block.canMove(player.fallBox))
-                    {
-                        toReturn[1] = block.position.Y - player.position.Y;
-                        if (toReturn[1] < 0)
-                        {
-                            toReturn[1] += Cube.cubeSize + 1.5f;
-                        }
-                        if (toReturn[1] > 0)
-                        {
-                            toReturn[1] -= Cube.cubeSize + 1.5f;
-                        }
-                    }
-                    if (block.canMove(player.vForward))
-                    {
-                        toReturn[2] = block.position.Z - player.position.Z;
-                        if (toReturn[2] < 0)
-                        {
-                            toReturn[2] += Cube.cubeSize + .357f;
-                        }
-                        if (toReturn[2] > 0)
-                        {
-                            toReturn[2] -= Cube.cubeSize + .357f;
-                        }
-                    }
-                }
-            }
-            return toReturn;
-        }
         public void Draw()
         {
             foreach (Block block in BlockList)
