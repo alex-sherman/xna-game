@@ -13,7 +13,7 @@ namespace Learning
         public const float PlayerWalkSpeed = 0.008f;
         public const float Gravity = 0.00018f;
         public const float PlayerJumpSpeed = .005f;
-        public static Vector3 PlayerSize = new Vector3(0.6f, 1.5f, 0.6f);
+        public static Vector3 PlayerSize = new Vector3(0.6f, 1.55f, 0.6f);
 
     }
 }

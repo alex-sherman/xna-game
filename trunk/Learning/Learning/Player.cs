@@ -66,8 +66,10 @@ namespace Learning
         public Matrix getCameraMatrix()
         {
 
-            return Matrix.CreateLookAt(this.position + Vector3.Transform(new Vector3(0, 0, -.4f), this.rotation),
-                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position, Vector3.Transform(Vector3.Up, this.rotation));
+            return Matrix.CreateLookAt(
+                   position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
+                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position, 
+                   Vector3.Transform(Vector3.Up, this.rotation));
 
 
         }
