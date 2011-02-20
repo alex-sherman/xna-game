@@ -59,7 +59,7 @@ VertexShaderOutputPerVertexDiffuse PerVertexDiffuseVS(
      //calculate diffuse component
      float3 directionToLight = normalize(lightPosition - output.WorldPosition);
      float diffuseIntensity = saturate( dot(directionToLight, output.WorldNormal));
-     float4 diffuse = diffuseLightColor * 1/length(lightPosition - output.WorldPosition)*5;
+     float4 diffuse = diffuseLightColor * diffuseIntensity;
 
      output.Color = diffuse + ambientLightColor;
 
