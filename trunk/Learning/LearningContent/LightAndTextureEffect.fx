@@ -1,11 +1,8 @@
 
 uniform extern texture UserTexture;
 float4x4 WorldViewProj;
-float4x4 world;
-float4x4 view;
-float4x4 projection;
 float3 cameraPosition;
-
+float4x4 world;
 //light properties
 float3 lightPosition;
 float4 ambientLightColor;
@@ -50,19 +47,19 @@ VertexShaderOutputPerVertexDiffuse PerVertexDiffuseVS(
      VertexShaderOutputPerVertexDiffuse output;
 	 output.textureCoord = textureCoord;
      //generate the world-view-projection matrix
-     float4x4 wvp = mul(mul(world, view), projection);
+     float4x4 wvp = WorldViewProj;
      
      //transform the input position to the output
      output.Position = mul(float4(position, 1.0), wvp);
      
      output.WorldNormal =  mul(normal, world);
      float4 worldPosition =  mul(float4(position, 1.0), world);
-     output.WorldPosition = worldPosition / worldPosition.w;
+     output.WorldPosition = worldPosition/ worldPosition.w;;
      
      //calculate diffuse component
      float3 directionToLight = normalize(lightPosition - output.WorldPosition);
      float diffuseIntensity = saturate( dot(directionToLight, output.WorldNormal));
-     float4 diffuse = diffuseLightColor * diffuseIntensity;
+     float4 diffuse = diffuseLightColor * 1/length(lightPosition - output.WorldPosition)*5;
 
      output.Color = diffuse + ambientLightColor;
 
@@ -83,9 +80,9 @@ float4 PhongPS(PixelShaderInputPerVertexDiffuse input) : COLOR
                        specularPower);
      
      float4 color = input.Color + specular;
-     color.a = .5;
+     color.a = 1;
      
-     return color*=tex2D(textureSampler, input.textureCoord).rgba;
+     return color;
 }
 struct VS_OUTPUT
 {
@@ -116,17 +113,17 @@ technique TransformAndTexture
 {
 	/*pass P0
     {
-        vertexShader = compile vs_2_0 Transform();
-        pixelShader  = compile ps_2_0 ApplyTexture();
+        vertexShader = compile vs_3_0 Transform();
+        pixelShader  = compile ps_3_0 ApplyTexture();
     }*/
     pass P1
     {
           //Per-vertex diffuse calculation and preparation of inputs
           //for the phong pixel shader
-          VertexShader = compile vs_2_0 PerVertexDiffuseVS();
+          VertexShader = compile vs_3_0 PerVertexDiffuseVS();
           
           //set the pixel shader to the per-pixel phong function      
-          PixelShader = compile ps_2_0 PhongPS();
+          PixelShader = compile ps_3_0 PhongPS();
     }
 	 
 }
