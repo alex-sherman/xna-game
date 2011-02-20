@@ -129,7 +129,6 @@ namespace Learning
             // move the player's camera up a bit
             endAABB.Min.Y -= GameConstants.PlayerSize.Y / 2;
             endAABB.Max.Y -= GameConstants.PlayerSize.Y / 2;
-
             foreach (Chunk chunk in this.chunkList)
             {
                 foreach (Block b in chunk.BlockList)

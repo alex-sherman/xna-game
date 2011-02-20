@@ -33,28 +33,32 @@ namespace Learning
 
         public void Update(GameTime gameTime)
         {
-            this.actionProgress++;
+            actionProgress++;
 
-            this.hitBox.Max = this.position + new Vector3(1f, 0, 1f);
-            this.hitBox.Min = this.position - new Vector3(1f, 2, 1f);
+            hitBox.Max = position + new Vector3(1f, 0, 1f);
+            hitBox.Min = position - new Vector3(1f, 2, 1f);
 
 
-            this.rotation = Matrix.CreateRotationX(this.yRotation) * Matrix.CreateRotationY(this.xRotation);
-            this.lookAt.Direction = Vector3.Transform(Vector3.UnitZ, this.rotation);
-            this.lookAt.Position = this.position;
-            this.currentVelocity = Vector3.Transform(this.velocity, Matrix.CreateRotationY(this.xRotation));
+            rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
+            lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
+            lookAt.Position = position;
+            currentVelocity = Vector3.Transform(velocity, Matrix.CreateRotationY(xRotation));
 
             outsideV.Y -= GameConstants.Gravity;
-            currentVelocity += this.outsideV;
+            //currentVelocity += outsideV;
             
             Vector3 endPos = position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
-            // resolve a few possible collisions and check if on ground
-            // at most 5 are possible
+            // resolve non-gravity-caused collisions
             isWalking = false;
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
                 world.collisionCheck(ref endPos, ref isWalking);
+
+            // gravity (to get the true state of isWalking)
+            isWalking = false;
+            endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
+            world.collisionCheck(ref endPos, ref isWalking);
 
             if (isWalking)
                 outsideV.Y = 0;
