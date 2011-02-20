@@ -66,6 +66,7 @@ namespace Learning
             if (keyboard.IsKeyDown(Keys.Space) && this.player.isWalking)
             {
                 this.player.outsideV.Y = GameConstants.PlayerJumpSpeed;
+                player.isWalking = false;
             }
             
         }
