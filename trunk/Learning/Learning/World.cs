@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -11,21 +12,20 @@ namespace Learning
     {
         public Matrix partialWorld;
         public Matrix projection;
-        public ArrayList chunkList = new ArrayList();
-        public ArrayList players = new ArrayList();
-        public ArrayList itemList = new ArrayList();
+        public List<Player> players = new List<Player>();
+        public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
+        public OctreeNode blockTree;
+
         public World(GraphicsDevice device)
         {
             World.device = device;
+            blockTree = new OctreeNode(this, Vector3.Zero, 1000f, 36);
+            generateFloor();
         }
         public void spawnItem(int type, Vector3 position)
         {
             Item poo = new Item(position, type);
-        }
-        public void addChunk(int x, int y, int z)
-        {
-            this.chunkList.Add(new Chunk(new Vector3(x, y, z), this));
         }
         public void addPlayer(Player player)
         {
@@ -43,80 +43,35 @@ namespace Learning
             this.partialWorld = partialWorld;
 
         }
-        public bool addBlock(Ray lookat, int type)
+        public bool addBlock(Ray lookAt, int type)
         {
+            return blockTree.addBlock(lookAt, type);
+        }
+        public void destroyBlock(Ray lookAt)
+        {
+            blockTree.destroyBlock(lookAt);
+        }
 
-            Chunk newChunk;
-            foreach (Chunk chunk in this.chunkList)
-            {
-                if (lookat.Intersects(chunk.hitBox) != null)
-                {
-                    Block hit = chunk.getBlock(lookat);
-                    if (hit != null)
-                    {
-                        Vector3 position = hit.getNormal(lookat) + hit.position;
-                        newChunk = this.getChunk(position);
-                        if (newChunk != null && ((Player)players[0]).hitBox.Contains(position) != ContainmentType.Contains)
-                        {
-                            return newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, type);
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        public void destroyBlock(Ray lookat)
-        {
-            foreach (Chunk chunk in this.chunkList)
-            {
-                if (lookat.Intersects(chunk.hitBox) != null)
-                {
-                    Block destroyed = chunk.getBlock(lookat);
-                    if (destroyed != null)
-                    {
-                        this.spawnItem(destroyed.type, destroyed.position);
-                        chunk.destroyBlock(destroyed);
-                        return;
-                    }
-                }
-            }
-
-        }
-        public Chunk getChunk(float i, float j, float k)
-        {
-            Vector3 point = new Vector3(i, j, k);
-            foreach (Chunk chunk in this.chunkList)
-            {
-                if (chunk.hitBox.Contains(point) == ContainmentType.Contains)
-                {
-                    return chunk;
-                }
-            }
-            return null;
-        }
-        public Chunk getChunk(Vector3 pos)
-        {
-            float i = pos.X;
-            float j = pos.Y;
-            float k = pos.Z;
-            foreach (Chunk chunk in this.chunkList)
-            {
-                if (chunk.position.X + 10 > i && chunk.position.X <= i &&
-                    chunk.position.Y + 10 > j && chunk.position.Y <= j &&
-                    chunk.position.Z + 10 > k && chunk.position.Z <= k)
-                {
-                    return chunk;
-                }
-            }
-            return null;
-        }
         public void Draw()
         {
-            foreach (Chunk chunk in this.chunkList)
-            {
-                chunk.Draw();
-            }
+            blockTree.Draw();
             Item.Draw(this);
+        }
+
+        public void generateFloor()
+        {
+            for (int u = -20; u < 10; u++)
+            {
+                for (int v = -20; v < 10; v++)
+                {
+                    blockTree.addBlock(u, 0, v, 1);
+                    blockTree.addBlock(u, 1, v, 2);
+                    blockTree.addBlock(u, 2, v, 3);
+                    blockTree.addBlock(u, 3, v, 1);
+                    blockTree.addBlock(u, 4, v, 4);
+                }
+            }
+            blockTree.redistributeObjects();
         }
 
         #region Collision Detection
@@ -127,21 +82,19 @@ namespace Learning
                 endPos + GameConstants.PlayerSize / 2);
 
             // move the player's camera up a bit
-            endAABB.Min.Y -= 1f;
-            endAABB.Max.Y += 1f;
-            foreach (Chunk chunk in this.chunkList)
+            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 2;
+            endAABB.Max.Y += GameConstants.PlayerSize.Y / 2;
+            foreach (Block b in blockTree.getCollisionCandidates(endAABB))
             {
-                foreach (Block b in chunk.BlockList)
+                if (b != null)
                 {
-                    if (b != null)
-                    {
-                        Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
-                        endPos += correction;
-                        if (correction.Y > 0) onGround = true;
-                        if (!correction.Equals(Vector3.Zero)) return;
-                    }
+                    Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
+                    endPos += correction;
+                    if (correction.Y > 0) onGround = true;
+                    if (!correction.Equals(Vector3.Zero)) return;
                 }
             }
+
         }
 
         /// <summary>

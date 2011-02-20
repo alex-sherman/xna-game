@@ -70,12 +70,6 @@ namespace Learning
             GUI.Init(font,crosshair,hotbar,inventory);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
-            newWorld.addChunk(0, 0, 0);
-            Chunk poo = (Chunk)newWorld.chunkList[0];
-            newWorld.addChunk(10, 0, 0);
-            newWorld.addChunk(-10, 0, 0);
-            newWorld.addChunk(0, 0, -20);
-            newWorld.addChunk(0, 0, -10);
 
             someBitch = new Player();
             inputMethod = new Input(someBitch);
