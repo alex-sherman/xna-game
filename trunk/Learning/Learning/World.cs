@@ -25,7 +25,7 @@ namespace Learning
         }
         public void addChunk(int x, int y, int z)
         {
-            this.chunkList.Add(new Chunk(new Vector3(x, y, z),this));
+            this.chunkList.Add(new Chunk(new Vector3(x, y, z), this));
         }
         public void addPlayer(Player player)
         {
@@ -35,7 +35,8 @@ namespace Learning
 
         public void Update(Matrix partialWorld)
         {
-            foreach(Player player in this.players){
+            foreach (Player player in this.players)
+            {
                 //player.Update();
             }
             Item.Update(this);
@@ -51,11 +52,11 @@ namespace Learning
                 if (lookat.Intersects(chunk.hitBox) != null)
                 {
                     Block hit = chunk.getBlock(lookat);
-                    if (hit != null )
+                    if (hit != null)
                     {
                         Vector3 position = hit.getNormal(lookat) + hit.position;
                         newChunk = this.getChunk(position);
-                        if (newChunk != null && ((Player)players[0]).hitBox.Contains(position)!=ContainmentType.Contains)
+                        if (newChunk != null && ((Player)players[0]).hitBox.Contains(position) != ContainmentType.Contains)
                         {
                             return newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, type);
                         }
@@ -111,43 +112,135 @@ namespace Learning
         }
         public void Draw()
         {
-            foreach(Chunk chunk in this.chunkList){
+            foreach (Chunk chunk in this.chunkList)
+            {
                 chunk.Draw();
             }
             Item.Draw(this);
         }
-        private float[] and(float[] first, float[] second)
-        {
-            
-            if (first.Length != second.Length)
-            {
-                return first;
-            }
-            float[] toReturn = new float[first.Length];
-            first.CopyTo(toReturn, 0);
-            for (int i = 0; i < first.Length; i++)
-            {
-                toReturn[i] = first[i] + second[i];
-            }
-            return toReturn;
-        }
-        public void collisionCheck(Player player)
-        {
-            float[] toReturn = { 0, 0, 0};
 
-            
+        #region Collision Detection
+        public void collisionCheck(ref Vector3 endPos, ref bool onGround)
+        {
+            BoundingBox endAABB = new BoundingBox(
+                endPos - GameConstants.PlayerSize / 2,
+                endPos + GameConstants.PlayerSize / 2);
+
             foreach (Chunk chunk in this.chunkList)
             {
-                toReturn = and(toReturn, chunk.collisionCheck(player));
+                foreach (Block b in chunk.BlockList)
+                {
+                    if (b != null)
+                    {
+                        Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
+                        endPos += correction;
+                        if (correction.Y > 0) onGround = true;
+                        if (!correction.Equals(Vector3.Zero)) return;
+                    }
+                }
             }
-            if (Math.Abs(toReturn[1]) == 0) { player.outsideV.Y -= GameConstants.Gravity; }
-            else { player.outsideV.Y = 0; }
-
-
-            if (Math.Abs(toReturn[0]) != 0) { player.toAdd.X = 0; player.outsideV.X = 0; }
-            if (Math.Abs(toReturn[2]) != 0) { player.toAdd.Z = 0; player.outsideV.Z = 0; }
-            if (Math.Abs(toReturn[1]) != 0) { player.toAdd.Y = 0; player.outsideV.Y = 0; }
-            player.isWalking = toReturn[1]!=0;
         }
+
+        /// <summary>
+        /// Calculates the "minimum penetration" vector pointing from
+        /// box2 to box1 - that is, the smallest distance needed to
+        /// travel to free box1 from the collision. If they aren't colliding,
+        /// returns (0,0,0).
+        /// </summary>
+        /// <param name="box1">The colliding bounding box</param>
+        /// <param name="box2">The collided bounding box.</param>
+        /// <returns>A trajectory for box1 to free it from the collision</returns>
+        public Vector3 getMinimumPenetrationVector(BoundingBox box1, BoundingBox box2)
+        {
+            Vector3 result = Vector3.Zero;
+
+            float diff, minDiff;
+            int axis, side;
+
+            // neg X
+            diff = box1.Max.X - box2.Min.X;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            minDiff = diff;
+            axis = 0;
+            side = -1;
+
+            // pos X
+            diff = box2.Max.X - box1.Min.X;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            if (diff < minDiff)
+            {
+                minDiff = diff;
+                side = 1;
+            }
+
+            // neg Y
+            diff = box1.Max.Y - box2.Min.Y;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            if (diff < minDiff)
+            {
+                minDiff = diff;
+                axis = 1;
+                side = -1;
+            }
+
+            // pos Y
+            diff = box2.Max.Y - box1.Min.Y;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            if (diff < minDiff)
+            {
+                minDiff = diff;
+                axis = 1;
+                side = 1;
+            }
+
+            // neg Z
+            diff = box1.Max.Z - box2.Min.Z;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            if (diff < minDiff)
+            {
+                minDiff = diff;
+                axis = 2;
+                side = -1;
+            }
+
+            // pos Z
+            diff = box2.Max.Z - box1.Min.Z;
+            if (diff < 0.0f)
+            {
+                return Vector3.Zero;
+            }
+            if (diff < minDiff)
+            {
+                minDiff = diff;
+                axis = 2;
+                side = 1;
+            }
+
+            // Intersection occurred
+            if (axis == 0)
+                result.X = (float)side * minDiff;
+            else if (axis == 1)
+                result.Y = (float)side * minDiff;
+            else
+                result.Z = (float)side * minDiff;
+
+            return result;
+        }
+        #endregion
     }
 }

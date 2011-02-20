@@ -161,7 +161,7 @@ namespace Learning
         {
 
             inputMethod.handleInput(gameTime);
-            someBitch.Update();
+            someBitch.Update(gameTime);
             newWorld.Update(someBitch.getCameraMatrix());
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
