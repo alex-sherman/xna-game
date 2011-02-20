@@ -82,7 +82,7 @@ float4 PhongPS(PixelShaderInputPerVertexDiffuse input) : COLOR
      float4 color = input.Color + specular;
      color.a = 1;
      
-     return color;
+     return color*=tex2D(textureSampler, input.textureCoord).rgba;
 }
 struct VS_OUTPUT
 {
@@ -106,17 +106,21 @@ VS_OUTPUT Transform(
 
 float4 ApplyTexture(VS_OUTPUT vsout) : COLOR
 {
-    return diffuseLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
+    return ambientLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
 }
 
-technique TransformAndTexture
+technique Texture
 {
-	/*pass P0
+	pass P0
     {
         vertexShader = compile vs_3_0 Transform();
         pixelShader  = compile ps_3_0 ApplyTexture();
-    }*/
-    pass P1
+    }
+	 
+}
+technique LightAndTexture
+{
+	pass P0
     {
           //Per-vertex diffuse calculation and preparation of inputs
           //for the phong pixel shader
@@ -125,5 +129,4 @@ technique TransformAndTexture
           //set the pixel shader to the per-pixel phong function      
           PixelShader = compile ps_3_0 PhongPS();
     }
-	 
 }
