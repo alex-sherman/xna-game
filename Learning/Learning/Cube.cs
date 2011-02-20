@@ -75,7 +75,7 @@ namespace Learning
 
             Vector3 frontNormal = new Vector3(0, 0, 1);
             Vector3 backNormal = new Vector3(0, 0, -1);
-            Vector3 leftNormal = new Vector3(1, 0, 0);
+            Vector3 leftNormal = new Vector3(-1, 0, 0);
             Vector3 rightNormal = new Vector3(1, 0, 0);
             Vector3 topNormal = new Vector3(0, 1, 0);
             Vector3 bottomNormal = new Vector3(0, -1, 0);
@@ -134,19 +134,9 @@ namespace Learning
         public static void Draw(Vector3 position, World world, Texture2D texture)
         {
             if (texture == null) { return; }
-            Matrix partialWorld = world.partialWorld;
+            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
-            Cube.effect.Parameters["view"].SetValue(partialWorld);
-            Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Cube.device.BlendState = BlendState.Opaque;
-            Draw(Cube.effect);
-        }
-        public static void Draw(Vector3 position, World world, Texture2D texture, float transparency)
-        {
-            if (texture == null) { return; }
-            Matrix partialWorld = world.partialWorld;
-            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
-            Cube.effect.Parameters["view"].SetValue(partialWorld);
+            Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
             Draw(Cube.effect);
         }
@@ -163,10 +153,9 @@ namespace Learning
         public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
         {
             if (texture == null) { return; }
-            Matrix partialWorld = world.partialWorld;
-            Matrix worldMatrix = Matrix.CreateScale(scale) * Matrix.CreateRotationY(rotation) * Matrix.CreateTranslation(position);
-            Cube.effect.Parameters["world"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(position));
-            Cube.effect.Parameters["view"].SetValue(partialWorld);
+            Matrix worldMatrix = Matrix.CreateRotationY(rotation)* Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
+            Cube.effect.Parameters["WorldViewProj"].SetValue(worldMatrix * world.partialWorld * world.projection);
+            Cube.effect.Parameters["world"].SetValue(worldMatrix);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
             Draw(Cube.effect);
         }
