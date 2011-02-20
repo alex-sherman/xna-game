@@ -105,18 +105,18 @@ namespace Learning
         {
             
             Effect effect = Content.Load<Effect>("LightAndTextureEffect");
-            effect.Parameters["projection"].SetValue(worldViewProjection);
+            effect.CurrentTechnique = effect.Techniques["LightAndTexture"];
             effect.Parameters["ambientLightColor"].SetValue(
-                    Color.DarkSlateGray.ToVector4()/4);
+                    Color.Black.ToVector4()*.6f);
             effect.Parameters["diffuseLightColor"].SetValue(
-                Color.White.ToVector4()/3);
-            effect.Parameters["specularLightColor"].SetValue(
                 Color.White.ToVector4());
+            effect.Parameters["specularLightColor"].SetValue(
+                Color.White.ToVector4()/3);
             effect.Parameters["lightPosition"].SetValue(
-                    new Vector3(0f, 10f, 0f));
+                    new Vector3(0f, 10f, 10f));
 
             effect.Parameters["specularPower"].SetValue(12f);
-            effect.Parameters["specularIntensity"].SetValue(.05f);
+            effect.Parameters["specularIntensity"].SetValue(.5f);
             return effect;
         }
         void InitializeTextures()
