@@ -8,8 +8,10 @@ namespace Learning
     class GameConstants
     {
         // Player variables
-        public const float PlayerRunSpeed = 0.1f;
-        public const float PlayerWalkSpeed = 0.05f;
+        public const float PlayerRunSpeed = 0.12f;
+        public const float PlayerWalkSpeed = 0.08f;
+        public const float Gravity = 0.018f;
+        public const float PlayerJumpSpeed = .195f;
 
     }
 }

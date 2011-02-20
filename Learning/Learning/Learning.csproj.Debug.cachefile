@@ -1,5 +1,4 @@
 Content\ReallySimpleEffect.xnb
-Content\TextureEffect.xnb
 Content\GUIFont.xnb
 Content\Textures\Crosshair.xnb
 Content\Textures\Dirt.xnb
@@ -11,3 +10,4 @@ Content\Textures\Stone.xnb
 Content\Textures\Tree.xnb
 Content\Textures\Wood.xnb
 Content\Textures\WrapBlank.xnb
+Content\LightAndTextureEffect.xnb

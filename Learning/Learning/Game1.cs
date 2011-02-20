@@ -28,7 +28,6 @@ namespace Learning
         GraphicsDeviceManager graphics;
         Player someBitch;
         Matrix worldViewProjection;
-        static Effect effect;
         MouseState orgMouseState;
         World newWorld;
         Input inputMethod;
@@ -61,12 +60,12 @@ namespace Learning
             // TODO: Add your initialization logic here
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
+            newWorld = new World(graphics.GraphicsDevice);
             InitializeTransform();
             InitializeTextures();
             SpriteFont font = Content.Load<SpriteFont>("GUIfont");
             Texture2D crosshair = Content.Load<Texture2D>("Textures\\Crosshair");
             Texture2D hotbar = Content.Load<Texture2D>("Textures\\Hotbar");
-            newWorld = new World(graphics.GraphicsDevice);
             GUI.Init(font,crosshair,hotbar);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
@@ -99,13 +98,25 @@ namespace Learning
                 0.4f, 2000.0f);
 
             worldViewProjection = projection;
+            newWorld.projection = projection;
         }
 
-        BasicEffect InitializeEffect()
+        Effect InitializeEffect()
         {
-            BasicEffect effect = new BasicEffect(graphics.GraphicsDevice);
-            effect.TextureEnabled = true;
-            effect.Projection = worldViewProjection;
+            
+            Effect effect = Content.Load<Effect>("LightAndTextureEffect");
+            effect.Parameters["projection"].SetValue(worldViewProjection);
+            effect.Parameters["ambientLightColor"].SetValue(
+                    Color.DarkSlateGray.ToVector4()/4);
+            effect.Parameters["diffuseLightColor"].SetValue(
+                Color.White.ToVector4()/3);
+            effect.Parameters["specularLightColor"].SetValue(
+                Color.White.ToVector4());
+            effect.Parameters["lightPosition"].SetValue(
+                    new Vector3(0f, 10f, 0f));
+
+            effect.Parameters["specularPower"].SetValue(12f);
+            effect.Parameters["specularIntensity"].SetValue(.05f);
             return effect;
         }
         void InitializeTextures()
@@ -113,7 +124,9 @@ namespace Learning
             Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"),
                                      Content.Load<Texture2D>("Textures\\Stone"),
                                      Content.Load<Texture2D>("Textures\\Wood"),
-                                     Content.Load<Texture2D>("Textures\\Sand")
+                                     Content.Load<Texture2D>("Textures\\Sand"),
+                                     
+                                     Content.Load<Texture2D>("Textures\\leaves")
                                    };
             Block.initTextures(textures);
         }

@@ -10,6 +10,7 @@ namespace Learning
     class World
     {
         public Matrix partialWorld;
+        public Matrix projection;
         public ArrayList chunkList = new ArrayList();
         public ArrayList players = new ArrayList();
         public ArrayList itemList = new ArrayList();
@@ -52,12 +53,11 @@ namespace Learning
                     Block hit = chunk.getBlock(lookat);
                     if (hit != null )
                     {
-                        newChunk = this.getChunk(hit.getNormal(lookat) + hit.position);
-                        if (newChunk != null)
+                        Vector3 position = hit.getNormal(lookat) + hit.position;
+                        newChunk = this.getChunk(position);
+                        if (newChunk != null && ((Player)players[0]).hitBox.Contains(position)!=ContainmentType.Contains)
                         {
-                            
-                            newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, type);
-                            return true;
+                            return newChunk.addBlock(hit.getNormal(lookat) + hit.position - newChunk.position, type);
                         }
                     }
                 }
@@ -140,7 +140,7 @@ namespace Learning
             {
                 toReturn = and(toReturn, chunk.collisionCheck(player));
             }
-            if (Math.Abs(toReturn[1]) == 0) { player.outsideV.Y -= .025f; }
+            if (Math.Abs(toReturn[1]) == 0) { player.outsideV.Y -= GameConstants.Gravity; }
             else { player.outsideV.Y = 0; }
 
 
