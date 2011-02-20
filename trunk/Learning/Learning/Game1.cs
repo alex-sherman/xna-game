@@ -66,7 +66,8 @@ namespace Learning
             SpriteFont font = Content.Load<SpriteFont>("GUIfont");
             Texture2D crosshair = Content.Load<Texture2D>("Textures\\Crosshair");
             Texture2D hotbar = Content.Load<Texture2D>("Textures\\Hotbar");
-            GUI.Init(font,crosshair,hotbar);
+            Texture2D inventory = Content.Load<Texture2D>("Textures\\Inventory");
+            GUI.Init(font,crosshair,hotbar,inventory);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());
             newWorld.addChunk(0, 0, 0);

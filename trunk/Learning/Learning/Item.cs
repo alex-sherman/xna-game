@@ -42,7 +42,7 @@ namespace Learning
                 {
                     if ((player.position - item.position).Length() < 2.5f)
                     {
-                        player.inventory.addItem(item, 1);
+                        player.inventory.addItem(item);
                         Item.itemList.Remove(item);
                         return;
                     }
