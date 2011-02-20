@@ -9,8 +9,13 @@ namespace Learning
 {
     class Input
     {
+        public const int IsWalking = 0;
+        public const int EnteringInventory = 1;
+        public const int InInventory = 2;
+        public const int LeavingInventory = 3;
         public Player player;
         private GraphicsDevice device;
+        private int state;
         public Input(Player player)
         {
             this.device = World.device;
@@ -21,9 +26,13 @@ namespace Learning
         {
             KeyboardState keyboard = Keyboard.GetState();
             MouseState mouse = Mouse.GetState();
-            this.handleRotation(time, mouse);
-            this.handleMovement(time, keyboard, mouse);
+            
             this.handleInventory(keyboard, mouse);
+            if (state == IsWalking)
+            {
+                this.handleRotation(time, mouse);
+                this.handleMovement(time, keyboard, mouse);
+            }
         }
 
         private void handleMovement(GameTime time, KeyboardState keyboard, MouseState mouse)
@@ -72,6 +81,33 @@ namespace Learning
         }
         private void handleInventory(KeyboardState keyboard, MouseState mouse)
         {
+            if (keyboard.IsKeyDown(Keys.I))
+            {
+                if (state == IsWalking)
+                {
+                    state = EnteringInventory;
+                    player.inventory.inventoryUp = true;
+                }
+                if(state == InInventory){
+                    state = LeavingInventory;
+                    player.inventory.inventoryUp = false;
+                }
+            }
+            if(keyboard.IsKeyUp(Keys.I)){
+                if (state == EnteringInventory)
+                {
+                    state = InInventory;
+                }
+                if (state == LeavingInventory)
+                {
+                    Mouse.SetPosition(this.device.Viewport.Width / 2, this.device.Viewport.Height / 2);
+                    state = IsWalking;
+                }
+            }
+            if (player.inventory.inventoryUp)
+            {
+                player.velocity = Vector3.Zero;
+            }
             //Select items
             if (keyboard.IsKeyDown(Keys.D1))
             {
@@ -92,6 +128,26 @@ namespace Learning
             if (keyboard.IsKeyDown(Keys.D5))
             {
                 this.player.inventory.currentItem = 4;
+            }
+            if (keyboard.IsKeyDown(Keys.D6))
+            {
+                this.player.inventory.currentItem = 5;
+            }
+            if (keyboard.IsKeyDown(Keys.D7))
+            {
+                this.player.inventory.currentItem = 6;
+            }
+            if (keyboard.IsKeyDown(Keys.D8))
+            {
+                this.player.inventory.currentItem = 7;
+            } 
+            if (keyboard.IsKeyDown(Keys.D9))
+            {
+                this.player.inventory.currentItem = 8;
+            }
+            if (keyboard.IsKeyDown(Keys.D0))
+            {
+                this.player.inventory.currentItem = 9;
             }
 
             //Use items and such

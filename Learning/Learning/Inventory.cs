@@ -9,40 +9,40 @@ namespace Learning
     {
         public Player player;
         public Item[] items;
-        public int[] count;
         public int currentItem = 0;
+        public bool inventoryUp = false;
 
         public Inventory(Player player)
         {
             this.player = player;
             this.items = new Item[100];
-            this.count = new int[100];
 
 
         }
         public Item getItem()
         {
             Item toReturn;
-            if (count[this.currentItem] == 0) { return null; }
             toReturn = this.items[this.currentItem];
+            if (toReturn.amount == 0) { return null; }
             return toReturn;
         }
         public void useItem()
         {
-            if (count[this.currentItem] == 0) { return; }
-            this.count[this.currentItem]--;
-            if (this.count[this.currentItem] == 0)
+            Item item = this.items[this.currentItem];
+            if (item.amount == 0) { return; }
+            item.amount--;
+            if (item.amount == 0)
             {
                 this.items[this.currentItem] = null;
             }
         }
-        public void addItem(Item toAdd,int amount)
+        public void addItem(Item toAdd)
         {
             for (int i = 0; i < this.items.Length; i++)
             {
                 if (this.items[i]!= null && this.items[i].type == toAdd.type)
                 {
-                    this.count[i]+= amount;
+                    this.items[i].amount+= toAdd.amount;
                     return;
                 }
             }
@@ -51,7 +51,6 @@ namespace Learning
                 if (this.items[i] == null)
                 {
                     this.items[i] = toAdd;
-                    this.count[i] += amount;
                     return;
                 }
             }
