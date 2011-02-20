@@ -105,9 +105,9 @@ namespace Learning
         {
             
             Effect effect = Content.Load<Effect>("LightAndTextureEffect");
-            effect.CurrentTechnique = effect.Techniques["LightAndTexture"];
+            effect.CurrentTechnique = effect.Techniques["Texture"];
             effect.Parameters["ambientLightColor"].SetValue(
-                    Color.Black.ToVector4()*.6f);
+                    Color.White.ToVector4()*.6f);
             effect.Parameters["diffuseLightColor"].SetValue(
                 Color.White.ToVector4());
             effect.Parameters["specularLightColor"].SetValue(
