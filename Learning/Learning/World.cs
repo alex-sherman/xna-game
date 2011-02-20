@@ -126,6 +126,10 @@ namespace Learning
                 endPos - GameConstants.PlayerSize / 2,
                 endPos + GameConstants.PlayerSize / 2);
 
+            // move the player's camera up a bit
+            endAABB.Min.Y -= 1f;
+            endAABB.Max.Y += 1f;
+
             foreach (Chunk chunk in this.chunkList)
             {
                 foreach (Block b in chunk.BlockList)
