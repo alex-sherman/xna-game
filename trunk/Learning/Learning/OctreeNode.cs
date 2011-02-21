@@ -10,58 +10,71 @@ namespace Learning
     class OctreeNode
     {
         #region Declarations
-        public List<Block> blocks = new List<Block>();
-        public List<OctreeNode> children = new List<OctreeNode>();
+        public List<Block> blocks;
+        public List<OctreeNode> children;
         public World world;
         public OctreeNode parent;
-        public BoundingBox bounds;
-        public Vector3 center;
-        public float size;
-        public int maxObjects;
+        public readonly BoundingBox bounds;
+        public readonly Vector3 center;
+        public readonly float nodeSize;
+        public readonly int maxObjects;
         #endregion
 
         public OctreeNode(World world, Vector3 center, float size, int maxObjects)
         {
             this.world = world;
             this.center = center;
-            this.size = size;
+            this.nodeSize = size;
             this.maxObjects = maxObjects;
             bounds = new BoundingBox();
-            bounds.Min = center - new Vector3(size, size, size);
-            bounds.Max = center + new Vector3(size, size, size);
+            bounds.Min = center - new Vector3(size);
+            bounds.Max = center + new Vector3(size);
+            blocks = new List<Block>();
+            children = new List<OctreeNode>();
         }
+
         protected void splitTree()
         {
             if (children.Count == 0)
             {
-                float childSize = size / 2.0f;
-                Vector3 offsetX = Vector3.UnitX * childSize / 2;
-                Vector3 offsetY = Vector3.UnitY * childSize / 2;
-                Vector3 offsetZ = Vector3.UnitZ * childSize / 2;
-                children.Add(new OctreeNode(world, center - offsetX - offsetY - offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - offsetX - offsetY + offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - offsetX + offsetY - offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - offsetX + offsetY + offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + offsetX - offsetY - offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + offsetX - offsetY + offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + offsetX + offsetY - offsetZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + offsetX + offsetY + offsetZ, childSize, maxObjects));
+                GUI.print("Making new child nodes...");
+                float childSize = nodeSize / 2.0f;
+
+                Vector3 offsetX = Vector3.UnitX * childSize;
+                Vector3 offsetY = Vector3.UnitY * childSize;
+                Vector3 offsetZ = Vector3.UnitZ * childSize;
+                for (int x = -1; x <= 1; x += 2)
+                {
+                    for (int y = -1; y <= 1; y += 2)
+                    {
+                        for (int z = -1; z <= 1; z += 2)
+                        {
+                            OctreeNode newNode = new OctreeNode(
+                                world,
+                                center + x * offsetX + y * offsetY + z * offsetZ,
+                                childSize,
+                                maxObjects);
+                            newNode.parent = this;
+                            children.Add(newNode);
+                        }
+                    }
+                }
             }
         }
         public void redistributeObjects()
         {
             if (blocks.Count > maxObjects)
             {
+                GUI.print("Splitting...");
                 splitTree();
                 for (int i = blocks.Count - 1; i >= 0; i--)
                 {
-                    Block block = blocks[i];
                     foreach (OctreeNode child in children)
                     {
-                        if (child.bounds.Contains(block.hitBox) == ContainmentType.Contains)
+                        if (child.bounds.Contains(blocks[i].hitBox) == ContainmentType.Contains)
                         {
-                            child.blocks.Add(block);
-                            blocks.Remove(block);
+                            child.blocks.Add(blocks[i]);
+                            blocks.RemoveAt(i);
                             break;
                         }
                     }
@@ -82,8 +95,11 @@ namespace Learning
                     return child.addBlock(block);
                 }
             }
+            GUI.print(String.Format("Added to a node with {0} blocks\n\n", blocks.Count));
+            if (blocks.Count > maxObjects)
+                GUI.print("Redistributing...");
             blocks.Add(block);
-            redistributeObjects();
+            this.redistributeObjects();
             return true;
         }
         public void addBlock(Vector3 pos, int type)
@@ -182,7 +198,7 @@ namespace Learning
         {
             List<Block> drawLast = new List<Block>();
 
-            //Cube.Draw(center, world, true, size);
+            if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             foreach (Block block in blocks)
             {
                 if (block.type == 4)
@@ -207,6 +223,7 @@ namespace Learning
         /// <returns>A list of all type 4 blocks in the node</returns>
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
+            if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             List<Block> drawLast = new List<Block>();
             foreach (Block block in blocks)
             {
@@ -238,7 +255,7 @@ namespace Learning
             {
                 if (child.bounds.Contains(box) == ContainmentType.Contains)
                 {
-                    return child.getContainingNode(box);
+                    return child.getContainingNode(box).parent;
                 }
             }
             return this;
