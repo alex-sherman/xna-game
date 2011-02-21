@@ -68,10 +68,11 @@ namespace Learning
                 }
                 foreach (OctreeNode child in children)
                 {
-                    //child.redistributeObjects();
+                    child.redistributeObjects();
                 }
             }
         }
+
         public bool addBlock(Block block)
         {
             foreach (OctreeNode child in children)
@@ -176,6 +177,7 @@ namespace Learning
             containingNode.blocks.Remove(destroyed);
             return true;
         }
+
         public void Draw(BoundingFrustum boundingFrustum)
         {
             List<Block> drawLast = new List<Block>();
@@ -197,6 +199,12 @@ namespace Learning
                 block.Draw(world);
             }
         }
+        /// <summary>
+        /// Draws all blocks contained in the current octree node except for those of type 4;
+        /// instead, it returns those in a list.
+        /// </summary>
+        /// <param name="boundingFrustum">The frustum containing the player's view</param>
+        /// <returns>A list of all type 4 blocks in the node</returns>
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
             List<Block> drawLast = new List<Block>();
@@ -213,6 +221,7 @@ namespace Learning
             }
             return drawLast;
         }
+
         public List<Block> getAllBlocks()
         {
             List<Block> result = new List<Block>();
