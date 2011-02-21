@@ -9,23 +9,35 @@ namespace Learning
 {
     class Item
     {
-        public Vector3 position;
+        public Vector3 position = new Vector3(0,0,0);
         public int type;
         public static ArrayList itemList = new ArrayList();
         public float rotation = 0f;
         public int amount;
+        private bool draw;
         public Item(Vector3 position,int type)
         {
             this.type = type;
             this.position = position;
             this.amount = 1;
             Item.itemList.Add(this);
+            draw = true;
+        }
+        public Item(int type,int amount)
+        {
+            this.type = type;
+            this.amount = 1;
+            Item.itemList.Add(this);
+            draw = false;
         }
         public static void Draw(World world)
         {
             foreach (Item item in Item.itemList)
             {
-                Cube.Draw(item.position, world, Block.textureList[item.type], .5f,item.rotation);
+                if (item.draw)
+                {
+                    Cube.Draw(item.position, world, Block.textureList[item.type], .5f, item.rotation);
+                }
             }
         }
         public static void Update(World world)
