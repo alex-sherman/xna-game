@@ -35,8 +35,11 @@ namespace Learning
         {
             actionProgress++;
 
-            hitBox.Max = position + new Vector3(1f, 0, 1f);
-            hitBox.Min = position - new Vector3(1f, 2, 1f);
+            hitBox.Max = position + GameConstants.PlayerSize;
+            hitBox.Min = position - GameConstants.PlayerSize;
+            // now account for the higher location of the camera
+            hitBox.Max.Y -= GameConstants.PlayerSize.Y / 2;
+            hitBox.Min.Y -= GameConstants.PlayerSize.Y / 2;
 
 
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
