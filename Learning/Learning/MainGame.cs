@@ -134,10 +134,10 @@ namespace Learning
             KeyboardState keyboard = input.CurrentKeyboardState;
 
             //Save, load game
-            if(input.IsNewKeyPress(Keys.F6)){
+            if(input.IsNewKeyPress(GameConstants.quickLoadKey)){
                 player.world.loadGame("save.sav");
             }
-            if(input.IsNewKeyPress(Keys.F5)){
+            if(input.IsNewKeyPress(GameConstants.quickSaveKey)){
                 player.world.saveGame("save.sav");
             }
             //Run/walk

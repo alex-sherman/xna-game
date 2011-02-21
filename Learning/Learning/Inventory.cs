@@ -9,13 +9,11 @@ namespace Learning
 {
     class Inventory
     {
-        public Player player;
         public Item[] items;
         public int currentItem = 0;
 
-        public Inventory(Player player)
+        public Inventory()
         {
-            this.player = player;
             this.items = new Item[60];
         }
 
