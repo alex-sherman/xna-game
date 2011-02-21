@@ -53,18 +53,7 @@ namespace Learning
 
         protected override void Initialize()
         {
-            /* what is this??
-            int[] pointList = { 2, 0, 0,
-                                0, 0, 0,
-                                4, 0, 0,
-                                0, 4, 4,
-                                4, 4, 4,
-                                0, 4, 6,
-                                4, 4, 6,
-                                0, 6, 8,
-                                4, 6, 8,
-                                6, 2, 2 };
-             */
+            
 
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();

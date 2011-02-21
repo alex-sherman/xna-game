@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 namespace Learning
 {
-    class Block
+    [Serializable()]
+    class Block : ISerializable
     {
         public Vector3 position;
         public int type = 0;
@@ -18,6 +21,19 @@ namespace Learning
             this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             this.position = 2 * Cube.cubeSize * position;
             this.type = type;
+        }
+        public Block(SerializationInfo info, StreamingContext context)
+        {
+            this.hitBox = (BoundingBox)info.GetValue("hitBox", typeof(BoundingBox));
+            this.position = (Vector3)info.GetValue("position", typeof(Vector3));
+            this.type = (int)info.GetValue("type", typeof(int));
+        }
+        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        {
+            info.AddValue("hitBox", this.hitBox);
+            info.AddValue("position", this.position);
+            info.AddValue("type", this.type);
+
         }
         public static void initTextures(Texture2D[] textureList)
         {

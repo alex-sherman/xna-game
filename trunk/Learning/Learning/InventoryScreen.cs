@@ -44,6 +44,7 @@ namespace Learning
         {
             if (input.IsNewKeyPress(Keys.I) || input.IsNewKeyPress(Keys.Escape))
             {
+                player.world.loadGame("save.dat");
                 ScreenManager.Game.IsMouseVisible = false;
                 ExitScreen();
             }
@@ -150,15 +151,12 @@ namespace Learning
 
         public override void Draw(GameTime gameTime)
         {
+            GUI.drawInventoryHotBar(player.inventory);
             ScreenManager.SpriteBatch.Begin();
             ScreenManager.SpriteBatch.Draw(GUI.inventory, inventoryRec, Color.White);
             DrawMenu();
             if (movingItem != null)
             {
-                /*ScreenManager.SpriteBatch.Draw(
-                    Block.textureList[movingItem.type],
-                    new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                    Color.White);*/
 
                 ScreenManager.SpriteBatch.Draw(
                     Block.textureList[movingItem.type],
@@ -166,7 +164,6 @@ namespace Learning
                     Color.White);
             }
             ScreenManager.SpriteBatch.End();
-            GUI.drawInventoryHotBar(player.inventory);
             base.Draw(gameTime);
         }
         private void DrawMenu()

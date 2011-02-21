@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Learning
 {
@@ -20,10 +23,28 @@ namespace Learning
         public World(GraphicsDevice device)
         {
             World.device = device;
+
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
-            blockTree = new OctreeNode(this, new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
+            OctreeNode.world = this;
+            blockTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
             generateFloor();
+        }
+        public void saveGame(String location)
+        {
+            Stream stream = File.Open(location, FileMode.Create);
+            BinaryFormatter bformatter = new BinaryFormatter();
+            GUI.print("Saving game to: " + location);
+            bformatter.Serialize(stream, blockTree);
+            stream.Close();
+        }
+        public void loadGame(String location)
+        {
+            Stream stream = File.Open(location, FileMode.Open);
+            BinaryFormatter bformatter = new BinaryFormatter();
+            GUI.print("Loading game from: " + location);
+            this.blockTree = (OctreeNode)bformatter.Deserialize(stream);
+            stream.Close();
         }
         public void spawnItem(int type, Vector3 position)
         {

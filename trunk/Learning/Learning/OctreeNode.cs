@@ -4,15 +4,18 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Learning
 {
-    class OctreeNode
+    [Serializable()]
+    class OctreeNode : ISerializable
     {
         #region Declarations
         public List<Block> blocks;
         public List<OctreeNode> children;
-        public World world;
+        public static World world;
         public OctreeNode parent;
         public readonly BoundingBox bounds;
         public readonly Vector3 center;
@@ -20,9 +23,8 @@ namespace Learning
         public readonly int maxObjects;
         #endregion
 
-        public OctreeNode(World world, Vector3 center, float size, int maxObjects)
+        public OctreeNode(Vector3 center, float size, int maxObjects)
         {
-            this.world = world;
             this.center = center;
             this.nodeSize = size;
             this.maxObjects = maxObjects;
@@ -32,7 +34,28 @@ namespace Learning
             blocks = new List<Block>();
             children = new List<OctreeNode>();
         }
-
+        #region Serialization
+        public OctreeNode(SerializationInfo info, StreamingContext context)
+        {
+            this.center = (Vector3)info.GetValue("center", typeof(Vector3));
+            this.nodeSize = (float)info.GetValue("nodeSize", typeof(float));
+            this.maxObjects = (int)info.GetValue("maxObjects", typeof(int));
+            this.parent = (OctreeNode)info.GetValue("parent", typeof(OctreeNode));
+            bounds = (BoundingBox)info.GetValue("bounds", typeof(BoundingBox));
+            blocks = (List<Block>)info.GetValue("blocks", typeof(List<Block>));
+            children = (List<OctreeNode>)info.GetValue("children", typeof(List<OctreeNode>));
+        }
+        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        {
+            info.AddValue("center", this.center);
+            info.AddValue("nodeSize", this.nodeSize);
+            info.AddValue("maxObjects", this.maxObjects);
+            info.AddValue("parent", this.parent);
+            info.AddValue("bounds", this.bounds);
+            info.AddValue("blocks", this.blocks);
+            info.AddValue("children", this.children);
+        }
+        #endregion
         protected void splitTree()
         {
             if (children.Count == 0)
@@ -49,7 +72,6 @@ namespace Learning
                         for (int z = -1; z <= 1; z += 2)
                         {
                             OctreeNode newNode = new OctreeNode(
-                                world,
                                 center + x * offsetX + y * offsetY + z * offsetZ,
                                 childSize,
                                 maxObjects);
@@ -93,7 +115,6 @@ namespace Learning
                     return child.addBlock(block);
                 }
             }
-            //GUI.print(String.Format("Added to a node with {0} blocks\n\n", blocks.Count));
             blocks.Add(block);
             this.redistributeObjects();
             return true;
@@ -118,7 +139,7 @@ namespace Learning
                 return false;
             }
             Vector3 position = target.getNormal(lookAt) + target.position;
-            if (world.players[0].hitBox.Contains(position) != ContainmentType.Contains)
+            if (OctreeNode.world.players[0].hitBox.Contains(position) != ContainmentType.Contains)
             {
                 addBlock(position, type);
                 return true;
@@ -185,7 +206,7 @@ namespace Learning
             {
                 return false;
             }
-            world.spawnItem(destroyed.type, destroyed.position);
+            OctreeNode.world.spawnItem(destroyed.type, destroyed.position);
             containingNode.blocks.Remove(destroyed);
             return true;
         }
@@ -194,12 +215,11 @@ namespace Learning
         {
             List<Block> drawLast = new List<Block>();
 
-            //if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             foreach (Block block in blocks)
             {
                 if (block.type == 4)
                     drawLast.Add(block);
-                else block.Draw(world);
+                else block.Draw(OctreeNode.world);
             }
             foreach (OctreeNode child in children)
             {
@@ -208,7 +228,7 @@ namespace Learning
             }
             foreach (Block block in drawLast)
             {
-                block.Draw(world);
+                block.Draw(OctreeNode.world);
             }
         }
         /// <summary>
@@ -219,13 +239,12 @@ namespace Learning
         /// <returns>A list of all type 4 blocks in the node</returns>
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
-            //if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             List<Block> drawLast = new List<Block>();
             foreach (Block block in blocks)
             {
                 if (block.type == 4)
                     drawLast.Add(block);
-                else block.Draw(world);
+                else block.Draw(OctreeNode.world);
             }
             foreach (OctreeNode child in children)
             {
