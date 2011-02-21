@@ -12,7 +12,6 @@ namespace Learning
         public Player player;
         public Item[] items;
         public int currentItem = 0;
-        public Item movingItem;
 
         public Inventory(Player player)
         {

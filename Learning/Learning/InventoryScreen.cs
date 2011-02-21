@@ -55,32 +55,30 @@ namespace Learning
                 if (snapMouse(out X, out Y))
                 {
                     int index = X + Y * 10 + 10;
-                    if (player.inventory.movingItem == null)
+                    if (movingItem == null)
                     {
                         GUI.print(X.ToString() + ", " + Y.ToString());
                         Item item = player.inventory.items[index];
                         if (item != null)
                         {
-                            player.inventory.movingItem = item;
+                            movingItem = item;
                             player.inventory.items[index] = null;
                         }
                     }
                     else
                     {
-
                         Item temp = player.inventory.items[index];
-                        if (temp != null && temp.type == player.inventory.movingItem.type)
+                        if (temp != null && temp.type == movingItem.type)
                         {
-                            temp.amount += player.inventory.movingItem.amount;
-                            player.inventory.movingItem = null;
+                            temp.amount += movingItem.amount;
+                            movingItem = null;
 
                         }
                         else
                         {
-                            player.inventory.items[index] = player.inventory.movingItem;
-                            player.inventory.movingItem = temp;
+                            player.inventory.items[index] = movingItem;
+                            movingItem = temp;
                         }
-
                     }
                 }
             }
@@ -92,35 +90,35 @@ namespace Learning
                 {
                     int index = X + Y * 10 + 10;
                     Item item = player.inventory.items[index];
-                    if (player.inventory.movingItem == null && item != null)
+                    if (movingItem == null && item != null)
                     {
                         if (item.amount == 1)
                         {
-                            player.inventory.movingItem = item;
+                            movingItem = item;
                             player.inventory.items[index] = null;
                         }
                         else
                         {
-                            player.inventory.movingItem = new Item(Vector3.Zero, item.type);
-                            player.inventory.movingItem.amount = item.amount / 2;
-                            item.amount -= player.inventory.movingItem.amount;
+                            movingItem = new Item(Vector3.Zero, item.type);
+                            movingItem.amount = item.amount / 2;
+                            item.amount -= movingItem.amount;
                         }
                     }
                     else if (item != null)
                     {
-                        if (item.type == player.inventory.movingItem.type)
+                        if (item.type == movingItem.type)
                         {
                             player.inventory.items[index].amount++;
-                            player.inventory.movingItem.amount--;
-                            if (player.inventory.movingItem.amount == 0) { player.inventory.movingItem = null; }
+                            movingItem.amount--;
+                            if (movingItem.amount == 0) { movingItem = null; }
 
                         }
                     }
                     else
                     {
-                        player.inventory.items[index] = new Item(new Vector3(0, 0, 0), player.inventory.movingItem.type);
-                        player.inventory.movingItem.amount--;
-                        if (player.inventory.movingItem.amount == 0) { player.inventory.movingItem = null; }
+                        player.inventory.items[index] = new Item(new Vector3(0, 0, 0), movingItem.type);
+                        movingItem.amount--;
+                        if (movingItem.amount == 0) { movingItem = null; }
                     }
                 }
             }
@@ -157,9 +155,14 @@ namespace Learning
             DrawMenu();
             if (movingItem != null)
             {
-                ScreenManager.SpriteBatch.Draw(
+                /*ScreenManager.SpriteBatch.Draw(
                     Block.textureList[movingItem.type],
                     new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                    Color.White);*/
+
+                ScreenManager.SpriteBatch.Draw(
+                    Block.textureList[movingItem.type],
+                    new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 60, 57),
                     Color.White);
             }
             ScreenManager.SpriteBatch.End();
