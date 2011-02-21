@@ -51,6 +51,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Textures\blank.png">
       <Name>blank</Name>
