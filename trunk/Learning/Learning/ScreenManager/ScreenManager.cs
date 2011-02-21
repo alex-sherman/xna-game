@@ -35,7 +35,7 @@ namespace Learning
 
         SpriteBatch spriteBatch;
         SpriteFont font;
-        Texture2D blankTexture;
+        public Texture2D blankTexture;
 
         bool isInitialized;
 
