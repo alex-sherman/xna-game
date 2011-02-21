@@ -150,12 +150,12 @@ namespace Learning
                 Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
             }
         }
-        public static void Draw(Vector3 position, World world, bool wireframe)
+        public static void Draw(Vector3 position, World world, bool wireframe, float scale)
         {
             RasterizerState poo = new RasterizerState();
             poo.FillMode = FillMode.WireFrame;
             device.RasterizerState = poo;
-            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
+            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale) * Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
             Draw(Cube.effect);
             poo = new RasterizerState();
