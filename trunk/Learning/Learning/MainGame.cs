@@ -248,12 +248,10 @@ namespace Learning
             //Use items and such
             if (input.IsNewLeftClick())
             {
-                this.player.actionProgress = -20;
                 this.player.world.destroyBlock(this.player.lookAt);
             }
             if (input.IsNewRightClick())
             {
-                this.player.actionProgress = -20;
                 Item item = this.player.inventory.getItem();
                 if (item != null)
                 {
