@@ -20,7 +20,9 @@ namespace Learning
         public World(GraphicsDevice device)
         {
             World.device = device;
-            blockTree = new OctreeNode(this, Vector3.Zero, 500f, 16);
+            // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
+            // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
+            blockTree = new OctreeNode(this, new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
             generateFloor();
         }
         public void spawnItem(int type, Vector3 position)
@@ -72,7 +74,6 @@ namespace Learning
                     blockTree.addBlock(u, 4, v, 4);
                 }
             }
-            blockTree.redistributeObjects();
         }
 
         #region Collision Detection

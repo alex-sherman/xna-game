@@ -14,8 +14,8 @@ namespace Learning
         public static Texture2D[] textureList;
         public Block(Vector3 position,int type)
         {
-            this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
-            this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
+            this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize);
+            this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             this.position = 2 * Cube.cubeSize * position;
             this.type = type;
         }
