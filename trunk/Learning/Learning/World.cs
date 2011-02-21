@@ -67,10 +67,10 @@ namespace Learning
             {
                 for (int v = -10; v < 10; v++)
                 {
-                    blockTree.addBlock(u, 0, v, 1);
-                    blockTree.addBlock(u, 1, v, 2);
-                    blockTree.addBlock(u, 2, v, 3);
-                    blockTree.addBlock(u, 3, v, 1);
+                    blockTree.addBlock(u, 0, v, 0);
+                    blockTree.addBlock(u, 1, v, 1);
+                    blockTree.addBlock(u, 2, v, 2);
+                    blockTree.addBlock(u, 3, v, 3);
                     blockTree.addBlock(u, 4, v, 4);
                 }
             }
