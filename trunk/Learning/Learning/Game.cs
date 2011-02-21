@@ -20,12 +20,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Learning
 {
-    enum GameState
-    {
-        MainMenu,
-        Running
-    }
-
     /// <summary>
     /// This is the main type for your game
     /// </summary>

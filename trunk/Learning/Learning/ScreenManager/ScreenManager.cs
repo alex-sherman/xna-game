@@ -98,7 +98,7 @@ namespace Learning
         public override void Initialize()
         {
             base.Initialize();
-
+            blankTexture = Game.Content.Load<Texture2D>("Textures/blank");
             isInitialized = true;
         }
 
