@@ -76,15 +76,15 @@ namespace Learning
         }
 
         #region Collision Detection
-        public void collisionCheck(ref Vector3 endPos, ref bool onGround)
+        public void collisionCheck(ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
         {
             BoundingBox endAABB = new BoundingBox(
                 endPos - GameConstants.PlayerSize / 2,
                 endPos + GameConstants.PlayerSize / 2);
 
-            // move the player's camera up a bit
-            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 2;
-            //endAABB.Max.Y -= GameConstants.PlayerSize.Y / 2;
+            // move the player's camera up
+            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+            endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
 
             foreach (Block b in blockTree.getCollisionCandidates(endAABB))
             {
@@ -92,10 +92,13 @@ namespace Learning
                 endPos += correction;
                 //endAABB.Max += correction;
                 //endAABB.Min += correction;
-                if (correction.Y > 0) onGround = true;
+                if (correction.Y != 0)
+                {
+                    outsideVel.Y = 0;
+                    if (correction.Y > 0) onGround = true;
+                }
                 if (!correction.Equals(Vector3.Zero)) return;
             }
-
         }
 
         /// <summary>
