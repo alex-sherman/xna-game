@@ -125,7 +125,7 @@ namespace Learning
                 ScreenManager.AddScreen(new InventoryScreen(player));
             }
             if (input.IsNewKeyPress(Keys.Escape))
-                ScreenManager.Game.Exit();
+                ScreenManager.AddScreen(new Menus.PauseScreen(this));
             base.HandleInput(input);
         }
 
