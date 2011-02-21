@@ -6,13 +6,13 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Learning
 {
     class World
     {
-        
         public Matrix partialWorld;
         public Matrix projection;
         public List<Player> players = new List<Player>();
@@ -33,7 +33,7 @@ namespace Learning
         public void saveGame(String location)
         {
             Stream stream = File.Open(location, FileMode.Create);
-            XmlSerializer bformatter = new XmlSerializer(typeof(OctreeNode));
+            BinaryFormatter bformatter = new BinaryFormatter();
             GUI.print("Saving game to: " + location);
             bformatter.Serialize(stream, blockTree);
             stream.Close();
@@ -41,7 +41,7 @@ namespace Learning
         public void loadGame(String location)
         {
             Stream stream = File.Open(location, FileMode.Open);
-            XmlSerializer bformatter = new XmlSerializer(typeof(OctreeNode));
+            BinaryFormatter bformatter = new BinaryFormatter();
             GUI.print("Loading game from: " + location);
             this.blockTree = (OctreeNode)bformatter.Deserialize(stream);
             stream.Close();
