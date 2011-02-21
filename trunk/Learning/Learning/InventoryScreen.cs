@@ -20,6 +20,7 @@ namespace Learning
 
         public InventoryScreen(Player player)
         {
+            IsPopup = true;
             this.player = player;
             itemRec.Height = 62;
             itemRec.Width = 62;
