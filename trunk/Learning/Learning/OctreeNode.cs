@@ -37,7 +37,6 @@ namespace Learning
         {
             if (children.Count == 0)
             {
-                GUI.print("Making new child nodes...");
                 float childSize = nodeSize / 2.0f;
 
                 Vector3 offsetX = Vector3.UnitX * childSize;
@@ -65,7 +64,6 @@ namespace Learning
         {
             if (blocks.Count > maxObjects)
             {
-                GUI.print("Splitting...");
                 splitTree();
                 for (int i = blocks.Count - 1; i >= 0; i--)
                 {
@@ -95,9 +93,7 @@ namespace Learning
                     return child.addBlock(block);
                 }
             }
-            GUI.print(String.Format("Added to a node with {0} blocks\n\n", blocks.Count));
-            if (blocks.Count > maxObjects)
-                GUI.print("Redistributing...");
+            //GUI.print(String.Format("Added to a node with {0} blocks\n\n", blocks.Count));
             blocks.Add(block);
             this.redistributeObjects();
             return true;
@@ -198,7 +194,7 @@ namespace Learning
         {
             List<Block> drawLast = new List<Block>();
 
-            if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
+            //if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             foreach (Block block in blocks)
             {
                 if (block.type == 4)
@@ -223,7 +219,7 @@ namespace Learning
         /// <returns>A list of all type 4 blocks in the node</returns>
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
-            if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
+            //if (children.Count == 0) Cube.Draw(center, world, true, 2 * nodeSize);
             List<Block> drawLast = new List<Block>();
             foreach (Block block in blocks)
             {
