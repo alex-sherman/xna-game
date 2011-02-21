@@ -34,7 +34,8 @@ namespace Learning.Menus
 
         void exitGameItem_Selected(object sender, EventArgs e)
         {
-            ScreenManager.AddScreen(new ConfirmationDialog(
+            ScreenManager.AddScreen(
+                new ConfirmationDialog(
                 "Are you sure?",
                 closeConfirmed,
                 closeDenied));
@@ -49,7 +50,7 @@ namespace Learning.Menus
 
         void optionsItem_Selected(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ScreenManager.AddScreen(new OptionsMenu());
         }
 
         void resumeGameItem_Selected(object sender, EventArgs e)
