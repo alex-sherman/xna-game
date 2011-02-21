@@ -7,16 +7,21 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 namespace Learning
 {
+    enum InventoryState
+    {
+        IsWalking,
+        EnteringInventory,
+        InInventory,
+        LeavingInventory
+    }
+
     class Input
     {
-        public const int IsWalking = 0;
-        public const int EnteringInventory = 1;
-        public const int InInventory = 2;
-        public const int LeavingInventory = 3;
         private bool mouseClicked = false;
         public Player player;
         private GraphicsDevice device;
-        private int state;
+        private InventoryState inventoryState;
+
         public Input(Player player)
         {
             this.device = World.device;
@@ -27,9 +32,9 @@ namespace Learning
         {
             KeyboardState keyboard = Keyboard.GetState();
             MouseState mouse = Mouse.GetState();
-            
-            this.handleInventory(keyboard, mouse);
-            if (state == IsWalking)
+
+            //this.handleInventory(keyboard, mouse);
+            if (inventoryState == InventoryState.IsWalking)
             {
                 this.handleRotation(time, mouse);
                 this.handleMovement(time, keyboard, mouse);
@@ -38,7 +43,7 @@ namespace Learning
 
         private void handleMovement(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            
+
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))
             {
@@ -78,17 +83,38 @@ namespace Learning
                 this.player.outsideV.Y = GameConstants.PlayerJumpSpeed;
                 player.isWalking = false;
             }
-            
+
         }
+
+        private void handleRotation(GameTime time, MouseState mouse)
+        {
+            int dx = Mouse.GetState().X - this.device.Viewport.Width / 2;
+            int dy = Mouse.GetState().Y - this.device.Viewport.Height / 2;
+
+            Mouse.SetPosition(this.device.Viewport.Width / 2, this.device.Viewport.Height / 2);
+            this.player.xRotation -= dx * .00175f;
+
+            if (this.player.yRotation > -MathHelper.PiOver2 && dy < 0 || this.player.yRotation < MathHelper.PiOver2 && dy > 0)
+            {
+                this.player.yRotation += dy * .00175f;
+            }
+            if (this.player.xRotation >= 2 * MathHelper.Pi)
+            {
+                this.player.xRotation -= 2 * MathHelper.Pi;
+            }
+        }
+
+        #region Handle Inventory
+
         private bool snapMouse(out int X, out int Y)
         {
             X = Mouse.GetState().X - player.inventory.inventoryRec.Left;
-            Y = Mouse.GetState().Y - player.inventory.inventoryRec.Top-90;
-            if (X>=0 && X < player.inventory.inventoryRec.Width -2 && Y>=0 && Y < player.inventory.inventoryRec.Height-92)
+            Y = Mouse.GetState().Y - player.inventory.inventoryRec.Top - 90;
+            if (X >= 0 && X < player.inventory.inventoryRec.Width - 2 && Y >= 0 && Y < player.inventory.inventoryRec.Height - 92)
             {
 
-                X = X*10/player.inventory.inventoryRec.Width;
-                Y = Y*5/(player.inventory.inventoryRec.Height-90);
+                X = X * 10 / player.inventory.inventoryRec.Width;
+                Y = Y * 5 / (player.inventory.inventoryRec.Height - 90);
                 return true;
             }
             X = Mouse.GetState().X - player.inventory.hotBarRec.Left;
@@ -102,32 +128,33 @@ namespace Learning
             }
             return false;
         }
-        #region Handle Inventory
         private void handleInventory(KeyboardState keyboard, MouseState mouse)
         {
             if (keyboard.IsKeyDown(Keys.I))
             {
-                if (state == IsWalking)
+                if (inventoryState == InventoryState.IsWalking)
                 {
-                    state = EnteringInventory;
+                    inventoryState = InventoryState.EnteringInventory;
                     player.inventory.inventoryUp = true;
                     GUI.game.IsMouseVisible = true;
                 }
-                if(state == InInventory){
-                    state = LeavingInventory;
+                if (inventoryState == InventoryState.InInventory)
+                {
+                    inventoryState = InventoryState.LeavingInventory;
                     player.inventory.inventoryUp = false;
                     GUI.game.IsMouseVisible = false;
                 }
             }
-            if(keyboard.IsKeyUp(Keys.I)){
-                if (state == EnteringInventory)
+            if (keyboard.IsKeyUp(Keys.I))
+            {
+                if (inventoryState == InventoryState.EnteringInventory)
                 {
-                    state = InInventory;
+                    inventoryState = InventoryState.InInventory;
                 }
-                if (state == LeavingInventory)
+                if (inventoryState == InventoryState.LeavingInventory)
                 {
                     Mouse.SetPosition(this.device.Viewport.Width / 2, this.device.Viewport.Height / 2);
-                    state = IsWalking;
+                    inventoryState = InventoryState.IsWalking;
                 }
             }
             if (player.inventory.inventoryUp)
@@ -142,7 +169,7 @@ namespace Learning
                         int index = X + Y * 10 + 10;
                         if (player.inventory.movingItem == null)
                         {
-                            GUI.print(X.ToString()+", " + Y.ToString());
+                            GUI.print(X.ToString() + ", " + Y.ToString());
                             Item item = player.inventory.items[index];
                             if (item != null)
                             {
@@ -152,9 +179,9 @@ namespace Learning
                         }
                         else
                         {
-                            
+
                             Item temp = player.inventory.items[index];
-                            if (temp!=null && temp.type == player.inventory.movingItem.type)
+                            if (temp != null && temp.type == player.inventory.movingItem.type)
                             {
                                 temp.amount += player.inventory.movingItem.amount;
                                 player.inventory.movingItem = null;
@@ -178,19 +205,19 @@ namespace Learning
                     {
                         int index = X + Y * 10 + 10;
                         Item item = player.inventory.items[index];
-                        if (player.inventory.movingItem == null && item!= null)
+                        if (player.inventory.movingItem == null && item != null)
                         {
-                                if (item.amount == 1)
-                                {
-                                    player.inventory.movingItem = item;
-                                    player.inventory.items[index] = null;
-                                }
-                                else
-                                {
-                                    player.inventory.movingItem = new Item(Vector3.Zero, item.type);
-                                    player.inventory.movingItem.amount = item.amount / 2;
-                                    item.amount -= player.inventory.movingItem.amount;
-                                }
+                            if (item.amount == 1)
+                            {
+                                player.inventory.movingItem = item;
+                                player.inventory.items[index] = null;
+                            }
+                            else
+                            {
+                                player.inventory.movingItem = new Item(Vector3.Zero, item.type);
+                                player.inventory.movingItem.amount = item.amount / 2;
+                                item.amount -= player.inventory.movingItem.amount;
+                            }
                         }
                         else if (item != null)
                         {
@@ -204,7 +231,7 @@ namespace Learning
                         }
                         else
                         {
-                            player.inventory.items[index] = new Item(new Vector3(0,0,0), player.inventory.movingItem.type);
+                            player.inventory.items[index] = new Item(new Vector3(0, 0, 0), player.inventory.movingItem.type);
                             player.inventory.movingItem.amount--;
                             if (player.inventory.movingItem.amount == 0) { player.inventory.movingItem = null; }
                         }
@@ -218,7 +245,7 @@ namespace Learning
             }
 
             //Select items with keyboard
-            if (state == IsWalking)
+            if (inventoryState == InventoryState.IsWalking)
             {
                 if (keyboard.IsKeyDown(Keys.D1))
                 {
@@ -285,23 +312,9 @@ namespace Learning
                 }
             }
         }
+
         #endregion
-        private void handleRotation(GameTime time, MouseState mouse)
-        {
-            int dx = Mouse.GetState().X - this.device.Viewport.Width / 2;
-            int dy = Mouse.GetState().Y - this.device.Viewport.Height / 2;
-
-            Mouse.SetPosition(this.device.Viewport.Width / 2, this.device.Viewport.Height / 2);
-            this.player.xRotation -= dx * .00175f;
-
-            if (this.player.yRotation > -MathHelper.PiOver2 && dy < 0 || this.player.yRotation < MathHelper.PiOver2 && dy > 0)
-            {
-                this.player.yRotation += dy * .00175f;
-            }
-            if (this.player.xRotation >= 2 * MathHelper.Pi)
-            {
-                this.player.xRotation -= 2 * MathHelper.Pi;
-            }
-        }
+        
+        
     }
 }

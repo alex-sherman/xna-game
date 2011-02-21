@@ -8,6 +8,7 @@ namespace Learning
 {
     class Player
     {
+        #region Declarations
         public BoundingBox hitBox = new BoundingBox();
         public BoundingBox vForward = new BoundingBox();
         public BoundingBox vLeft = new BoundingBox();
@@ -25,6 +26,8 @@ namespace Learning
         public bool isWalking = false;
         public Ray lookAt = new Ray();
         public World world;
+
+        #endregion
 
         public Player()
         {
@@ -68,13 +71,10 @@ namespace Learning
 
         public Matrix getCameraMatrix()
         {
-
             return Matrix.CreateLookAt(
                    position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
                    Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position, 
                    Vector3.Transform(Vector3.Up, this.rotation));
-
-
         }
 
     }
