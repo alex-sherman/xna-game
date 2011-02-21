@@ -74,6 +74,36 @@ namespace Learning
                     LastKeyboardState.IsKeyUp(key));
         }
 
+        /// <summary>
+        /// Checks for a newly pressed key. If a key was just pressed, returns that key.
+        /// If no key was recently pressed, returns null.
+        /// </summary>
+        /// <returns>The last pressed key, or null.</returns>
+        public Keys? getLastPressedKey()
+        {
+            Keys[] lastPressed = LastKeyboardState.GetPressedKeys();
+            Keys[] nowPressed = CurrentKeyboardState.GetPressedKeys();
+            Keys? result = null;
+            foreach (Keys key in nowPressed)
+            {
+                bool newKeyPress = true;
+                foreach (Keys oldKey in lastPressed)
+                {
+                    if (key == oldKey)
+                    {
+                        newKeyPress = false;
+                        break;
+                    }
+                }
+                if (newKeyPress)
+                {
+                    result = key;
+                    break;
+                }
+            }
+            return result;
+        }
+
         public bool IsNewLeftClick()
         {
             return (LastMouseState.LeftButton == ButtonState.Released &&
