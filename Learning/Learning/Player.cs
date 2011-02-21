@@ -20,7 +20,6 @@ namespace Learning
         public Vector3 outsideV = new Vector3(0, 0, 0);
         public Vector3 currentVelocity;
         public Matrix rotation;
-        public int actionProgress;
         public float xRotation;
         public float yRotation;
         public bool isWalking = false;
@@ -36,8 +35,6 @@ namespace Learning
 
         public void Update(GameTime gameTime)
         {
-            actionProgress++;
-
             hitBox.Max = position + GameConstants.PlayerSize;
             hitBox.Min = position - GameConstants.PlayerSize;
             // now account for the higher location of the camera
