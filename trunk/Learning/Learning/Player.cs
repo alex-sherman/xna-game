@@ -52,7 +52,7 @@ namespace Learning
 
             // resolve non-gravity-caused collisions
             isWalking = false;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
                 world.collisionCheck(ref endPos, ref isWalking);
 
             // gravity (to get the true state of isWalking)

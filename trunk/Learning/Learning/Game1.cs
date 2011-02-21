@@ -61,8 +61,8 @@ namespace Learning
             Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             orgMouseState = Mouse.GetState();
             newWorld = new World(graphics.GraphicsDevice);
-            InitializeTransform();
             InitializeTextures();
+            InitializeTransform();
             GUI.Init(this);
             
             Cube.InitializeCube(graphics.GraphicsDevice, InitializeEffect());

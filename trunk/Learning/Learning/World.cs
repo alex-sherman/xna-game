@@ -20,7 +20,7 @@ namespace Learning
         public World(GraphicsDevice device)
         {
             World.device = device;
-            blockTree = new OctreeNode(this, Vector3.Zero, 1000f, 36);
+            blockTree = new OctreeNode(this, Vector3.Zero, 500f, 16);
             generateFloor();
         }
         public void spawnItem(int type, Vector3 position)
@@ -54,15 +54,16 @@ namespace Learning
 
         public void Draw()
         {
-            blockTree.Draw();
+            BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
+            blockTree.Draw(toDraw);
             Item.Draw(this);
         }
 
         public void generateFloor()
         {
-            for (int u = -20; u < 10; u++)
+            for (int u = -10; u < 10; u++)
             {
-                for (int v = -20; v < 10; v++)
+                for (int v = -10; v < 10; v++)
                 {
                     blockTree.addBlock(u, 0, v, 1);
                     blockTree.addBlock(u, 1, v, 2);
@@ -86,13 +87,12 @@ namespace Learning
             endAABB.Max.Y += GameConstants.PlayerSize.Y / 2;
             foreach (Block b in blockTree.getCollisionCandidates(endAABB))
             {
-                if (b != null)
-                {
-                    Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
-                    endPos += correction;
-                    if (correction.Y > 0) onGround = true;
-                    if (!correction.Equals(Vector3.Zero)) return;
-                }
+                Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
+                endPos += correction;
+                //endAABB.Max += correction;
+                //endAABB.Min += correction;
+                if (correction.Y > 0) onGround = true;
+                if (!correction.Equals(Vector3.Zero)) return;
             }
 
         }
