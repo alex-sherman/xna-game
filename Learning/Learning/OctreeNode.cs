@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Learning
 {
@@ -24,26 +25,26 @@ namespace Learning
             this.size = size;
             this.maxObjects = maxObjects;
             bounds = new BoundingBox();
-            bounds.Min = center - new Vector3(size);
-            bounds.Max = center + new Vector3(size);
+            bounds.Min = center - new Vector3(size, size, size);
+            bounds.Max = center + new Vector3(size, size, size);
         }
 
         protected void splitTree()
         {
             if (children.Count == 0)
             {
-                float childSize = size / 2;
-                Vector3 halfX = Vector3.UnitX * childSize;
-                Vector3 halfY = Vector3.UnitY * childSize;
-                Vector3 halfZ = Vector3.UnitZ * childSize;
-                children.Add(new OctreeNode(world, center - halfX - halfY - halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - halfX - halfY + halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - halfX + halfY - halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center - halfX + halfY + halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + halfX - halfY - halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + halfX - halfY + halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + halfX + halfY - halfZ, childSize, maxObjects));
-                children.Add(new OctreeNode(world, center + halfX + halfY + halfZ, childSize, maxObjects));
+                float childSize = size / 2.0f;
+                Vector3 offsetX = Vector3.UnitX * childSize / 2;
+                Vector3 offsetY = Vector3.UnitY * childSize / 2;
+                Vector3 offsetZ = Vector3.UnitZ * childSize / 2;
+                children.Add(new OctreeNode(world, center - offsetX - offsetY - offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center - offsetX - offsetY + offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center - offsetX + offsetY - offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center - offsetX + offsetY + offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center + offsetX - offsetY - offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center + offsetX - offsetY + offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center + offsetX + offsetY - offsetZ, childSize, maxObjects));
+                children.Add(new OctreeNode(world, center + offsetX + offsetY + offsetZ, childSize, maxObjects));
             }
         }
 
@@ -60,12 +61,11 @@ namespace Learning
                         if (child.bounds.Contains(block.hitBox) == ContainmentType.Contains)
                         {
                             child.blocks.Add(block);
-                            blocks.RemoveAt(i);
+                            blocks.Remove(block);
                             break;
                         }
                     }
                 }
-                //TODO is this necessary?
                 foreach (OctreeNode child in children)
                 {
                     child.redistributeObjects();
@@ -83,8 +83,10 @@ namespace Learning
                 }
             }
             blocks.Add(block);
+            redistributeObjects();
             return true;
         }
+
         public void addBlock(Vector3 pos, int type)
         {
             Block poo = new Block(pos, type);
@@ -170,22 +172,24 @@ namespace Learning
             Block destroyed = getBlock(lookAt, out containingNode);
             if (destroyed == null)
             {
-                GUI.print("failed to destroy");
                 return false;
             }
             world.spawnItem(destroyed.type, destroyed.position);
             containingNode.blocks.Remove(destroyed);
             return true;
         }
-        public void Draw()
+
+        public void Draw(BoundingFrustum boundingFrustum)
         {
+            //Cube.Draw(center, world, true, size);
             foreach (Block block in blocks)
             {
                 block.Draw(world);
             }
             foreach (OctreeNode child in children)
             {
-                child.Draw();
+                if (child.bounds.Intersects(boundingFrustum))
+                    child.Draw(boundingFrustum);
             }
         }
 
@@ -217,6 +221,5 @@ namespace Learning
             OctreeNode containingNode = getContainingNode(box);
             return containingNode.getAllBlocks();
         }
-
     }
 }
