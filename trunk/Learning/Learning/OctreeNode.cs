@@ -9,6 +9,7 @@ namespace Learning
 {
     class OctreeNode
     {
+        #region Declarations
         public List<Block> blocks = new List<Block>();
         public List<OctreeNode> children = new List<OctreeNode>();
         public World world;
@@ -17,6 +18,7 @@ namespace Learning
         public Vector3 center;
         public float size;
         public int maxObjects;
+        #endregion
 
         public OctreeNode(World world, Vector3 center, float size, int maxObjects)
         {
@@ -28,7 +30,6 @@ namespace Learning
             bounds.Min = center - new Vector3(size, size, size);
             bounds.Max = center + new Vector3(size, size, size);
         }
-
         protected void splitTree()
         {
             if (children.Count == 0)
@@ -47,7 +48,6 @@ namespace Learning
                 children.Add(new OctreeNode(world, center + offsetX + offsetY + offsetZ, childSize, maxObjects));
             }
         }
-
         public void redistributeObjects()
         {
             if (blocks.Count > maxObjects)
@@ -72,7 +72,6 @@ namespace Learning
                 }
             }
         }
-
         public bool addBlock(Block block)
         {
             foreach (OctreeNode child in children)
@@ -86,7 +85,6 @@ namespace Learning
             redistributeObjects();
             return true;
         }
-
         public void addBlock(Vector3 pos, int type)
         {
             Block poo = new Block(pos, type);
@@ -178,21 +176,43 @@ namespace Learning
             containingNode.blocks.Remove(destroyed);
             return true;
         }
-
         public void Draw(BoundingFrustum boundingFrustum)
         {
+            List<Block> drawLast = new List<Block>();
+
             //Cube.Draw(center, world, true, size);
             foreach (Block block in blocks)
             {
-                block.Draw(world);
+                if (block.type == 4)
+                    drawLast.Add(block);
+                else block.Draw(world);
             }
             foreach (OctreeNode child in children)
             {
                 if (child.bounds.Intersects(boundingFrustum))
-                    child.Draw(boundingFrustum);
+                    drawLast.AddRange(child.drawChild(boundingFrustum));
+            }
+            foreach (Block block in drawLast)
+            {
+                block.Draw(world);
             }
         }
-
+        public List<Block> drawChild(BoundingFrustum boundingFrustum)
+        {
+            List<Block> drawLast = new List<Block>();
+            foreach (Block block in blocks)
+            {
+                if (block.type == 4)
+                    drawLast.Add(block);
+                else block.Draw(world);
+            }
+            foreach (OctreeNode child in children)
+            {
+                if (child.bounds.Intersects(boundingFrustum))
+                    drawLast.AddRange(child.drawChild(boundingFrustum));
+            }
+            return drawLast;
+        }
         public List<Block> getAllBlocks()
         {
             List<Block> result = new List<Block>();
@@ -203,7 +223,6 @@ namespace Learning
             }
             return result;
         }
-
         public OctreeNode getContainingNode(BoundingBox box)
         {
             foreach (OctreeNode child in children)
@@ -215,7 +234,6 @@ namespace Learning
             }
             return this;
         }
-
         public List<Block> getCollisionCandidates(BoundingBox box)
         {
             OctreeNode containingNode = getContainingNode(box);

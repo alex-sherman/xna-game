@@ -157,7 +157,7 @@ namespace Learning
             poo.FillMode = FillMode.WireFrame;
             device.RasterizerState = poo;
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale) * Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
-            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position) * Matrix.CreateScale(scale));
+            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
             Draw(Cube.effect);
             poo = new RasterizerState();
             poo.FillMode = FillMode.Solid;
