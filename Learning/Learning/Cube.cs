@@ -130,7 +130,22 @@ namespace Learning
             indexBuffer.SetData<short>(indices);
 
         }
+        public static void Draw(Vector3 position, World world, Model myModel){
+            foreach (ModelMesh mesh in myModel.Meshes)
+            {
 
+
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+                    effect.World = Matrix.CreateTranslation(position);
+                    effect.View = world.partialWorld;
+                    effect.Projection = world.projection;
+                }
+                // Draw the mesh, using the effects set above.
+                    mesh.Draw();
+            }
+        }
         public static void Draw(Vector3 position, World world, Texture2D texture)
         {
             device.BlendState = BlendState.AlphaBlend;
