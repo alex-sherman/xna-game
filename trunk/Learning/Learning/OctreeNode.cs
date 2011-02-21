@@ -68,7 +68,7 @@ namespace Learning
                 }
                 foreach (OctreeNode child in children)
                 {
-                    child.redistributeObjects();
+                    //child.redistributeObjects();
                 }
             }
         }

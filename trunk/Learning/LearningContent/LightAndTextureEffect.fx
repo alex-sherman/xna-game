@@ -106,7 +106,9 @@ VS_OUTPUT Transform(
 
 float4 ApplyTexture(VS_OUTPUT vsout) : COLOR
 {
-    return ambientLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
+	float4 color = ambientLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
+	color.a = tex2D(textureSampler, vsout.textureCoordinate).a;
+    return color;
 }
 
 technique Texture
