@@ -84,7 +84,8 @@ namespace Learning
 
             // move the player's camera up a bit
             endAABB.Min.Y -= GameConstants.PlayerSize.Y / 2;
-            endAABB.Max.Y -= GameConstants.PlayerSize.Y / 2;
+            //endAABB.Max.Y -= GameConstants.PlayerSize.Y / 2;
+
             foreach (Block b in blockTree.getCollisionCandidates(endAABB))
             {
                 Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
