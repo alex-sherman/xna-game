@@ -83,16 +83,26 @@ namespace Learning
         private bool snapMouse(out int X, out int Y)
         {
             X = Mouse.GetState().X - player.inventory.inventoryRec.Left;
-            Y = Mouse.GetState().Y - player.inventory.inventoryRec.Top;
-            if (X < player.inventory.inventoryRec.Width && Y < player.inventory.inventoryRec.Height)
+            Y = Mouse.GetState().Y - player.inventory.inventoryRec.Top-90;
+            if (X>=0 && X < player.inventory.inventoryRec.Width -2 && Y>=0 && Y < player.inventory.inventoryRec.Height-92)
             {
 
-                X /= player.inventory.inventoryRec.Width/10;
-                Y /= player.inventory.inventoryRec.Height/10;
+                X = X*10/player.inventory.inventoryRec.Width;
+                Y = Y*5/(player.inventory.inventoryRec.Height-90);
+                return true;
+            }
+            X = Mouse.GetState().X - player.inventory.hotBarRec.Left;
+            Y = Mouse.GetState().Y - player.inventory.hotBarRec.Top;
+            if (X >= 0 && X < player.inventory.hotBarRec.Width - 2 && Y >= 0 && Y < player.inventory.hotBarRec.Height - 2)
+            {
+
+                X = X * 10 / player.inventory.hotBarRec.Width;
+                Y = -1;
                 return true;
             }
             return false;
         }
+        #region Handle Inventory
         private void handleInventory(KeyboardState keyboard, MouseState mouse)
         {
             if (keyboard.IsKeyDown(Keys.I))
@@ -129,22 +139,74 @@ namespace Learning
                     int Y;
                     if (snapMouse(out X, out Y))
                     {
+                        int index = X + Y * 10 + 10;
                         if (player.inventory.movingItem == null)
                         {
-                            Item item = player.inventory.items[X + Y * 10];
+                            GUI.print(X.ToString()+", " + Y.ToString());
+                            Item item = player.inventory.items[index];
                             if (item != null)
                             {
-                                GUI.print(item.type.ToString());
                                 player.inventory.movingItem = item;
-                                player.inventory.items[X + Y * 10] = null;
+                                player.inventory.items[index] = null;
                             }
                         }
                         else
                         {
-                            Item temp = player.inventory.items[X + Y * 10];
-                            player.inventory.items[X + Y * 10] = player.inventory.movingItem;
-                            player.inventory.movingItem = temp;
+                            
+                            Item temp = player.inventory.items[index];
+                            if (temp!=null && temp.type == player.inventory.movingItem.type)
+                            {
+                                temp.amount += player.inventory.movingItem.amount;
+                                player.inventory.movingItem = null;
 
+                            }
+                            else
+                            {
+                                player.inventory.items[index] = player.inventory.movingItem;
+                                player.inventory.movingItem = temp;
+                            }
+
+                        }
+                    }
+                }
+                if (mouse.RightButton == ButtonState.Pressed && !mouseClicked)
+                {
+                    mouseClicked = true;
+                    int X;
+                    int Y;
+                    if (snapMouse(out X, out Y))
+                    {
+                        int index = X + Y * 10 + 10;
+                        Item item = player.inventory.items[index];
+                        if (player.inventory.movingItem == null && item!= null)
+                        {
+                                if (item.amount == 1)
+                                {
+                                    player.inventory.movingItem = item;
+                                    player.inventory.items[index] = null;
+                                }
+                                else
+                                {
+                                    player.inventory.movingItem = new Item(Vector3.Zero, item.type);
+                                    player.inventory.movingItem.amount = item.amount / 2;
+                                    item.amount -= player.inventory.movingItem.amount;
+                                }
+                        }
+                        else if (item != null)
+                        {
+                            if (item.type == player.inventory.movingItem.type)
+                            {
+                                player.inventory.items[index].amount++;
+                                player.inventory.movingItem.amount--;
+                                if (player.inventory.movingItem.amount == 0) { player.inventory.movingItem = null; }
+
+                            }
+                        }
+                        else
+                        {
+                            player.inventory.items[index] = new Item(new Vector3(0,0,0), player.inventory.movingItem.type);
+                            player.inventory.movingItem.amount--;
+                            if (player.inventory.movingItem.amount == 0) { player.inventory.movingItem = null; }
                         }
                     }
                 }
@@ -223,6 +285,7 @@ namespace Learning
                 }
             }
         }
+        #endregion
         private void handleRotation(GameTime time, MouseState mouse)
         {
             int dx = Mouse.GetState().X - this.device.Viewport.Width / 2;

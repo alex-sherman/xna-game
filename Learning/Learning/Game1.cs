@@ -116,7 +116,7 @@ namespace Learning
                                      Content.Load<Texture2D>("Textures\\Stone"),
                                      Content.Load<Texture2D>("Textures\\Wood"),
                                      Content.Load<Texture2D>("Textures\\Sand"),
-                                     Content.Load<Texture2D>("Textures\\leaves")
+                                     Content.Load<Texture2D>("Textures\\leaves2")
                                    };
             Block.initTextures(textures);
         }

@@ -15,16 +15,24 @@ namespace Learning
         public int currentItem = 0;
         public Item movingItem;
         public Rectangle inventoryRec;
+        public Rectangle hotBarRec;
+        public Rectangle itemRec;
         public bool inventoryUp = false;
 
         public Inventory(Player player)
         {
             this.player = player;
-            this.items = new Item[100];
-            inventoryRec.Height = 663;
-            inventoryRec.Width = 663;
-            inventoryRec.X = GUI.device.Viewport.Width/2-331;
-            inventoryRec.Y = GUI.device.Viewport.Height / 2 - 329;
+            this.items = new Item[60];
+            itemRec.Height = 62;
+            itemRec.Width = 62;
+            inventoryRec.Height = 398;
+            inventoryRec.Width = 651;
+            inventoryRec.X = GUI.device.Viewport.Width/2-325;
+            inventoryRec.Y = GUI.device.Viewport.Height / 2 - 200;
+            hotBarRec.Height = 68;
+            hotBarRec.Width = 663;
+            hotBarRec.X = GUI.device.Viewport.Width / 2 - 331;
+            hotBarRec.Y = GUI.device.Viewport.Height - 68;
 
 
         }
@@ -63,27 +71,47 @@ namespace Learning
                 }
             }
         }
+        private void DrawHotBar()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (items[i] != null)
+                {
+                    itemRec.Width = 62;
+                    itemRec.Height = 62;
+                    itemRec.X = GUI.device.Viewport.Width / 2 + i * 66 - 328;
+                    GUI.batch.Draw(Block.textureList[items[i].type], itemRec, Color.White);
+                    GUI.batch.DrawString(GUI.font, items[i].amount.ToString(), new Vector2(itemRec.X, itemRec.Y), Color.Black);
+                }
+            }
+        }
+        private void DrawMenu()
+        {
+            for (int i = 10; i < 60; i++)
+            {
+                if (items[i] != null)
+                {
+                    itemRec.Width = 60;
+                    itemRec.Height = 57;
+                    itemRec.X = (inventoryRec.Left+2) + inventoryRec.Width / 10 * (i % 10);
+                    itemRec.Y = inventoryRec.Top+92 + (inventoryRec.Height -92)/ 5 * ((i / 10)-1);
+                    GUI.batch.Draw(Block.textureList[items[i].type], itemRec, Color.White);
+                    GUI.batch.DrawString(GUI.font, items[i].amount.ToString(), new Vector2(itemRec.X, itemRec.Y), Color.Black);
+                }
+            }
+        }
+
         public void Draw()
         {
             //Draw the hotbar
-            Rectangle curItemRec = new Rectangle();
-            curItemRec.Height = 64;
-            curItemRec.Width = 65;
-            curItemRec.Y = GUI.device.Viewport.Height - 66;
-            GUI.batch.Begin();
-            GUI.batch.Draw(GUI.hotbar, new Vector2(GUI.device.Viewport.Width / 2 - 331, GUI.device.Viewport.Height - 68), Color.White);
+            itemRec.Y = GUI.device.Viewport.Height - 65;
+            GUI.batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            GUI.batch.Draw(GUI.hotbar, hotBarRec, Color.White);
             if (inventoryUp)
             {
                 GUI.batch.Draw(GUI.inventory, inventoryRec, Color.White);
-                for (int i = 0; i < items.Length; i++)
-                {
-                    if (items[i] != null)
-                    {
-                        curItemRec.X = GUI.device.Viewport.Width / 2 + i * 66 - 329;
-                        GUI.batch.Draw(Block.textureList[items[i].type], curItemRec, Color.White);
-                        GUI.batch.DrawString(GUI.font, items[i].amount.ToString(), new Vector2(GUI.device.Viewport.Width / 2 + i * 66 - 329, GUI.device.Viewport.Height - 64), Color.Black);
-                    }
-                }
+                DrawHotBar();
+                DrawMenu();
                 if (movingItem != null)
                 {
                     GUI.batch.Draw(Block.textureList[movingItem.type], new Vector2(Mouse.GetState().X, Mouse.GetState().Y), Color.White);
@@ -92,15 +120,7 @@ namespace Learning
             else
             {
                 //Draw any items in it
-                for (int i = 0; i < items.Length; i++)
-                {
-                    if (items[i] != null)
-                    {
-                        curItemRec.X = GUI.device.Viewport.Width / 2 + i * 66 - 329;
-                        GUI.batch.Draw(Block.textureList[items[i].type], curItemRec, Color.White);
-                        GUI.batch.DrawString(GUI.font, items[i].amount.ToString(), new Vector2(GUI.device.Viewport.Width / 2 + i * 66 - 329, GUI.device.Viewport.Height - 64), Color.Black);
-                    }
-                }
+                DrawHotBar();
             }
             GUI.batch.End();
         }
