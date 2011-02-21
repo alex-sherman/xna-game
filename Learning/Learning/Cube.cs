@@ -150,6 +150,18 @@ namespace Learning
                 Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
             }
         }
+        public static void Draw(Vector3 position, World world, bool wireframe)
+        {
+            RasterizerState poo = new RasterizerState();
+            poo.FillMode = FillMode.WireFrame;
+            device.RasterizerState = poo;
+            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
+            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
+            Draw(Cube.effect);
+            poo = new RasterizerState();
+            poo.FillMode = FillMode.Solid;
+            device.RasterizerState = poo;
+        }
         public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
         {
             if (texture == null) { return; }
