@@ -31,7 +31,7 @@ namespace Learning
 
         public Player()
         {
-            this.inventory = new Inventory(this);
+            this.inventory = new Inventory();
         }
 
         public void Update(GameTime gameTime)

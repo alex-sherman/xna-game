@@ -57,7 +57,14 @@ namespace Learning.Menus
 
         void saveKeyItem_Selected(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            saveKeyItem.Pulsate = true;
+            catchNextInput(setSaveKey);
+        }
+        void setSaveKey(Keys key)
+        {
+            GameConstants.quickSaveKey = key;
+            saveKeyItem.Pulsate = false;
+            UpdateMenuText();
         }
     }
 }
