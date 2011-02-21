@@ -44,7 +44,6 @@ namespace Learning
         {
             if (input.IsNewKeyPress(Keys.I) || input.IsNewKeyPress(Keys.Escape))
             {
-                player.world.loadGame("save.dat");
                 ScreenManager.Game.IsMouseVisible = false;
                 ExitScreen();
             }

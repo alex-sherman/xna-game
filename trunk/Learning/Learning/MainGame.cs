@@ -132,6 +132,14 @@ namespace Learning
         protected void handleKeyboard(InputState input)
         {
             KeyboardState keyboard = input.CurrentKeyboardState;
+
+            //Save, load game
+            if(input.IsNewKeyPress(Keys.F6)){
+                player.world.loadGame("save.sav");
+            }
+            if(input.IsNewKeyPress(Keys.F5)){
+                player.world.saveGame("save.sav");
+            }
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))
             {
