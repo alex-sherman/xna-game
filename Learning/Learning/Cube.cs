@@ -133,6 +133,7 @@ namespace Learning
 
         public static void Draw(Vector3 position, World world, Texture2D texture)
         {
+            device.BlendState = BlendState.AlphaBlend;
             if (texture == null) { return; }
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
