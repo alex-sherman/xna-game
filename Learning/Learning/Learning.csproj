@@ -115,6 +115,10 @@
     <Compile Include="GUI.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="Menus\MainMenu.cs" />
+    <Compile Include="Menus\MenuItem.cs" />
+    <Compile Include="Menus\MenuScreen.cs" />
+    <Compile Include="Menus\OptionsMenu.cs" />
     <Compile Include="OctreeNode.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

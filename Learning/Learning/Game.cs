@@ -42,7 +42,7 @@ namespace Learning
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
 
-            screenManager.AddScreen(new MainGame());
+            screenManager.AddScreen(new Menus.MainMenu());
         }
 
         protected override void Initialize()
