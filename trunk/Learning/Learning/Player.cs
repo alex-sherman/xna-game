@@ -38,8 +38,8 @@ namespace Learning
             hitBox.Max = position + GameConstants.PlayerSize;
             hitBox.Min = position - GameConstants.PlayerSize;
             // now account for the higher location of the camera
-            hitBox.Max.Y -= GameConstants.PlayerSize.Y / 2;
-            hitBox.Min.Y -= GameConstants.PlayerSize.Y / 2;
+            //hitBox.Max.Y -= GameConstants.PlayerSize.Y / 3;
+            hitBox.Min.Y -= GameConstants.PlayerSize.Y / 3;
 
 
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
@@ -54,17 +54,13 @@ namespace Learning
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
             // resolve non-gravity-caused collisions
-            isWalking = false;
-            for (int i = 0; i < 5; i++)
-                world.collisionCheck(ref endPos, ref isWalking);
+            for (int i = 0; i < 8; i++)
+                world.collisionCheck(ref endPos, ref isWalking, ref outsideV);
 
             // gravity (to get the true state of isWalking)
             isWalking = false;
             endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
-            world.collisionCheck(ref endPos, ref isWalking);
-
-            if (isWalking)
-                outsideV.Y = 0;
+            world.collisionCheck(ref endPos, ref isWalking, ref outsideV);
 
             // and update the player's position
             position = endPos; 
