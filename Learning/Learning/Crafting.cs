@@ -13,7 +13,9 @@ namespace Learning
         {
             foreach (Recipe recipe in recipes)
             {
-                if (recipe.canCraft(items) > 0) { return recipe; }
+                if (recipe.canCraft(items) > 0) {
+                    return recipe;
+                }
             }
             return null;
         }
@@ -22,8 +24,11 @@ namespace Learning
             Recipe toCraft = getRecipe(items);
             if (toCraft == null) { return null; }
             for(int i = 0; i<items.Length; i++){
-                items[i].amount -= toCraft.requiredItems[i].amount * amount;
-                if (items[i].amount <= 0) { items[i] = null; }
+                if (items[i] != null)
+                {
+                    items[i].amount -= toCraft.requiredItems[i].amount * amount;
+                    if (items[i].amount <= 0) { items[i] = null; }
+                }
             }
             return toCraft.craft(amount);
         }
@@ -50,7 +55,7 @@ namespace Learning
             int temp;
             for (int i = 0; i < items.Length; i++)
             {
-                if ((items[i] == null || requiredItems == null))
+                if (items[i] == null || requiredItems[i] == null)
                 {
                     if (items[i] != requiredItems[i]) { return 0; }
                 }

@@ -87,9 +87,9 @@ namespace Learning
                 {
                     //Craft all items
                     Recipe toMake = Crafting.getRecipe(craftItems);
-                    int amount = toMake.canCraft(craftItems);
                     if (toMake != null)
                     {
+                        int amount = toMake.canCraft(craftItems);
                         if (movingItem == null)
                         {
                             movingItem = Crafting.craft(craftItems, amount);
@@ -211,7 +211,7 @@ namespace Learning
 
                     }
                 }
-                else
+                else if(movingItem!=null)
                 {
                     player.inventory.items[index] = new Item(movingItem.type, 1);
                     movingItem.amount--;

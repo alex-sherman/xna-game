@@ -26,9 +26,11 @@ namespace Learning
             Item[] req = {new Item(2,2), new Item(2,2)};
             Item[] req1 = { new Item(7, 2), new Item(7, 2) };
             Item[] req2 = { new Item(1, 2), new Item(1, 2) };
+            Item[] req3 = { new Item(7, 1), null };
             Crafting.addRecipe(req, new Item(5, 1));
             Crafting.addRecipe(req1, new Item(6, 1));
             Crafting.addRecipe(req2, new Item(8, 1));
+            Crafting.addRecipe(req3, new Item(9, 1));
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;

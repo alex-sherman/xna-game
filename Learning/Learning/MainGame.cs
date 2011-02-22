@@ -37,7 +37,7 @@ namespace Learning
         {
             if (Content == null)
                 Content = new ContentManager(ScreenManager.Game.Services, "Content");
-
+            
             newWorld = new World(ScreenManager.GraphicsDevice);
             player = new Player();
             newWorld.addPlayer(player);
@@ -96,7 +96,8 @@ namespace Learning
                                      Content.Load<Texture2D>("Textures\\CraftingTable"), //5
                                      Content.Load<Texture2D>("Textures\\Oven"), //6
                                      Content.Load<Texture2D>("Textures\\IronOre"), //7
-                                     Content.Load<Texture2D>("Textures\\Furnace") //8
+                                     Content.Load<Texture2D>("Textures\\Furnace"), //8
+                                     Content.Load<Texture2D>("Textures\\IronBlock") //9
                                    };
             Block.initTextures(textures);
         }
