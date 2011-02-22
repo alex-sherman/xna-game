@@ -9,33 +9,34 @@ namespace Learning
 {
     class Item
     {
-        public Vector3 position = new Vector3(0,0,0);
+        public Vector3 Position = Vector3.Zero;
+        public bool Visible = false;
         public int type;
-        public static ArrayList itemList = new ArrayList();
+        public static List<Item> itemList = new List<Item>();
         public float rotation = 0f;
         public int amount;
-        private bool draw;
         public Item(Vector3 position,int type)
         {
             this.type = type;
-            this.position = position;
+            this.Position = position;
             this.amount = 1;
             Item.itemList.Add(this);
-            draw = true;
+            Visible = true;
         }
         public Item(int type,int amount)
         {
             this.type = type;
             this.amount = amount;
-            draw = false;
+            Visible = false;
         }
+
         public static void Draw(World world)
         {
             foreach (Item item in Item.itemList)
             {
-                if (item.draw)
+                if (item.Visible)
                 {
-                    Cube.Draw(item.position, world, Block.textureList[item.type], .5f, item.rotation);
+                    Cube.Draw(item.Position, world, Block.textureList[item.type], .5f, item.rotation);
                 }
             }
         }
@@ -51,7 +52,7 @@ namespace Learning
                 }
                 foreach (Player player in world.players)
                 {
-                    if ((player.position - item.position).Length() < 2.5f)
+                    if ((player.position - item.Position).Length() < 2.5f)
                     {
                         player.inventory.addItem(item);
                         Item.itemList.Remove(item);

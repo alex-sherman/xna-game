@@ -30,7 +30,6 @@ namespace Learning
 
         public MainGame()
         {
-            
         }
 
         public override void LoadContent()
@@ -38,6 +37,8 @@ namespace Learning
             if (Content == null)
                 Content = new ContentManager(ScreenManager.Game.Services, "Content");
             
+            EnemyAgent.model = Content.Load<Model>("models/ship");
+
             newWorld = new World(ScreenManager.GraphicsDevice);
             player = new Player();
             newWorld.addPlayer(player);
@@ -46,7 +47,6 @@ namespace Learning
             InitializeTransform();
             Cube.InitializeCube(ScreenManager.GraphicsDevice, InitializeEffect());
             GUI.Init(this);
-
 
             base.LoadContent();
         }
