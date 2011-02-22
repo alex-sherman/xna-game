@@ -18,6 +18,7 @@ namespace Learning
         private static Texture2D crosshair;
         public static Texture2D hotbar;
         public static Texture2D inventory;
+        public static Texture2D crafting;
         private static int lineNumber = 0;
         public static Rectangle hotBarRec, itemRec;
 
@@ -28,6 +29,7 @@ namespace Learning
             GUI.crosshair = game.Content.Load<Texture2D>("Textures\\Crosshair");
             GUI.hotbar = game.Content.Load<Texture2D>("Textures\\Hotbar");
             GUI.inventory = game.Content.Load<Texture2D>("Textures\\Inventory");
+            GUI.crafting = game.Content.Load<Texture2D>("Textures\\InvCraft");
             GUI.device = World.device;
             GUI.batch = game.ScreenManager.SpriteBatch;
 

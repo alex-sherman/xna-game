@@ -26,8 +26,7 @@ namespace Learning
         public Item(int type,int amount)
         {
             this.type = type;
-            this.amount = 1;
-            Item.itemList.Add(this);
+            this.amount = amount;
             draw = false;
         }
         public static void Draw(World world)

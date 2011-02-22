@@ -23,7 +23,8 @@ namespace Learning
         public World(GraphicsDevice device)
         {
             World.device = device;
-
+            Item[] req = {new Item(2,2), new Item(2,2)};
+            Crafting.addRecipe(req, new Item(5,1));
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;

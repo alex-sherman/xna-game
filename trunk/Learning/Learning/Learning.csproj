@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Block.cs" />
+    <Compile Include="Crafting.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="GameConstants.cs" />
     <Compile Include="InventoryScreen.cs" />
