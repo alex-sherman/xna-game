@@ -15,7 +15,9 @@ namespace Learning
         public Item movingItem;
         public Rectangle inventoryRec;
         public Rectangle hotBarRec;
+        public Rectangle craftRec;
         public Rectangle itemRec;
+        public Item[] craftItems = new Item[2];
         public bool inventoryUp = false;
 
         public InventoryScreen(Player player)
@@ -24,10 +26,16 @@ namespace Learning
             this.player = player;
             itemRec.Height = 62;
             itemRec.Width = 62;
+            craftRec.Height = 132;
+            craftRec.Width = 132;
+            craftRec.X = GUI.device.Viewport.Width / 2 - 550;
+            craftRec.Y = GUI.device.Viewport.Height / 2 - 200;
+
             inventoryRec.Height = 398;
             inventoryRec.Width = 651;
             inventoryRec.X = GUI.device.Viewport.Width / 2 - 325;
             inventoryRec.Y = GUI.device.Viewport.Height / 2 - 200;
+
             hotBarRec.Height = 68;
             hotBarRec.Width = 663;
             hotBarRec.X = GUI.device.Viewport.Width / 2 - 331;
@@ -40,6 +48,7 @@ namespace Learning
             base.LoadContent();
         }
 
+        
         public override void HandleInput(InputState input)
         {
             if (input.IsNewKeyPress(Keys.I) || input.IsNewKeyPress(Keys.Escape))
@@ -52,32 +61,67 @@ namespace Learning
             {
                 int X;
                 int Y;
-                if (snapMouse(out X, out Y))
+                bool crafting;
+                if (snapMouse(out X, out Y, out crafting))
                 {
-                    int index = X + Y * 10 + 10;
-                    if (movingItem == null)
+                    if (crafting)
                     {
-                        GUI.print(X.ToString() + ", " + Y.ToString());
-                        Item item = player.inventory.items[index];
-                        if (item != null)
+                        if (X == -1)
                         {
-                            movingItem = item;
-                            player.inventory.items[index] = null;
+                            Item item = craftItems[Y];
+                            if (movingItem == null)
+                            {
+                                if (item != null)
+                                {
+                                    movingItem = item;
+                                    craftItems[Y] = null;
+                                }
+                            }
+                            else
+                            {
+                                if (item != null)
+                                {
+                                    if (item.type == movingItem.type)
+                                    {
+                                        item.amount += movingItem.amount;
+                                        movingItem = null;
+                                    }
+                                }
+                                else
+                                {
+                                    craftItems[Y] = movingItem;
+                                    movingItem = null;
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        Item temp = player.inventory.items[index];
-                        if (temp != null && temp.type == movingItem.type)
+                        int index = X + Y * 10 + 10;
+                        if (movingItem == null)
                         {
-                            temp.amount += movingItem.amount;
-                            movingItem = null;
-
+                            GUI.print(X.ToString() + ", " + Y.ToString());
+                            Item item = player.inventory.items[index];
+                            if (item != null)
+                            {
+                                movingItem = item;
+                                player.inventory.items[index] = null;
+                            }
                         }
                         else
                         {
-                            player.inventory.items[index] = movingItem;
-                            movingItem = temp;
+                            Item temp = player.inventory.items[index];
+                            if (temp != null && temp.type == movingItem.type)
+                            {
+                                temp.amount += movingItem.amount;
+                                movingItem = null;
+
+                            }
+                            else
+                            {
+                                player.inventory.items[index] = movingItem;
+                                movingItem = temp;
+                            }
                         }
                     }
                 }
@@ -86,52 +130,92 @@ namespace Learning
             {
                 int X;
                 int Y;
-                if (snapMouse(out X, out Y))
+                bool crafting;
+                if (snapMouse(out X, out Y, out crafting))
                 {
-                    int index = X + Y * 10 + 10;
-                    Item item = player.inventory.items[index];
-                    if (movingItem == null && item != null)
+                    if (crafting)
                     {
-                        if (item.amount == 1)
+                        if (X == -1)
                         {
-                            movingItem = item;
-                            player.inventory.items[index] = null;
+                            Item item = craftItems[Y];
+                            if (movingItem == null)
+                            {
+                                if (item.amount == 1)
+                                {
+                                    movingItem = item;
+                                    craftItems[Y] = null;
+                                }
+                                else if (item != null)
+                                {
+                                    movingItem = new Item(item.type, item.amount / 2);
+                                    item.amount -= movingItem.amount;
+                                }
+                            }
+                            else
+                            {
+                                if (item == null)
+                                {
+                                    craftItems[Y] = new Item(movingItem.type, 1);
+                                }
+                                else if (item.type == movingItem.type)
+                                {
+                                    item.amount++;
+                                    movingItem.amount--;
+                                    if (movingItem.amount == 0) { movingItem = null; }
+                                }
+                            }
                         }
                         else
                         {
-                            movingItem = new Item(Vector3.Zero, item.type);
-                            movingItem.amount = item.amount / 2;
-                            item.amount -= movingItem.amount;
-                        }
-                    }
-                    else if (item != null)
-                    {
-                        if (item.type == movingItem.type)
-                        {
-                            player.inventory.items[index].amount++;
-                            movingItem.amount--;
-                            if (movingItem.amount == 0) { movingItem = null; }
-
+                            movingItem = Crafting.craft(craftItems, 1);
                         }
                     }
                     else
                     {
-                        player.inventory.items[index] = new Item(new Vector3(0, 0, 0), movingItem.type);
-                        movingItem.amount--;
-                        if (movingItem.amount == 0) { movingItem = null; }
+                        int index = X + Y * 10 + 10;
+                        Item item = player.inventory.items[index];
+                        if (movingItem == null && item != null)
+                        {
+                            if (item.amount == 1)
+                            {
+                                movingItem = item;
+                                player.inventory.items[index] = null;
+                            }
+                            else
+                            {
+                                movingItem = new Item(item.type, item.amount/2);
+                                item.amount -= movingItem.amount;
+                            }
+                        }
+                        else if (item != null)
+                        {
+                            if (item.type == movingItem.type)
+                            {
+                                player.inventory.items[index].amount++;
+                                movingItem.amount--;
+                                if (movingItem.amount == 0) { movingItem = null; }
+
+                            }
+                        }
+                        else
+                        {
+                            player.inventory.items[index] = new Item(movingItem.type,1);
+                            movingItem.amount--;
+                            if (movingItem.amount == 0) { movingItem = null; }
+                        }
                     }
                 }
             }
             player.velocity = Vector3.Zero;
             base.HandleInput(input);
         }
-        private bool snapMouse(out int X, out int Y)
+        private bool snapMouse(out int X, out int Y, out bool inCrafting)
         {
             X = Mouse.GetState().X - inventoryRec.Left;
             Y = Mouse.GetState().Y - inventoryRec.Top - 90;
+            inCrafting = false;
             if (X >= 0 && X < inventoryRec.Width - 2 && Y >= 0 && Y < inventoryRec.Height - 92)
             {
-
                 X = X * 10 / inventoryRec.Width;
                 Y = Y * 5 / (inventoryRec.Height - 90);
                 return true;
@@ -145,6 +229,22 @@ namespace Learning
                 Y = -1;
                 return true;
             }
+            X = Mouse.GetState().X - craftRec.Left;
+            Y = Mouse.GetState().Y - craftRec.Top;
+            if (X >= 0 && X < craftRec.Width - 2 && Y >= 0 && Y < craftRec.Height - 2)
+            {
+                if (X < craftRec.Width / 2 - 2)
+                {
+                    X = -1;
+                    Y /= craftRec.Height / 2;
+                    inCrafting = true;
+                    return true;
+                }
+                X = 1;
+                Y = -1;
+                inCrafting = true;
+                return true;
+            }
             return false;
         }
 
@@ -154,6 +254,7 @@ namespace Learning
             ScreenManager.SpriteBatch.Begin();
             ScreenManager.SpriteBatch.Draw(GUI.inventory, inventoryRec, Color.White);
             DrawMenu();
+            DrawCrafting();
             if (movingItem != null)
             {
 
@@ -164,6 +265,44 @@ namespace Learning
             }
             ScreenManager.SpriteBatch.End();
             base.Draw(gameTime);
+        }
+        public void DrawCrafting()
+        {
+            itemRec.X = craftRec.Left;
+            itemRec.Y = craftRec.Top;
+            ScreenManager.SpriteBatch.Draw(GUI.crafting, craftRec, Color.White);
+            if (craftItems[0] != null)
+            {
+                ScreenManager.SpriteBatch.Draw(Block.textureList[craftItems[0].type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.DrawString(
+                        GUI.font,
+                        craftItems[0].amount.ToString(),
+                        new Vector2(itemRec.X, itemRec.Y),
+                        Color.Black);
+            }
+            itemRec.Y += 66;
+            if (craftItems[1] != null)
+            {
+                ScreenManager.SpriteBatch.Draw(Block.textureList[craftItems[1].type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.DrawString(
+                        GUI.font,
+                        craftItems[1].amount.ToString(),
+                        new Vector2(itemRec.X, itemRec.Y),
+                        Color.Black);
+            }
+            Recipe recipe = Crafting.getRecipe(craftItems);
+            if (recipe != null)
+            {
+                itemRec.Y -= 33;
+                itemRec.X += 66;
+                ScreenManager.SpriteBatch.Draw(Block.textureList[recipe.craftedItem.type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.DrawString(
+                        GUI.font,
+                        recipe.canCraft(craftItems).ToString(),
+                        new Vector2(itemRec.X, itemRec.Y),
+                        Color.Black);
+            }
+
         }
         private void DrawMenu()
         {
