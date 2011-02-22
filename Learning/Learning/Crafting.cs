@@ -21,6 +21,10 @@ namespace Learning
         {
             Recipe toCraft = getRecipe(items);
             if (toCraft == null) { return null; }
+            for(int i = 0; i<items.Length; i++){
+                items[i].amount -= toCraft.requiredItems[i].amount * amount;
+                if (items[i].amount <= 0) { items[i] = null; }
+            }
             return toCraft.craft(amount);
         }
         public static void addRecipe(Item[] items, Item craft){
