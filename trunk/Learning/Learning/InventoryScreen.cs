@@ -48,7 +48,179 @@ namespace Learning
             base.LoadContent();
         }
 
-        
+        #region ItemCrafting
+        void HandleCrafting(int X, int Y, bool leftClick){
+            if (!leftClick)
+            {
+                if (X == -1)
+                {
+                    Item item = craftItems[Y];
+                    if (movingItem == null)
+                    {
+                        if (item.amount == 1)
+                        {
+                            movingItem = item;
+                            craftItems[Y] = null;
+                        }
+                        else if (item != null)
+                        {
+                            movingItem = new Item(item.type, item.amount / 2);
+                            item.amount -= movingItem.amount;
+                        }
+                    }
+                    else
+                    {
+                        if (item == null)
+                        {
+                            craftItems[Y] = new Item(movingItem.type, 1);
+                            movingItem.amount--;
+                        }
+                        else if (item.type == movingItem.type)
+                        {
+                            item.amount++;
+                            movingItem.amount--;
+                        }
+                        if (movingItem.amount == 0) { movingItem = null; }
+                    }
+                }
+                else
+                {
+                    //Craft all items
+                    Recipe toMake = Crafting.getRecipe(craftItems);
+                    int amount = toMake.canCraft(craftItems);
+                    if (toMake != null)
+                    {
+                        if (movingItem == null)
+                        {
+                            movingItem = Crafting.craft(craftItems, amount);
+                        }
+                        else if (movingItem.type == toMake.craftedItem.type)
+                        {
+                            Crafting.craft(craftItems, amount);
+                            movingItem.amount += amount;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (X == -1)
+                {
+                    Item item = craftItems[Y];
+                    if (movingItem == null)
+                    {
+                        if (item != null)
+                        {
+                            movingItem = item;
+                            craftItems[Y] = null;
+                        }
+                    }
+                    else
+                    {
+                        if (item != null)
+                        {
+                            if (item.type == movingItem.type)
+                            {
+                                item.amount += movingItem.amount;
+                                movingItem = null;
+                            }
+                        }
+                        else
+                        {
+                            craftItems[Y] = movingItem;
+                            movingItem = null;
+                        }
+                    }
+                }
+                else
+                {
+                    Recipe toMake = Crafting.getRecipe(craftItems);
+                    if (toMake != null)
+                    {
+                        if (movingItem == null)
+                        {
+                            movingItem = Crafting.craft(craftItems, 1);
+                        }
+                        else if (movingItem.type == toMake.craftedItem.type)
+                        {
+                            Crafting.craft(craftItems, 1);
+                            movingItem.amount += 1;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region InventoryManagement
+        void ManageInventory(int X, int Y, bool leftClick)
+        {
+            if (leftClick)
+            {
+                int index = X + Y * 10 + 10;
+                if (movingItem == null)
+                {
+                    GUI.print(X.ToString() + ", " + Y.ToString());
+                    Item item = player.inventory.items[index];
+                    if (item != null)
+                    {
+                        movingItem = item;
+                        player.inventory.items[index] = null;
+                    }
+                }
+                else
+                {
+                    Item temp = player.inventory.items[index];
+                    if (temp != null && temp.type == movingItem.type)
+                    {
+                        temp.amount += movingItem.amount;
+                        movingItem = null;
+
+                    }
+                    else
+                    {
+                        player.inventory.items[index] = movingItem;
+                        movingItem = temp;
+                    }
+                }
+            }
+            else
+            {
+                int index = X + Y * 10 + 10;
+                Item item = player.inventory.items[index];
+                if (movingItem == null && item != null)
+                {
+                    if (item.amount == 1)
+                    {
+                        movingItem = item;
+                        player.inventory.items[index] = null;
+                    }
+                    else
+                    {
+                        movingItem = new Item(item.type, item.amount / 2);
+                        item.amount -= movingItem.amount;
+                    }
+                }
+                else if (item != null)
+                {
+                    if (item.type == movingItem.type)
+                    {
+                        player.inventory.items[index].amount++;
+                        movingItem.amount--;
+                        if (movingItem.amount == 0) { movingItem = null; }
+
+                    }
+                }
+                else
+                {
+                    player.inventory.items[index] = new Item(movingItem.type, 1);
+                    movingItem.amount--;
+                    if (movingItem.amount == 0) { movingItem = null; }
+                }
+            }
+        }
+        #endregion
+
         public override void HandleInput(InputState input)
         {
             if (input.IsNewKeyPress(Keys.I) || input.IsNewKeyPress(Keys.Escape))
@@ -66,63 +238,11 @@ namespace Learning
                 {
                     if (crafting)
                     {
-                        if (X == -1)
-                        {
-                            Item item = craftItems[Y];
-                            if (movingItem == null)
-                            {
-                                if (item != null)
-                                {
-                                    movingItem = item;
-                                    craftItems[Y] = null;
-                                }
-                            }
-                            else
-                            {
-                                if (item != null)
-                                {
-                                    if (item.type == movingItem.type)
-                                    {
-                                        item.amount += movingItem.amount;
-                                        movingItem = null;
-                                    }
-                                }
-                                else
-                                {
-                                    craftItems[Y] = movingItem;
-                                    movingItem = null;
-                                }
-                            }
-                        }
+                        HandleCrafting(X, Y, true);   
                     }
                     else
                     {
-                        int index = X + Y * 10 + 10;
-                        if (movingItem == null)
-                        {
-                            GUI.print(X.ToString() + ", " + Y.ToString());
-                            Item item = player.inventory.items[index];
-                            if (item != null)
-                            {
-                                movingItem = item;
-                                player.inventory.items[index] = null;
-                            }
-                        }
-                        else
-                        {
-                            Item temp = player.inventory.items[index];
-                            if (temp != null && temp.type == movingItem.type)
-                            {
-                                temp.amount += movingItem.amount;
-                                movingItem = null;
-
-                            }
-                            else
-                            {
-                                player.inventory.items[index] = movingItem;
-                                movingItem = temp;
-                            }
-                        }
+                        ManageInventory(X, Y, true);
                     }
                 }
             }
@@ -135,74 +255,11 @@ namespace Learning
                 {
                     if (crafting)
                     {
-                        if (X == -1)
-                        {
-                            Item item = craftItems[Y];
-                            if (movingItem == null)
-                            {
-                                if (item.amount == 1)
-                                {
-                                    movingItem = item;
-                                    craftItems[Y] = null;
-                                }
-                                else if (item != null)
-                                {
-                                    movingItem = new Item(item.type, item.amount / 2);
-                                    item.amount -= movingItem.amount;
-                                }
-                            }
-                            else
-                            {
-                                if (item == null)
-                                {
-                                    craftItems[Y] = new Item(movingItem.type, 1);
-                                }
-                                else if (item.type == movingItem.type)
-                                {
-                                    item.amount++;
-                                    movingItem.amount--;
-                                    if (movingItem.amount == 0) { movingItem = null; }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            movingItem = Crafting.craft(craftItems, 1);
-                        }
+                        HandleCrafting(X, Y, false);
                     }
                     else
                     {
-                        int index = X + Y * 10 + 10;
-                        Item item = player.inventory.items[index];
-                        if (movingItem == null && item != null)
-                        {
-                            if (item.amount == 1)
-                            {
-                                movingItem = item;
-                                player.inventory.items[index] = null;
-                            }
-                            else
-                            {
-                                movingItem = new Item(item.type, item.amount/2);
-                                item.amount -= movingItem.amount;
-                            }
-                        }
-                        else if (item != null)
-                        {
-                            if (item.type == movingItem.type)
-                            {
-                                player.inventory.items[index].amount++;
-                                movingItem.amount--;
-                                if (movingItem.amount == 0) { movingItem = null; }
-
-                            }
-                        }
-                        else
-                        {
-                            player.inventory.items[index] = new Item(movingItem.type,1);
-                            movingItem.amount--;
-                            if (movingItem.amount == 0) { movingItem = null; }
-                        }
+                        ManageInventory(X, Y, false);
                     }
                 }
             }

@@ -88,12 +88,15 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"),
-                                     Content.Load<Texture2D>("Textures\\Stone"),
-                                     Content.Load<Texture2D>("Textures\\Wood"),
-                                     Content.Load<Texture2D>("Textures\\Sand"),
-                                     Content.Load<Texture2D>("Textures\\leaves"),
-                                     Content.Load<Texture2D>("Textures\\CraftingTable")
+            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"), //0
+                                     Content.Load<Texture2D>("Textures\\Stone"), //1
+                                     Content.Load<Texture2D>("Textures\\Wood"), //2
+                                     Content.Load<Texture2D>("Textures\\Sand"), //3
+                                     Content.Load<Texture2D>("Textures\\leaves"), //4
+                                     Content.Load<Texture2D>("Textures\\CraftingTable"), //5
+                                     Content.Load<Texture2D>("Textures\\Oven"), //6
+                                     Content.Load<Texture2D>("Textures\\IronOre"), //7
+                                     Content.Load<Texture2D>("Textures\\Furnace") //8
                                    };
             Block.initTextures(textures);
         }

@@ -24,7 +24,11 @@ namespace Learning
         {
             World.device = device;
             Item[] req = {new Item(2,2), new Item(2,2)};
-            Crafting.addRecipe(req, new Item(5,1));
+            Item[] req1 = { new Item(7, 2), new Item(7, 2) };
+            Item[] req2 = { new Item(1, 2), new Item(1, 2) };
+            Crafting.addRecipe(req, new Item(5, 1));
+            Crafting.addRecipe(req1, new Item(6, 1));
+            Crafting.addRecipe(req2, new Item(8, 1));
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
@@ -89,11 +93,12 @@ namespace Learning
             {
                 for (int v = -10; v < 10; v++)
                 {
-                    blockTree.addBlock(u, 0, v, 0);
-                    blockTree.addBlock(u, 1, v, 1);
-                    blockTree.addBlock(u, 2, v, 2);
+                    blockTree.addBlock(u, 0, v, 7);
+                    blockTree.addBlock(u, 1, v, 7);
+                    blockTree.addBlock(u, 2, v, 1);
                     blockTree.addBlock(u, 3, v, 3);
-                    blockTree.addBlock(u, 4, v, 4);
+                    blockTree.addBlock(u, 4, v, 0);
+                    blockTree.addBlock(u, 5, v, 2);
                 }
             }
         }
