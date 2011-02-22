@@ -14,9 +14,11 @@ Content\LightAndTextureEffect.xnb
 Content\Textures\Inventory.xnb
 Content\menufont.xnb
 Content\Textures\blank.xnb
-Content\Textures\InvCraft.xnb
 Content\Textures\CraftingTable.xnb
+Content\Textures\InvCraft.xnb
 Content\Textures\IronOre.xnb
 Content\Textures\Oven.xnb
 Content\Textures\Furnace.xnb
-Content\Textures\IronBlock.xnb
+Content\Models\carriertextures.xnb
+Content\Models\carriertextures_0.xnb
+Content\Models\ship.xnb

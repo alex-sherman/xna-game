@@ -63,14 +63,15 @@ namespace Learning
             player.world = this;
         }
 
-        public void Update(Matrix partialWorld)
+        public void Update(GameTime gameTime)
         {
             foreach (Player player in this.players)
             {
                 //player.Update();
             }
             Item.Update(this);
-            this.partialWorld = partialWorld;
+            this.partialWorld = players[0].getCameraMatrix();// partialWorld;
+            objectTree.Update(gameTime);
 
         }
         public bool addBlock(Ray lookAt, int type)
@@ -103,7 +104,7 @@ namespace Learning
                     objectTree.addBlock(u, 5, v, 2);
                 }
             }
-            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5));
+            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this);
             objectTree.addObject(enemy);
             
         }
