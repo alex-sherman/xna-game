@@ -14,7 +14,7 @@ namespace Learning.Menus
         string prompt;
         string yes = "Yes";
         string no = "No";
-        int selected = 0;
+        int selected = 1;
         ConfirmationDelegate affirmative, negative;
 
         public ConfirmationDialog(string prompt,

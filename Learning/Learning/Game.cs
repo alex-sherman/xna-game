@@ -32,7 +32,6 @@ namespace Learning
 
         public Game()
         {
-
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = 1050;
             graphics.PreferredBackBufferWidth = 1680;
@@ -42,6 +41,9 @@ namespace Learning
 
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
+
+            //GuiComponents.ComponentManager.init(
+            //    Content, screenManager.Font, screenManager.SpriteBatch);
 
             screenManager.AddScreen(new Menus.MainMenu());
         }

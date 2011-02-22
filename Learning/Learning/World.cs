@@ -18,7 +18,7 @@ namespace Learning
         public List<Player> players = new List<Player>();
         public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
-        public OctreeNode blockTree;
+        public OctreeNode objectTree;
 
         public World(GraphicsDevice device)
         {
@@ -34,7 +34,7 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            blockTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
             generateFloor();
         }
         public void saveGame(String location)
@@ -42,7 +42,7 @@ namespace Learning
             Stream stream = File.Open(location, FileMode.Create);
             BinaryFormatter bformatter = new BinaryFormatter();
             GUI.print("Saving game to: " + location);
-            bformatter.Serialize(stream, blockTree);
+            bformatter.Serialize(stream, objectTree);
             stream.Close();
         }
         public void loadGame(String location)
@@ -50,7 +50,7 @@ namespace Learning
             Stream stream = File.Open(location, FileMode.Open);
             BinaryFormatter bformatter = new BinaryFormatter();
             GUI.print("Loading game from: " + location);
-            this.blockTree = (OctreeNode)bformatter.Deserialize(stream);
+            this.objectTree = (OctreeNode)bformatter.Deserialize(stream);
             stream.Close();
         }
         public void spawnItem(int type, Vector3 position)
@@ -75,17 +75,17 @@ namespace Learning
         }
         public bool addBlock(Ray lookAt, int type)
         {
-            return blockTree.addBlock(lookAt, type);
+            return objectTree.addBlock(lookAt, type);
         }
         public void destroyBlock(Ray lookAt)
         {
-            blockTree.destroyBlock(lookAt);
+            objectTree.destroyBlock(lookAt);
         }
 
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            blockTree.Draw(toDraw);
+            objectTree.Draw(toDraw);
             Item.Draw(this);
         }
 
@@ -95,14 +95,17 @@ namespace Learning
             {
                 for (int v = -10; v < 10; v++)
                 {
-                    blockTree.addBlock(u, 0, v, 7);
-                    blockTree.addBlock(u, 1, v, 7);
-                    blockTree.addBlock(u, 2, v, 1);
-                    blockTree.addBlock(u, 3, v, 3);
-                    blockTree.addBlock(u, 4, v, 0);
-                    blockTree.addBlock(u, 5, v, 2);
+                    objectTree.addBlock(u, 0, v, 7);
+                    objectTree.addBlock(u, 1, v, 7);
+                    objectTree.addBlock(u, 2, v, 1);
+                    objectTree.addBlock(u, 3, v, 3);
+                    objectTree.addBlock(u, 4, v, 0);
+                    objectTree.addBlock(u, 5, v, 2);
                 }
             }
+            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5));
+            objectTree.addObject(enemy);
+            
         }
 
         #region Collision Detection
@@ -116,7 +119,7 @@ namespace Learning
             endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
             endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
 
-            foreach (Block b in blockTree.getCollisionCandidates(endAABB))
+            foreach (GameObject b in objectTree.getCollisionCandidates(endAABB))
             {
                 Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
                 endPos += correction;

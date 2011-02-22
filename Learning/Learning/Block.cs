@@ -9,29 +9,28 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Learning
 {
     [Serializable()]
-    class Block : ISerializable
+    class Block : GameObject, ISerializable
     {
-        public Vector3 position;
         public int type = 0;
-        public BoundingBox hitBox = new BoundingBox();
         public static Texture2D[] textureList;
         public Block(Vector3 position,int type)
+            : base(position)
         {
             this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize);
             this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
-            this.position = 2 * Cube.cubeSize * position;
+            Position = 2 * Cube.cubeSize * position;
             this.type = type;
         }
         public Block(SerializationInfo info, StreamingContext context)
         {
             this.hitBox = (BoundingBox)info.GetValue("hitBox", typeof(BoundingBox));
-            this.position = (Vector3)info.GetValue("position", typeof(Vector3));
+            Position = (Vector3)info.GetValue("position", typeof(Vector3));
             this.type = (int)info.GetValue("type", typeof(int));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
         {
-            info.AddValue("hitBox", this.hitBox);
-            info.AddValue("position", this.position);
+            info.AddValue("hitBox", hitBox);
+            info.AddValue("position", Position);
             info.AddValue("type", this.type);
 
         }
@@ -43,9 +42,9 @@ namespace Learning
         {
             return this.hitBox.Intersects(vBox);
         }
-        public void Draw(World world)
+        public override void Draw(World world)
         {
-                Cube.Draw(this.position, world, this.getTexture());
+                Cube.Draw(Position, world, this.getTexture());
         }
         public Vector3 getNormal(Ray lookat)
         {
@@ -75,23 +74,23 @@ namespace Learning
             BoundingBox top = new BoundingBox();
             BoundingBox bottom = new BoundingBox();
 
-            front.Max = this.position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
-            front.Min = this.position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, Cube.cubeSize);
+            front.Max = Position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
+            front.Min = Position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, Cube.cubeSize);
 
-            back.Max = this.position + new Vector3(Cube.cubeSize, Cube.cubeSize, -Cube.cubeSize);
-            back.Min = this.position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
+            back.Max = Position + new Vector3(Cube.cubeSize, Cube.cubeSize, -Cube.cubeSize);
+            back.Min = Position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
 
-            left.Max = this.position + new Vector3(-Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
-            left.Min = this.position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
+            left.Max = Position + new Vector3(-Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
+            left.Min = Position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
 
-            right.Max = this.position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
-            right.Min = this.position + new Vector3(Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
+            right.Max = Position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
+            right.Min = Position + new Vector3(Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
 
-            top.Max = this.position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
-            top.Min = this.position + new Vector3(-Cube.cubeSize, Cube.cubeSize, -Cube.cubeSize);
+            top.Max = Position + new Vector3(Cube.cubeSize, Cube.cubeSize, Cube.cubeSize);
+            top.Min = Position + new Vector3(-Cube.cubeSize, Cube.cubeSize, -Cube.cubeSize);
 
-            bottom.Max = this.position + new Vector3(Cube.cubeSize, -Cube.cubeSize, Cube.cubeSize);
-            bottom.Min = this.position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
+            bottom.Max = Position + new Vector3(Cube.cubeSize, -Cube.cubeSize, Cube.cubeSize);
+            bottom.Min = Position + new Vector3(-Cube.cubeSize, -Cube.cubeSize, -Cube.cubeSize);
             BoundingBox[] toReturn = { front, back, right, left, top, bottom };
             return toReturn;
         }
@@ -101,7 +100,7 @@ namespace Learning
         }
         public int[] getDirection(Vector3 other)
         {
-            int[] toReturn = { (int)(other.X - this.position.X),(int)(other.Y - this.position.Y), (int)(other.Z - this.position.Z) };
+            int[] toReturn = { (int)(other.X - Position.X),(int)(other.Y - Position.Y), (int)(other.Z - Position.Z) };
             return toReturn;
         }
     }
