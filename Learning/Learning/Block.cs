@@ -13,7 +13,7 @@ namespace Learning
     {
         public int type = 0;
         public static Texture2D[] textureList;
-        public Block(Vector3 position,int type)
+        public Block(Vector3 position, int type)
             : base(position)
         {
             this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize);
@@ -44,7 +44,7 @@ namespace Learning
         }
         public override void Draw(World world)
         {
-                Cube.Draw(Position, world, this.getTexture());
+            Cube.Draw(Position, world, this.getTexture());
         }
         public Vector3 getNormal(Ray lookat)
         {
@@ -54,16 +54,16 @@ namespace Learning
             Vector3[] normals = {new Vector3(0,0,1),new Vector3(0,0,-1),new Vector3(1,0,0),
                                  new Vector3(-1,0,0), new Vector3(0,1,0), new Vector3(0,-1,0)};
 
-            for(int i = 0; i<faces.Length;i++)
+            for (int i = 0; i < faces.Length; i++)
             {
-                if (lookat.Intersects(faces[i])<distance)
+                if (lookat.Intersects(faces[i]) < distance)
                 {
                     distance = lookat.Intersects(faces[i]);
                     closestFace = i;
                 }
             }
             if (closestFace != -1) { return normals[closestFace]; }
-            return new Vector3(0,2,0);
+            return new Vector3(0, 2, 0);
         }
         private BoundingBox[] getFaces()
         {
@@ -100,8 +100,11 @@ namespace Learning
         }
         public int[] getDirection(Vector3 other)
         {
-            int[] toReturn = { (int)(other.X - Position.X),(int)(other.Y - Position.Y), (int)(other.Z - Position.Z) };
+            int[] toReturn = { (int)(other.X - Position.X), (int)(other.Y - Position.Y), (int)(other.Z - Position.Z) };
             return toReturn;
+        }
+        public override void Update(GameTime gameTime)
+        {
         }
     }
 }

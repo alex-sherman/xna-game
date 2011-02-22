@@ -96,8 +96,8 @@ namespace Learning
                                      Content.Load<Texture2D>("Textures\\CraftingTable"), //5
                                      Content.Load<Texture2D>("Textures\\Oven"), //6
                                      Content.Load<Texture2D>("Textures\\IronOre"), //7
-                                     Content.Load<Texture2D>("Textures\\Furnace"), //8
-                                     Content.Load<Texture2D>("Textures\\IronBlock") //9
+                                     Content.Load<Texture2D>("Textures\\Furnace")//, //8
+                                     //Content.Load<Texture2D>("Textures\\IronBlock") //9
                                    };
             Block.initTextures(textures);
         }
@@ -117,7 +117,7 @@ namespace Learning
             if (IsActive)
             {
                 player.Update(gameTime);
-                newWorld.Update(player.getCameraMatrix());
+                newWorld.Update(gameTime);//player.getCameraMatrix());
             }
         }
 

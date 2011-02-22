@@ -62,5 +62,6 @@ namespace Learning
         #endregion
 
         public abstract void Draw(World world);
+        public abstract void Update(GameTime gameTime);
     }
 }

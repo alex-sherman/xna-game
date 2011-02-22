@@ -284,5 +284,30 @@ namespace Learning
             OctreeNode containingNode = getContainingNode(box);
             return containingNode.getAllBlocks();
         }
+
+        public List<GameObject> getMobileObjects()
+        {
+            List<GameObject> result = new List<GameObject>();
+            foreach (GameObject obj in gameObjects)
+            {
+                if (obj.GetType() != typeof(Block))
+                {
+                    result.Add(obj);
+                }
+            }
+            foreach (OctreeNode child in children)
+            {
+                result.AddRange(child.getMobileObjects());
+            }
+            return result;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (GameObject obj in getMobileObjects())
+            {
+                obj.Update(gameTime);
+            }
+        }
     }
 }
