@@ -42,7 +42,7 @@ namespace Learning
             this.maxObjects = (int)info.GetValue("maxObjects", typeof(int));
             this.parent = (OctreeNode)info.GetValue("parent", typeof(OctreeNode));
             bounds = (BoundingBox)info.GetValue("bounds", typeof(BoundingBox));
-            gameObjects = (List<GameObject>)info.GetValue("blocks", typeof(List<Block>));
+            gameObjects = (List<GameObject>)info.GetValue("blocks", typeof(List<GameObject>));
             children = (List<OctreeNode>)info.GetValue("children", typeof(List<OctreeNode>));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
@@ -52,7 +52,7 @@ namespace Learning
             info.AddValue("maxObjects", this.maxObjects);
             info.AddValue("parent", this.parent);
             info.AddValue("bounds", this.bounds);
-            info.AddValue("blocks", this.gameObjects);
+            info.AddValue("gameObjects", this.gameObjects);
             info.AddValue("children", this.children);
         }
         #endregion
