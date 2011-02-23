@@ -29,10 +29,12 @@ namespace Learning
             Item[] req1 = { new Item(7, 2), new Item(7, 2) };
             Item[] req2 = { new Item(1, 2), new Item(1, 2) };
             Item[] req3 = { new Item(7, 1), null };
+            Item[] req4 = { new Item(9, 2), new Item(9, 2) };
             Crafting.addRecipe(req, new Item(5, 1));
             Crafting.addRecipe(req1, new Item(6, 1));
             Crafting.addRecipe(req2, new Item(8, 1));
             Crafting.addRecipe(req3, new Item(9, 1));
+            Crafting.addRecipe(req4, new Item(10, 1));
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
@@ -57,28 +59,7 @@ namespace Learning
                 {
                     Block objBlock = (Block)poo;
                     {
-                        Vector3 relation;
-                        foreach (Block block in objectTree.getNeighborBlocks(objBlock))
-                        {
-                            bool[] foo = {true,true,true,true,true,true};
-                            objBlock.drawSide = foo;
-                            relation = objBlock.Position - block.Position;
-                            if (relation.X != 0)
-                            {
-                                if (relation.X > 0) { objBlock.drawSide[2] = false; block.drawSide[3] = false; }
-                                else { objBlock.drawSide[3] = false; block.drawSide[2] = false; }
-                            }
-                            if (relation.Y != 0)
-                            {
-                                if (relation.Y > 0) { objBlock.drawSide[4] = false; block.drawSide[5] = false; }
-                                else { objBlock.drawSide[5] = false; block.drawSide[4] = false; }
-                            }
-                            if (relation.Z != 0)
-                            {
-                                if (relation.Z > 0) { objBlock.drawSide[0] = false; block.drawSide[1] = false; }
-                                else { objBlock.drawSide[1] = false; block.drawSide[0] = false; }
-                            }
-                        }
+                        objBlock.updateIndexBuffer(objectTree.getNeighborBlocks(objBlock));
                     }
                 }
             }
@@ -140,6 +121,7 @@ namespace Learning
                     objectTree.addBlock(u, 3, v, 3);
                     objectTree.addBlock(u, 4, v, 0);
                     objectTree.addBlock(u, 5, v, 2);
+                    objectTree.addBlock(u, 6, v, 4);
                 }
             }
             EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this, aiManager);

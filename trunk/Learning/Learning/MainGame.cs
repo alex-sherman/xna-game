@@ -39,13 +39,13 @@ namespace Learning
             
             EnemyAgent.model = Content.Load<Model>("models/ship");
 
+
+            InitializeTextures();
+            Cube.InitializeCube(ScreenManager.GraphicsDevice, InitializeEffect());
             newWorld = new World(ScreenManager.GraphicsDevice);
             player = new Player();
             newWorld.addPlayer(player);
-
-            InitializeTextures();
             InitializeTransform();
-            Cube.InitializeCube(ScreenManager.GraphicsDevice, InitializeEffect());
             GUI.Init(this);
 
             base.LoadContent();
@@ -96,8 +96,9 @@ namespace Learning
                                      Content.Load<Texture2D>("Textures\\CraftingTable"), //5
                                      Content.Load<Texture2D>("Textures\\Oven"), //6
                                      Content.Load<Texture2D>("Textures\\IronOre"), //7
-                                     Content.Load<Texture2D>("Textures\\Furnace")//, //8
-                                     //Content.Load<Texture2D>("Textures\\IronBlock") //9
+                                     Content.Load<Texture2D>("Textures\\Furnace"), //8
+                                     Content.Load<Texture2D>("Textures\\IronBlock"), //9
+                                     Content.Load<Texture2D>("Textures\\MiniFridge") //10
                                    };
             Block.initTextures(textures);
         }

@@ -121,27 +121,12 @@ namespace Learning
             this.redistributeObjects();
             if (obj.GetType() == typeof(Block))
             {
-                Vector3 relation;
                 Block objBlock = (Block)obj;
                 foreach (Block block in getNeighborBlocks(objBlock))
                 {
-                    relation = block.Position - objBlock.Position;
-                    if (relation.X != 0)
-                    {
-                        if (relation.X > 0) { objBlock.drawSide[2] = false; block.drawSide[3] = false; }
-                        else { objBlock.drawSide[3] = false; block.drawSide[2] = false; }
-                    }
-                    if (relation.Y != 0)
-                    {
-                        if (relation.Y > 0) { objBlock.drawSide[4] = false; block.drawSide[5] = false; }
-                        else { objBlock.drawSide[5] = false; block.drawSide[4] = false; }
-                    }
-                    if (relation.Z != 0)
-                    {
-                        if (relation.Z > 0) { objBlock.drawSide[0] = false; block.drawSide[1] = false; }
-                        else { objBlock.drawSide[1] = false; block.drawSide[0] = false; }
-                    }
+                    block.updateIndexBuffer(getNeighborBlocks(block));
                 }
+                objBlock.updateIndexBuffer(getNeighborBlocks(objBlock));
             }
             return true;
         }
@@ -232,8 +217,13 @@ namespace Learning
             {
                 return false;
             }
-            OctreeNode.world.spawnItem(((Block)destroyed).type, destroyed.Position);
+            Block objBlock = (Block)destroyed;
             containingNode.gameObjects.Remove(destroyed);
+            foreach (Block block in getNeighborBlocks(objBlock))
+            {
+                block.updateIndexBuffer(getNeighborBlocks(block));
+            }
+            OctreeNode.world.spawnItem(((Block)destroyed).type, destroyed.Position);
             return true;
         }
 
