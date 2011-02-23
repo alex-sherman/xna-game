@@ -39,6 +39,7 @@ namespace Learning
             objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
             aiManager = new AIManager(this);
             generateFloor();
+            updateBlocks(objectTree.getAllBlocks());
         }
         public void saveGame(String location)
         {
@@ -47,6 +48,40 @@ namespace Learning
             GUI.print("Saving game to: " + location);
             bformatter.Serialize(stream, objectTree);
             stream.Close();
+        }
+        public void updateBlocks(List<GameObject> blockList)
+        {
+            foreach (GameObject poo in blockList)
+            {
+                if (poo.GetType() == typeof(Block))
+                {
+                    Block objBlock = (Block)poo;
+                    {
+                        Vector3 relation;
+                        foreach (Block block in objectTree.getNeighborBlocks(objBlock))
+                        {
+                            bool[] foo = {true,true,true,true,true,true};
+                            objBlock.drawSide = foo;
+                            relation = objBlock.Position - block.Position;
+                            if (relation.X != 0)
+                            {
+                                if (relation.X > 0) { objBlock.drawSide[2] = false; block.drawSide[3] = false; }
+                                else { objBlock.drawSide[3] = false; block.drawSide[2] = false; }
+                            }
+                            if (relation.Y != 0)
+                            {
+                                if (relation.Y > 0) { objBlock.drawSide[4] = false; block.drawSide[5] = false; }
+                                else { objBlock.drawSide[5] = false; block.drawSide[4] = false; }
+                            }
+                            if (relation.Z != 0)
+                            {
+                                if (relation.Z > 0) { objBlock.drawSide[0] = false; block.drawSide[1] = false; }
+                                else { objBlock.drawSide[1] = false; block.drawSide[0] = false; }
+                            }
+                        }
+                    }
+                }
+            }
         }
         public void loadGame(String location)
         {

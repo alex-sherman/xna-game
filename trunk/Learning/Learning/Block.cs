@@ -13,6 +13,7 @@ namespace Learning
     {
         public int type = 0;
         public static Texture2D[] textureList;
+        public bool[] drawSide = { true, true, true, true, true, true };
         public Block(Vector3 position, int type)
             : base(position)
         {
@@ -44,7 +45,7 @@ namespace Learning
         }
         public override void Draw(World world)
         {
-            Cube.Draw(Position, world, this.getTexture());
+            Cube.Draw(Position, world, this.getTexture(),drawSide);
         }
         public Vector3 getNormal(Ray lookat)
         {
