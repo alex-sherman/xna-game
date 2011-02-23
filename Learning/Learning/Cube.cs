@@ -12,22 +12,34 @@ namespace Learning
         const int number_of_vertices = 24;
         const int number_of_indices = 36;
         public const float cubeSize = .5f;
-        static VertexBuffer frontBuffer;
-        static VertexBuffer leftBuffer;
-        static VertexBuffer rightBuffer;
-        static VertexBuffer backBuffer;
-        static VertexBuffer topBuffer;
-        static VertexBuffer bottomBuffer;
+        static VertexDeclaration vertexDeclaration;
+        static VertexPositionColor[] vertices;
+        static VertexBuffer vertexBuffer;
         static IndexBuffer indexBuffer;
+        public static short[] indices;
+        public static short[] front;
+        public static short[] back;
+        public static short[] left;
+        public static short[] right;
+        public static short[] top;
+        public static short[] bottom;
+
         private static GraphicsDevice device;
         private static Effect effect;
         public static void InitializeCube(GraphicsDevice device, Effect effect)
         {
             Cube.device = device;
             Cube.effect = effect;
+            vertexDeclaration = new VertexDeclaration(new VertexElement[]
+                {
+                    new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+                    new VertexElement(12, VertexElementFormat.Color, VertexElementUsage.Color, 0)
+                }
+            );
 
 
             float size = Cube.cubeSize;
+            vertices = new VertexPositionColor[24];
             Vector3 topLeftFront = new Vector3(-size, size, size);
             Vector3 bottomLeftFront = new Vector3(-size, -size, size);
             Vector3 topRightFront = new Vector3(size, size, size);
@@ -75,81 +87,77 @@ namespace Learning
             Vector3 rightNormal = new Vector3(1, 0, 0);
             Vector3 topNormal = new Vector3(0, 1, 0);
             Vector3 bottomNormal = new Vector3(0, -1, 0);
-            VertexPositionNormalTexture[] frontFace = new VertexPositionNormalTexture[]
+            VertexPositionNormalTexture[] boxData = new VertexPositionNormalTexture[]
             {
                 // Front Surface
                 new VertexPositionNormalTexture(bottomLeftFront,frontNormal,frontBottomLeft),
                 new VertexPositionNormalTexture(topLeftFront ,frontNormal,frontTopLeft), 
                 new VertexPositionNormalTexture(bottomRightFront,frontNormal,frontBottomRight),
-                new VertexPositionNormalTexture(topRightFront,frontNormal,frontTopRight) 
-            };
-            VertexPositionNormalTexture[] backFace = new VertexPositionNormalTexture[]
-            {
+                new VertexPositionNormalTexture(topRightFront,frontNormal,frontTopRight),  
+
                 // Back Surface
                 new VertexPositionNormalTexture(bottomRightBack,backNormal,backBottomLeft),
                 new VertexPositionNormalTexture(topRightBack,backNormal,backTopLeft), 
                 new VertexPositionNormalTexture(bottomLeftBack,backNormal,backBottomRight),
-                new VertexPositionNormalTexture(topLeftBack,backNormal,backTopRight)
-            };
-            VertexPositionNormalTexture[] leftFace = new VertexPositionNormalTexture[]
-            {
+                new VertexPositionNormalTexture(topLeftBack,backNormal,backTopRight), 
+
                 // Left Surface
                 new VertexPositionNormalTexture(bottomLeftBack,leftNormal,leftBottomRight),
                 new VertexPositionNormalTexture(topLeftBack,leftNormal,leftTopRight),
                 new VertexPositionNormalTexture(bottomLeftFront,leftNormal,leftBottomLeft),
-                new VertexPositionNormalTexture(topLeftFront,leftNormal,leftTopLeft)
-            };
-            VertexPositionNormalTexture[] rightFace = new VertexPositionNormalTexture[]
-            {
+                new VertexPositionNormalTexture(topLeftFront,leftNormal,leftTopLeft),
                 // Right Surface
                 new VertexPositionNormalTexture(bottomRightFront,rightNormal,rightBottomLeft),
                 new VertexPositionNormalTexture(topRightFront,rightNormal,rightTopLeft),
                 new VertexPositionNormalTexture(bottomRightBack,rightNormal,rightBottomRight),
-                new VertexPositionNormalTexture(topRightBack,rightNormal,rightTopRight)
-            };
-            VertexPositionNormalTexture[] topFace = new VertexPositionNormalTexture[]
-            {
+                new VertexPositionNormalTexture(topRightBack,rightNormal,rightTopRight),
                 // Top Surface
                 new VertexPositionNormalTexture(topLeftFront,topNormal,TtopLeftFront),
                 new VertexPositionNormalTexture(topLeftBack,topNormal,TtopLeftBack),
                 new VertexPositionNormalTexture(topRightFront,topNormal,TtopRightFront),
-                new VertexPositionNormalTexture(topRightBack,topNormal,TtopRightBack)
-            };
-            VertexPositionNormalTexture[] bottomFace = new VertexPositionNormalTexture[]
-            {
+                new VertexPositionNormalTexture(topRightBack,topNormal,TtopRightBack),
+
                 // Bottom Surface
                 new VertexPositionNormalTexture(bottomLeftBack,bottomNormal,TbottomRightBack),
                 new VertexPositionNormalTexture(bottomLeftFront,bottomNormal,TbottomRightFront),
                 new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TbottomLeftBack),
-                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomLeftFront)
+                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomLeftFront),
             };
-            short[] indices = new short[] { 
-                0, 1, 2, 2, 1, 3
+            indices = new short[] { 
+                0, 1, 2, 2, 1, 3,   
+                4, 5, 6, 6, 5, 7,
+                8, 9, 10, 10, 9, 11, 
+                12, 13, 14, 14, 13, 15, 
+                16, 17, 18, 18, 17, 19,
+                20, 21, 22, 22, 21, 23
             };
-            frontBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            frontBuffer.SetData<VertexPositionNormalTexture>(frontFace);
+            front = new short[] { 
+                0, 1, 2, 2, 1, 3 
+            };
+            back = new short[] { 
+                4, 5, 6, 6, 5, 7
+            };
+            left = new short[] { 
+                8, 9, 10, 10, 9, 11
+            };
+            right = new short[] { 
+                12, 13, 14, 14, 13, 15
+            };
+            top = new short[] { 
+                16, 17, 18, 18, 17, 19
+            };
+            bottom = new short[] { 
+                20, 21, 22, 22, 21, 23
+            };
+            vertexBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 24, BufferUsage.WriteOnly);
+            indexBuffer = new IndexBuffer(Cube.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
 
-            backBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            backBuffer.SetData<VertexPositionNormalTexture>(backFace);
-
-            leftBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            leftBuffer.SetData<VertexPositionNormalTexture>(leftFace);
-
-            rightBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            rightBuffer.SetData<VertexPositionNormalTexture>(rightFace);
-
-            topBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            topBuffer.SetData<VertexPositionNormalTexture>(topFace);
-
-            bottomBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
-            bottomBuffer.SetData<VertexPositionNormalTexture>(bottomFace);
-
-            indexBuffer = new IndexBuffer(Cube.device, IndexElementSize.SixteenBits, 6, BufferUsage.WriteOnly);
-
+            vertexBuffer.SetData<VertexPositionNormalTexture>(boxData);
             indexBuffer.SetData<short>(indices);
 
         }
-        public static void Draw(Vector3 position, World world, Model myModel){
+        public static void Draw(Vector3 position, World world, Model myModel)
+        {
             foreach (ModelMesh mesh in myModel.Meshes)
             {
 
@@ -162,10 +170,10 @@ namespace Learning
                     effect.Projection = world.projection;
                 }
                 // Draw the mesh, using the effects set above.
-                    mesh.Draw();
+                mesh.Draw();
             }
         }
-        public static void Draw(Vector3 position, World world, Texture2D texture)
+        public static void Draw(Vector3 position, World world, Texture2D texture,IndexBuffer indexBuffer)
         {
             device.BlendState = BlendState.AlphaBlend;
             if (texture == null) { return; }
@@ -173,74 +181,16 @@ namespace Learning
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
             Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Draw(Cube.effect);
+            Draw(Cube.effect, indexBuffer);
         }
-        public static void Draw(Vector3 position, World world, Texture2D texture, bool[] sides)
-        {
-            device.BlendState = BlendState.AlphaBlend;
-            if (texture == null) { return; }
-            Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
-            Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
-            Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
-            Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Draw(Cube.effect,sides);
-        }
-        public static void Draw(Effect effect)
+        public static void Draw(Effect effect,IndexBuffer indexBuffer)
         {
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
+                Cube.device.SetVertexBuffer(vertexBuffer);
                 Cube.device.Indices = indexBuffer;
-                Cube.device.SetVertexBuffer(frontBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                Cube.device.SetVertexBuffer(leftBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                Cube.device.SetVertexBuffer(rightBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                Cube.device.SetVertexBuffer(topBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                Cube.device.SetVertexBuffer(bottomBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                Cube.device.SetVertexBuffer(backBuffer);
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-            }
-        }
-        public static void Draw(Effect effect,bool[] sides)
-        {
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                Cube.device.Indices = indexBuffer;
-                if (sides[0])
-                {
-                    Cube.device.SetVertexBuffer(frontBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
-                if (sides[2])
-                {
-                    Cube.device.SetVertexBuffer(leftBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
-                if (sides[3])
-                {
-                    Cube.device.SetVertexBuffer(rightBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
-                if (sides[4])
-                {
-                    Cube.device.SetVertexBuffer(topBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
-                if (sides[5])
-                {
-                    Cube.device.SetVertexBuffer(bottomBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
-                if (sides[1])
-                {
-                    Cube.device.SetVertexBuffer(backBuffer);
-                    Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-                }
+                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
             }
         }
 
@@ -252,7 +202,7 @@ namespace Learning
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale) * Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position) * Matrix.CreateScale(scale));
             Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
-            Draw(Cube.effect);
+            Draw(Cube.effect,Cube.indexBuffer);
             poo = new RasterizerState();
             poo.FillMode = FillMode.Solid;
             device.RasterizerState = poo;
@@ -261,11 +211,11 @@ namespace Learning
         public static void Draw(Vector3 position, World world, Texture2D texture, float scale, float rotation)
         {
             if (texture == null) { return; }
-            Matrix worldMatrix = Matrix.CreateRotationY(rotation)* Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
+            Matrix worldMatrix = Matrix.CreateRotationY(rotation) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
             Cube.effect.Parameters["WorldViewProj"].SetValue(worldMatrix * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(worldMatrix);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Draw(Cube.effect);
+            Draw(Cube.effect,Cube.indexBuffer);
         }
     }
 }

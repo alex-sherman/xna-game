@@ -14,6 +14,8 @@ namespace Learning
         public int type = 0;
         public static Texture2D[] textureList;
         public bool[] drawSide = { true, true, true, true, true, true };
+        public bool draw = true;
+        public IndexBuffer indexBuffer;
         public Block(Vector3 position, int type)
             : base(position)
         {
@@ -21,6 +23,8 @@ namespace Learning
             this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             Position = 2 * Cube.cubeSize * position;
             this.type = type;
+            indexBuffer = new IndexBuffer(World.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
+            indexBuffer.SetData<short>(Cube.indices);
         }
         public Block(SerializationInfo info, StreamingContext context)
         {
@@ -35,6 +39,50 @@ namespace Learning
             info.AddValue("type", this.type);
 
         }
+        public void updateIndexBuffer(List<Block> neighbors)
+        {
+            Vector3 relation;
+            short[] indices;
+            bool[] drawSide = { true, true, true, true, true, true };
+            foreach (Block block in neighbors)
+            {
+                if (block.type != 4 || this.type==4)
+                {
+                    relation = this.Position - block.Position;
+                    if (relation.X != 0)
+                    {
+                        if (relation.X > 0) { drawSide[2] = false; }
+                        else { drawSide[3] = false; }
+                    }
+                    if (relation.Y != 0)
+                    {
+                        if (relation.Y > 0) { drawSide[4] = false; }
+                        else { drawSide[5] = false; }
+                    }
+                    if (relation.Z != 0)
+                    {
+                        if (relation.Z > 0) { drawSide[0] = false; }
+                        else { drawSide[1] = false; }
+                    }
+                }
+            }
+            int length = 0;
+            foreach (bool side in drawSide)
+            {
+                if (side) { length += 6; }
+            }
+            indices = new short[3];
+            if (drawSide[0]) { indices = indices.Concat(Cube.back).ToArray(); }
+            if (drawSide[1]) { indices = indices.Concat(Cube.front).ToArray(); }
+            if (drawSide[2]) { indices = indices.Concat(Cube.left).ToArray(); }
+            if (drawSide[3]) { indices = indices.Concat(Cube.right).ToArray(); }
+            if (drawSide[4]) { indices = indices.Concat(Cube.bottom).ToArray(); }
+            if (drawSide[5]) { indices = indices.Concat(Cube.top).ToArray(); }
+            if (length == 0) { this.draw = false; return; }
+            else{this.draw = true;}
+            this.indexBuffer = new IndexBuffer(World.device, IndexElementSize.SixteenBits, length+3, BufferUsage.WriteOnly);
+            this.indexBuffer.SetData<short>(indices);
+        }
         public static void initTextures(Texture2D[] textureList)
         {
             Block.textureList = textureList;
@@ -45,7 +93,10 @@ namespace Learning
         }
         public override void Draw(World world)
         {
-            Cube.Draw(Position, world, this.getTexture(),drawSide);
+            if (this.draw)
+            {
+                Cube.Draw(Position, world, this.getTexture(), indexBuffer);
+            }
         }
         public Vector3 getNormal(Ray lookat)
         {
