@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Learning
 {
+    [Serializable()]
     abstract class GameObject
     {
         #region Fields
