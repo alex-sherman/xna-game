@@ -20,6 +20,8 @@ namespace Learning
         public static GraphicsDevice device;
         public OctreeNode objectTree;
 
+        public AIManager aiManager;
+
         public World(GraphicsDevice device)
         {
             World.device = device;
@@ -35,6 +37,7 @@ namespace Learning
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
             objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 500f, GameConstants.OctreeBlockLimit);
+            aiManager = new AIManager(this);
             generateFloor();
         }
         public void saveGame(String location)
@@ -104,7 +107,7 @@ namespace Learning
                     objectTree.addBlock(u, 5, v, 2);
                 }
             }
-            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this);
+            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this, aiManager);
             objectTree.addObject(enemy);
             
         }

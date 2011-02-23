@@ -302,6 +302,46 @@ namespace Learning
             return result;
         }
 
+        public Block getBlockAtPoint(Vector3 vec) {
+            // assumes vec is the center of a block of width 1
+            Vector3 diagonal = new Vector3(0.5f);
+            BoundingBox box = new BoundingBox(vec - diagonal, vec + diagonal);
+            foreach (OctreeNode child in children) {
+                if (child.bounds.Contains(box) == ContainmentType.Contains) {
+                    return child.getBlockAtPoint(vec);
+                }
+            }
+            foreach (GameObject obj in gameObjects) {
+                if (obj.GetType() != typeof(Block))
+                    continue;
+                if (obj.hitBox.Contains(vec) == ContainmentType.Contains)
+                    return (Block)obj;
+            }
+            return null;
+        }
+
+        public List<Block> getNeighborBlocks(Block block)
+        {
+            List<Block> result = new List<Block>();
+            // create a list of points of unit distance from block in each direction
+            List<Vector3> points = new List<Vector3>();
+            points.Add(block.Position + Vector3.UnitX);
+            points.Add(block.Position - Vector3.UnitX);
+            points.Add(block.Position + Vector3.UnitY);
+            points.Add(block.Position - Vector3.UnitY);
+            points.Add(block.Position + Vector3.UnitZ);
+            points.Add(block.Position - Vector3.UnitZ);
+
+            // now search the tree for any blocks at these locations
+            foreach (Vector3 vec in points)
+            {
+                Block b = getBlockAtPoint(vec);
+                if (b != null)
+                    result.Add(b);
+            }
+            return result;
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (GameObject obj in getMobileObjects())
