@@ -35,7 +35,7 @@ namespace Learning
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = 1050;
             graphics.PreferredBackBufferWidth = 1680;
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
             //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
 

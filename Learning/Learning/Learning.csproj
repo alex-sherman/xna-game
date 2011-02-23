@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIManager.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="EnemyAgent.cs" />
     <Compile Include="GameObject.cs" />
