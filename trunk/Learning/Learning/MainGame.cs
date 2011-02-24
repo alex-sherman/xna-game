@@ -283,6 +283,8 @@ namespace Learning
             GUI.drawInventoryHotBar(player.inventory);
             GUI.Draw();
             base.Draw(gameTime);
+            GUI.timeDifference = gameTime.ElapsedGameTime.Ticks - GUI.gameTime;
+            GUI.gameTime = gameTime.ElapsedGameTime.Ticks;
         }
 
         #endregion

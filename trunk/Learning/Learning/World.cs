@@ -124,8 +124,8 @@ namespace Learning
                     objectTree.addBlock(u, 6, v, 4);
                 }
             }
-            EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this, aiManager);
-            objectTree.addObject(enemy);
+            //EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this, aiManager);
+            //objectTree.addObject(enemy);
             
         }
 
