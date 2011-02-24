@@ -17,6 +17,8 @@ namespace Learning
         private static ArrayList strings = new ArrayList();
         private static Texture2D crosshair;
         public static Texture2D hotbar;
+        public static float gameTime = 0;
+        public static float timeDifference = 0;
         public static Texture2D inventory;
         public static Texture2D crafting;
         private static int lineNumber = 0;
@@ -61,6 +63,7 @@ namespace Learning
             {
                 GUI.batch.DrawString(GUI.font, (String)GUI.strings[i], new Vector2(100, 20 * i), Color.Black);
             }
+            GUI.batch.DrawString(GUI.font, GUI.gameTime.ToString(), new Vector2(GUI.device.Viewport.Width - 50, 20), Color.Black);
             GUI.batch.End();
         }
 
