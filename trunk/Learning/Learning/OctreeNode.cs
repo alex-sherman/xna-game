@@ -14,13 +14,16 @@ namespace Learning
     {
         #region Declarations
         public List<GameObject> gameObjects;
+        public List<GameObject> visibleObjects = new List<GameObject>();
         public List<OctreeNode> children;
+        public List<OctreeNode> visibleChildren = new List<OctreeNode>();
         public static World world;
         public OctreeNode parent;
         public readonly BoundingBox bounds;
         public readonly Vector3 center;
         public readonly float nodeSize;
         public readonly int maxObjects;
+        
         #endregion
 
         public OctreeNode(Vector3 center, float size, int maxObjects)
@@ -85,6 +88,7 @@ namespace Learning
         }
         public void redistributeObjects()
         {
+            GameObject curObj;
             if (gameObjects.Count > maxObjects)
             {
                 splitTree();
@@ -94,6 +98,8 @@ namespace Learning
                     {
                         if (child.bounds.Contains(gameObjects[i].hitBox) == ContainmentType.Contains)
                         {
+                            curObj = gameObjects[i];
+                            if (visibleObjects.Contains(curObj)) { visibleObjects.Remove(curObj); child.visibleObjects.Add(curObj);  }
                             child.gameObjects.Add(gameObjects[i]);
                             gameObjects.RemoveAt(i);
                             break;
@@ -103,6 +109,7 @@ namespace Learning
                 foreach (OctreeNode child in children)
                 {
                     child.redistributeObjects();
+                    child.updateVisible();
                 }
             }
         }
@@ -116,19 +123,38 @@ namespace Learning
                     return child.addObject(obj);
                 }
             }
-            
             gameObjects.Add(obj);
             this.redistributeObjects();
             if (obj.GetType() == typeof(Block))
             {
-                Block objBlock = (Block)obj;
-                foreach (Block block in getNeighborBlocks(objBlock))
-                {
-                    block.updateIndexBuffer(getNeighborBlocks(block));
-                }
-                objBlock.updateIndexBuffer(getNeighborBlocks(objBlock));
+                updateVisible((Block)obj);
             }
             return true;
+        }
+        public void updateVisible(Block objBlock)
+        {
+            foreach (Block block in getNeighborBlocks(objBlock))
+            {
+                block.updateIndexBuffer(getNeighborBlocks(block));
+                if (block.visible && !visibleObjects.Contains(block)) { visibleObjects.Add(block); }
+                else if (!block.visible && visibleObjects.Contains(block)) { visibleObjects.Remove(block); }
+            }
+            objBlock.updateIndexBuffer(getNeighborBlocks(objBlock));
+            if (objBlock.visible && !visibleObjects.Contains(objBlock)) { visibleObjects.Add(objBlock); }
+            else if (!objBlock.visible && visibleObjects.Contains(objBlock)) { visibleObjects.Remove(objBlock); }
+            updateVisible();
+        }
+        public void updateVisible()
+        {
+            if (parent != null)
+            {
+                if (visibleObjects.Count == 0 && visibleChildren.Count == 0)
+                {
+                    if (parent.visibleChildren.Contains(this)) { parent.visibleChildren.Remove(this); }
+                }
+                else if (!parent.visibleChildren.Contains(this)) { parent.visibleChildren.Add(this); }
+                parent.updateVisible();
+            }
         }
         public void addBlock(Vector3 pos, int type)
         {
@@ -223,6 +249,8 @@ namespace Learning
             {
                 block.updateIndexBuffer(getNeighborBlocks(block));
             }
+            if (visibleObjects.Contains(objBlock)) { visibleObjects.Remove(objBlock); }
+            updateVisible();
             OctreeNode.world.spawnItem(((Block)destroyed).type, destroyed.Position);
             return true;
         }
@@ -231,13 +259,13 @@ namespace Learning
         {
             List<Block> drawLast = new List<Block>();
 
-            foreach (GameObject obj in gameObjects)
+            foreach (GameObject obj in visibleObjects)
             {
                 if (obj.GetType() == typeof(Block) && ((Block)obj).type == 4)
                     drawLast.Add((Block)obj);
                 else obj.Draw(OctreeNode.world);
             }
-            foreach (OctreeNode child in children)
+            foreach (OctreeNode child in visibleChildren)
             {
                 if (child.bounds.Intersects(boundingFrustum))
                     drawLast.AddRange(child.drawChild(boundingFrustum));
@@ -256,7 +284,7 @@ namespace Learning
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
             List<Block> drawLast = new List<Block>();
-            foreach (GameObject gameObject in gameObjects)
+            foreach (GameObject gameObject in visibleObjects)
             {
                 if (gameObject.GetType() == typeof(Block) && ((Block)gameObject).type == 4)
                     drawLast.Add((Block)gameObject);
@@ -264,7 +292,7 @@ namespace Learning
                 else gameObject.Draw(OctreeNode.world);
             }
 
-            foreach (OctreeNode child in children)
+            foreach (OctreeNode child in visibleChildren)
             {
                 if (child.bounds.Intersects(boundingFrustum))
                     drawLast.AddRange(child.drawChild(boundingFrustum));
