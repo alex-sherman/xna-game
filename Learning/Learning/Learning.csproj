@@ -119,6 +119,10 @@
     <Compile Include="GUI.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="Mapgen\CoastAgent.cs" />
+    <Compile Include="Mapgen\Mapgen.cs" />
+    <Compile Include="Mapgen\MapgenAgent.cs" />
+    <Compile Include="Mapgen\RockAgent.cs" />
     <Compile Include="Menus\ConfirmationDialog.cs" />
     <Compile Include="Menus\LoadScreen.cs" />
     <Compile Include="Menus\MainMenu.cs" />

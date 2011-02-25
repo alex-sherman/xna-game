@@ -151,9 +151,9 @@ namespace Learning
             };
             vertexBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 24, BufferUsage.WriteOnly);
             indexBuffer = new IndexBuffer(Cube.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
-
             vertexBuffer.SetData<VertexPositionNormalTexture>(boxData);
             indexBuffer.SetData<short>(indices);
+            
 
         }
         public static void Draw(Vector3 position, World world, Model myModel)
@@ -175,23 +175,21 @@ namespace Learning
         }
         public static void Draw(Vector3 position, World world, Texture2D texture,IndexBuffer indexBuffer)
         {
-            device.BlendState = BlendState.AlphaBlend;
+            device.BlendState = BlendState.Opaque;
             if (texture == null) { return; }
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position));
             Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Draw(Cube.effect, indexBuffer);
+            Draw(Cube.effect);
         }
-        public static void Draw(Effect effect,IndexBuffer indexBuffer)
+        public static void Draw(Effect effect)
         {
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
+            effect.CurrentTechnique.Passes[0].Apply();
                 Cube.device.SetVertexBuffer(vertexBuffer);
                 Cube.device.Indices = indexBuffer;
                 Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
-            }
+            
         }
 
         public static void Draw(Vector3 position, World world, bool wireframe, float scale)
@@ -202,7 +200,7 @@ namespace Learning
             Cube.effect.Parameters["WorldViewProj"].SetValue(Matrix.CreateScale(scale) * Matrix.CreateTranslation(position) * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(Matrix.CreateTranslation(position) * Matrix.CreateScale(scale));
             Cube.effect.Parameters["cameraPosition"].SetValue(((Player)world.players[0]).position);
-            Draw(Cube.effect,Cube.indexBuffer);
+            Draw(Cube.effect);
             poo = new RasterizerState();
             poo.FillMode = FillMode.Solid;
             device.RasterizerState = poo;
@@ -215,7 +213,7 @@ namespace Learning
             Cube.effect.Parameters["WorldViewProj"].SetValue(worldMatrix * world.partialWorld * world.projection);
             Cube.effect.Parameters["world"].SetValue(worldMatrix);
             Cube.effect.Parameters["UserTexture"].SetValue(texture);
-            Draw(Cube.effect,Cube.indexBuffer);
+            Draw(Cube.effect);
         }
     }
 }
