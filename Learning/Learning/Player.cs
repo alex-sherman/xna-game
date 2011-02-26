@@ -26,6 +26,9 @@ namespace Learning
         public Ray lookAt = new Ray();
         public World world;
 
+        OctreeNode containingNode, lastNode;
+        List<GameObject> curCollisionCandidates;
+
         #endregion
 
         public Player()
@@ -35,6 +38,12 @@ namespace Learning
 
         public void Update(GameTime gameTime)
         {
+            lastNode = containingNode;
+            containingNode = world.objectTree.getContainingNode(hitBox);
+            bool octreeNodeChanged = true;
+            if (lastNode == containingNode)
+                octreeNodeChanged = false;
+
             hitBox.Max = position + GameConstants.PlayerSize;
             hitBox.Min = position - GameConstants.PlayerSize;
             // now account for the higher location of the camera
@@ -53,14 +62,23 @@ namespace Learning
             Vector3 endPos = position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
+            BoundingBox endAABB = new BoundingBox(
+                endPos - GameConstants.PlayerSize / 2,
+                endPos + GameConstants.PlayerSize / 2);
+            // move the player's camera up
+            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+            endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
+            if (octreeNodeChanged)
+                curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+
             // resolve non-gravity-caused collisions
             for (int i = 0; i < 8; i++)
-                world.collisionCheck(ref endPos, ref isWalking, ref outsideV);
+                world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
 
             // gravity (to get the true state of isWalking)
             isWalking = false;
             endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
-            world.collisionCheck(ref endPos, ref isWalking, ref outsideV);
+            world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
 
             // and update the player's position
             position = endPos; 

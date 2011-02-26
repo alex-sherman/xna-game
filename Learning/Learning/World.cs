@@ -119,31 +119,23 @@ namespace Learning
         }
 
         #region Collision Detection
-        public void collisionCheck(ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
+        public void collisionCheck(List<GameObject> candidates, ref BoundingBox actorAABB, ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
         {
-            /*BoundingBox endAABB = new BoundingBox(
-                endPos - GameConstants.PlayerSize / 2,
-                endPos + GameConstants.PlayerSize / 2);
-
-            // move the player's camera up
-            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
-            endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
-
-            foreach (GameObject b in objectTree.getCollisionCandidates(endAABB))
+            foreach (GameObject b in candidates)
             {
-                Vector3 correction = getMinimumPenetrationVector(endAABB, b.hitBox);
+                Vector3 correction = getMinimumPenetrationVector(actorAABB, b.hitBox);
                 endPos += correction;
-                //endAABB.Max += correction;
-                //endAABB.Min += correction;
+                actorAABB.Max += correction;
+                actorAABB.Min += correction;
                 if (correction.Y != 0)
                 {
                     outsideVel.Y = 0;
                     if (correction.Y > 0) onGround = true;
                 }
                 if (!correction.Equals(Vector3.Zero)) return;
-            }*/
-            onGround = true;
-            outsideVel = Vector3.Zero;
+            }
+            //onGround = true;
+            //outsideVel = Vector3.Zero;
         }
 
         /// <summary>
