@@ -26,6 +26,9 @@ namespace Learning
         AgentState state = AgentState.Following;
         AIManager aiManager;
 
+        OctreeNode containingNode, lastNode;
+        List<GameObject> curCollisionCandidates;
+
         public EnemyAgent(World world, AIManager manager)
             : base()
         {
@@ -74,6 +77,12 @@ namespace Learning
 
         public override void Update(GameTime gameTime)
         {
+            lastNode = containingNode;
+            containingNode = world.objectTree.getContainingNode(hitBox);
+            bool octreeNodeChanged = true;
+            if (lastNode == containingNode)
+                octreeNodeChanged = false;
+
             float turnSpeed = 0.1f;
             Vector3 desiredHeading = aiManager.getHeading(this, world.players[0].position);
             Vector3 headingDifference = desiredHeading - heading;
@@ -94,16 +103,23 @@ namespace Learning
             Vector3 endPos = Position;
             endPos += currentAbsVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
+            
+            BoundingBox endAABB = new BoundingBox(
+                endPos - GameConstants.PlayerSize / 2,
+                endPos + GameConstants.PlayerSize / 2);
+            if (octreeNodeChanged)
+                curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+
             // resolve non-gravity-caused collisions
             bool onGround = false;
             for (int i = 0; i < 8; i++)
-                world.collisionCheck(ref endPos, ref onGround, ref outsideV);
+                world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref onGround, ref outsideV);
 
             // gravity (to get the true state of isWalking)
             //isWalking = false;
             endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
 
-            world.collisionCheck(ref endPos, ref onGround, ref outsideV);
+            world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref onGround, ref outsideV);
 
             Vector3 amountMoved = endPos - Position;
             hitBox.Max += amountMoved;

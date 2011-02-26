@@ -39,7 +39,6 @@ namespace Learning
             
             EnemyAgent.model = Content.Load<Model>("models/ship");
 
-
             InitializeTextures();
             Cube.InitializeCube(ScreenManager.GraphicsDevice, InitializeEffect());
             newWorld = new World(ScreenManager.GraphicsDevice);
