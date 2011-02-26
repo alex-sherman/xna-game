@@ -113,13 +113,13 @@ namespace Learning
             // resolve non-gravity-caused collisions
             bool onGround = false;
             for (int i = 0; i < 8; i++)
-                world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref onGround, ref outsideV);
+                world.collisionCheck(curCollisionCandidates, ref endPos, ref onGround, ref outsideV);
 
             // gravity (to get the true state of isWalking)
             //isWalking = false;
             endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
 
-            world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref onGround, ref outsideV);
+            world.collisionCheck(curCollisionCandidates, ref endPos, ref onGround, ref outsideV);
 
             Vector3 amountMoved = endPos - Position;
             hitBox.Max += amountMoved;

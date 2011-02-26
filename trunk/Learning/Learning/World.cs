@@ -79,7 +79,7 @@ namespace Learning
             }
             Item.Update(this);
             this.partialWorld = players[0].getCameraMatrix();// partialWorld;
-            objectTree.Update(gameTime);
+            //objectTree.Update(gameTime);
 
         }
         public bool addBlock(Ray lookAt, int type)
@@ -119,21 +119,41 @@ namespace Learning
         }
 
         #region Collision Detection
-        public void collisionCheck(List<GameObject> candidates, ref BoundingBox actorAABB, ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
+        public bool collisionCheck(List<GameObject> candidates, ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
         {
-            foreach (GameObject b in candidates)
+            BoundingBox actorAABB = new BoundingBox(
+                endPos - GameConstants.PlayerSize / 2,
+                endPos + GameConstants.PlayerSize / 2);
+            // move the player's camera up
+            actorAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+            actorAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
+            for (int i = candidates.Count - 1; i >= 0; i--)
             {
-                Vector3 correction = getMinimumPenetrationVector(actorAABB, b.hitBox);
+                if (!candidates[i].hitBox.Intersects(actorAABB))
+                {
+                    //candidates.RemoveAt(i);
+                    continue;
+                }
+                Vector3 correction = getMinimumPenetrationVector(actorAABB, candidates[i].hitBox);
                 endPos += correction;
-                actorAABB.Max += correction;
-                actorAABB.Min += correction;
+                //actorAABB.Max += correction;
+                //actorAABB.Min += correction;
                 if (correction.Y != 0)
                 {
                     outsideVel.Y = 0;
-                    if (correction.Y > 0) onGround = true;
+                    GUI.print("hit ground");
+                    if (correction.Y > 0)
+                    {
+                        onGround = true;
+                    }
+                    if (correction.X != 0 && correction.Z != 0)
+                    {
+                        return true;
+                        GUI.print("collided!");
+                    }
                 }
-                if (!correction.Equals(Vector3.Zero)) return;
             }
+            return false;
             //onGround = true;
             //outsideVel = Vector3.Zero;
         }
