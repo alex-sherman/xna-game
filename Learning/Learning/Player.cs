@@ -62,23 +62,30 @@ namespace Learning
             Vector3 endPos = position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
-            BoundingBox endAABB = new BoundingBox(
-                endPos - GameConstants.PlayerSize / 2,
-                endPos + GameConstants.PlayerSize / 2);
-            // move the player's camera up
-            endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
-            endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
             if (octreeNodeChanged)
+            {
+                BoundingBox endAABB = new BoundingBox(
+                    endPos - GameConstants.PlayerSize / 2,
+                    endPos + GameConstants.PlayerSize / 2);
+                // move the player's camera up
+                endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+                endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
                 curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+            }
 
             // resolve non-gravity-caused collisions
-            for (int i = 0; i < 8; i++)
-                world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
 
-            // gravity (to get the true state of isWalking)
-            isWalking = false;
+            //endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
+            
+            int checkedCollisions = 0;
+            while (world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV) && ++checkedCollisions < 4) 
+                if (isWalking) outsideV.Y = 0;
+            //world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
+
+            //gravity (to get the true state of isWalking)
             endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
-            world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
+            isWalking = false;
+            world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV);
 
             // and update the player's position
             position = endPos; 
@@ -88,7 +95,7 @@ namespace Learning
         {
             return Matrix.CreateLookAt(
                    position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
-                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position, 
+                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position,
                    Vector3.Transform(Vector3.Up, this.rotation));
         }
 

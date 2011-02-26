@@ -281,6 +281,7 @@ namespace Learning
             return containingNode.getAllBlocks();
         }
 
+        /*
         public List<GameObject> getMobileObjects()
         {
             List<GameObject> result = new List<GameObject>();
@@ -297,6 +298,7 @@ namespace Learning
             }
             return result;
         }
+         * */
 
         public Block getBlockAtPoint(Vector3 vec) {
             // assumes vec is the center of a block of width 1
@@ -336,14 +338,6 @@ namespace Learning
                     result.Add(b);
             }
             return result;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            foreach (GameObject obj in getMobileObjects())
-            {
-                obj.Update(gameTime);
-            }
         }
     }
 }
