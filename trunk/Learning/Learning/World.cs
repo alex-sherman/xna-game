@@ -39,11 +39,11 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 50f, GameConstants.OctreeBlockLimit);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(objectTree);
             aiManager = new AIManager(this);
-            generator.generateRock(100, 5);
-            generator.generateVertices();
+            generator.generateRock(10, 40);
+            generator.generateLand(300);
         }
         public void saveGame(String location)
         {
