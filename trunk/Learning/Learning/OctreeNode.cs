@@ -16,7 +16,6 @@ namespace Learning
         public List<GameObject> gameObjects;
         public List<GameObject> visibleObjects = new List<GameObject>();
         public List<OctreeNode> children;
-        public List<OctreeNode> visibleChildren = new List<OctreeNode>();
         public static World world;
         public OctreeNode parent;
         public readonly BoundingBox bounds;
@@ -109,7 +108,6 @@ namespace Learning
                 foreach (OctreeNode child in children)
                 {
                     child.redistributeObjects();
-                    child.updateVisible();
                 }
             }
         }
@@ -125,41 +123,22 @@ namespace Learning
             }
             gameObjects.Add(obj);
             this.redistributeObjects();
-            if (obj.GetType() == typeof(Block))
-            {
-                updateVisible((Block)obj);
-            }
             return true;
         }
-        public void updateVisible(Block objBlock)
+        public void addVisible(GameObject obj)
         {
-            foreach (Block block in getNeighborBlocks(objBlock))
-            {
-                block.updateIndexBuffer(getNeighborBlocks(block));
-                if (block.visible && !visibleObjects.Contains(block)) { visibleObjects.Add(block); }
-                else if (!block.visible && visibleObjects.Contains(block)) { visibleObjects.Remove(block); }
-            }
-            objBlock.updateIndexBuffer(getNeighborBlocks(objBlock));
-            if (objBlock.visible && !visibleObjects.Contains(objBlock)) { visibleObjects.Add(objBlock); }
-            else if (!objBlock.visible && visibleObjects.Contains(objBlock)) { visibleObjects.Remove(objBlock); }
-            updateVisible();
-        }
-        public void updateVisible()
-        {
-            if (parent != null)
-            {
-                if (visibleObjects.Count == 0 && visibleChildren.Count == 0)
-                {
-                    if (parent.visibleChildren.Contains(this)) { parent.visibleChildren.Remove(this); }
-                }
-                else if (!parent.visibleChildren.Contains(this)) { parent.visibleChildren.Add(this); }
-                parent.updateVisible();
-            }
+            visibleObjects.Add(obj);
+            addObject(obj);
         }
         public void addBlock(Vector3 pos, int type)
         {
             Block poo = new Block(pos, type);
             addObject(poo);
+        }
+        public void addVisibleBlock(int x, int y, int z, int type)
+        {
+            Block poo = new Block(new Vector3(x, y, z), type);
+            addVisible(poo);
         }
         public bool addBlock(int x, int y, int z, int type)
         {
@@ -245,35 +224,8 @@ namespace Learning
             }
             Block objBlock = (Block)destroyed;
             containingNode.gameObjects.Remove(destroyed);
-            foreach (Block block in getNeighborBlocks(objBlock))
-            {
-                block.updateIndexBuffer(getNeighborBlocks(block));
-            }
-            if (visibleObjects.Contains(objBlock)) { visibleObjects.Remove(objBlock); }
-            updateVisible();
             OctreeNode.world.spawnItem(((Block)destroyed).type, destroyed.Position);
             return true;
-        }
-
-        public void Draw(BoundingFrustum boundingFrustum)
-        {
-            List<Block> drawLast = new List<Block>();
-
-            foreach (GameObject obj in visibleObjects)
-            {
-                if (obj.GetType() == typeof(Block) && ((Block)obj).type == 4)
-                    drawLast.Add((Block)obj);
-                else obj.Draw(OctreeNode.world);
-            }
-            foreach (OctreeNode child in visibleChildren)
-            {
-                if (child.bounds.Intersects(boundingFrustum))
-                    drawLast.AddRange(child.drawChild(boundingFrustum));
-            }
-            foreach (Block block in drawLast)
-            {
-                block.Draw(OctreeNode.world);
-            }
         }
         /// <summary>
         /// Draws all blocks contained in the current octree node except for those of type 4;
@@ -284,15 +236,16 @@ namespace Learning
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
             List<Block> drawLast = new List<Block>();
+            List<Matrix> toDraw = new List<Matrix>();
             foreach (GameObject gameObject in visibleObjects)
             {
                 if (gameObject.GetType() == typeof(Block) && ((Block)gameObject).type == 4)
                     drawLast.Add((Block)gameObject);
 
-                else gameObject.Draw(OctreeNode.world);
+                else toDraw.Add(Matrix.CreateTranslation(gameObject.Position));
             }
-
-            foreach (OctreeNode child in visibleChildren)
+            Cube.Draw(toDraw.ToArray(), world, Block.textureList[2]);
+            foreach (OctreeNode child in children)
             {
                 if (child.bounds.Intersects(boundingFrustum))
                     drawLast.AddRange(child.drawChild(boundingFrustum));

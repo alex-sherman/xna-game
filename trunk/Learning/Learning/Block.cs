@@ -15,7 +15,6 @@ namespace Learning
         public static Texture2D[] textureList;
         public bool[] drawSide = { true, true, true, true, true, true };
         public bool visible = true;
-        public IndexBuffer indexBuffer;
         public Block(Vector3 position, int type)
             : base(position)
         {
@@ -23,8 +22,6 @@ namespace Learning
             this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             Position = 2 * Cube.cubeSize * position;
             this.type = type;
-            indexBuffer = new IndexBuffer(World.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
-            indexBuffer.SetData<short>(Cube.indices);
         }
         public Block(SerializationInfo info, StreamingContext context)
         {
@@ -85,7 +82,7 @@ namespace Learning
         {
             if (this.visible)
             {
-                Cube.Draw(Position, world, this.getTexture(), indexBuffer);
+                Cube.Draw(Position, world, this.getTexture());
             }
         }
         public Vector3 getNormal(Ray lookat)
