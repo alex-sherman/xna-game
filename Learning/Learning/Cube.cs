@@ -15,16 +15,12 @@ namespace Learning
         static VertexDeclaration vertexDeclaration;
         static VertexPositionColor[] vertices;
         static VertexBuffer vertexBuffer;
+        public static DynamicVertexBuffer instanceVertexBuffer;
+        public static VertexDeclaration instanceVertexDeclaration;
         static IndexBuffer indexBuffer;
         public static short[] indices;
-        public static short[] front;
-        public static short[] back;
-        public static short[] left;
-        public static short[] right;
-        public static short[] top;
-        public static short[] bottom;
 
-        private static GraphicsDevice device;
+        public static GraphicsDevice device;
         private static Effect effect;
         public static void InitializeCube(GraphicsDevice device, Effect effect)
         {
@@ -131,24 +127,13 @@ namespace Learning
                 16, 17, 18, 18, 17, 19,
                 20, 21, 22, 22, 21, 23
             };
-            front = new short[] { 
-                0, 1, 2, 2, 1, 3 
-            };
-            back = new short[] { 
-                4, 5, 6, 6, 5, 7
-            };
-            left = new short[] { 
-                8, 9, 10, 10, 9, 11
-            };
-            right = new short[] { 
-                12, 13, 14, 14, 13, 15
-            };
-            top = new short[] { 
-                16, 17, 18, 18, 17, 19
-            };
-            bottom = new short[] { 
-                20, 21, 22, 22, 21, 23
-            };
+            instanceVertexDeclaration = new VertexDeclaration
+            (
+            new VertexElement(0,  VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 0),
+            new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 1),
+            new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 2),
+            new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 3)
+            );
             vertexBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 24, BufferUsage.WriteOnly);
             indexBuffer = new IndexBuffer(Cube.device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionNormalTexture>(boxData);
@@ -173,7 +158,16 @@ namespace Learning
                 mesh.Draw();
             }
         }
-        public static void Draw(Vector3 position, World world, Texture2D texture,IndexBuffer indexBuffer)
+        public static void Draw(Matrix[] instances, World world, Texture2D texture)
+        {
+            device.BlendState = BlendState.Opaque;
+            if (texture == null) { return; }
+            Cube.effect.Parameters["view"].SetValue(world.partialWorld);
+            Cube.effect.Parameters["proj"].SetValue(world.projection);
+            Cube.effect.Parameters["UserTexture"].SetValue(texture);
+            Draw(Cube.effect, instances);
+        }
+        public static void Draw(Vector3 position, World world, Texture2D texture)
         {
             device.BlendState = BlendState.Opaque;
             if (texture == null) { return; }
@@ -185,11 +179,25 @@ namespace Learning
         }
         public static void Draw(Effect effect)
         {
+            effect.CurrentTechnique = effect.Techniques["Texture"];
             effect.CurrentTechnique.Passes[0].Apply();
-                Cube.device.SetVertexBuffer(vertexBuffer);
+            Cube.device.SetVertexBuffers(vertexBuffer);
+            Cube.device.Indices = indexBuffer;
+            Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
+        }
+
+        public static void Draw(Effect effect, Matrix[] instances)
+        {
+            if (instances.Length != 0)
+            {
+                instanceVertexBuffer = new DynamicVertexBuffer(Cube.device, instanceVertexDeclaration, instances.Length, BufferUsage.WriteOnly);
+                instanceVertexBuffer.SetData(instances, 0, instances.Length);
+                effect.CurrentTechnique = effect.Techniques["InstanceTexture"];
+                Cube.device.SetVertexBuffers(new VertexBufferBinding(vertexBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
                 Cube.device.Indices = indexBuffer;
-                Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12);
-            
+                effect.CurrentTechnique.Passes[0].Apply();
+                Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12, instances.Length);
+            }
         }
 
         public static void Draw(Vector3 position, World world, bool wireframe, float scale)

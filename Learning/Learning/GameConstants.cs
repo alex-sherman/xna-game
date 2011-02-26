@@ -21,6 +21,6 @@ namespace Learning
         public static Keys quickLoadKey = Keys.F6;
 
         // Misc.
-        public const int OctreeBlockLimit = 1024;
+        public const int OctreeBlockLimit = 256;
     }
 }

@@ -3,6 +3,8 @@ uniform extern texture UserTexture;
 float4x4 WorldViewProj;
 float3 cameraPosition;
 float4x4 world;
+float4x4 view;
+float4x4 proj;
 //light properties
 float3 lightPosition;
 float4 ambientLightColor;
@@ -39,51 +41,6 @@ sampler textureSampler = sampler_state
     mipfilter = LINEAR; 
 };
 
-VertexShaderOutputPerVertexDiffuse PerVertexDiffuseVS(
-     float3 position : POSITION,
-	 float4 textureCoord : TEXCOORD0,
-     float3 normal : NORMAL )
-{
-     VertexShaderOutputPerVertexDiffuse output;
-	 output.textureCoord = textureCoord;
-     //generate the world-view-projection matrix
-     float4x4 wvp = WorldViewProj;
-     
-     //transform the input position to the output
-     output.Position = mul(float4(position, 1.0), wvp);
-     
-     output.WorldNormal =  mul(normal, world);
-     float4 worldPosition =  mul(float4(position, 1.0), world);
-     output.WorldPosition = worldPosition/ worldPosition.w;;
-     
-     //calculate diffuse component
-     float3 directionToLight = normalize(lightPosition - output.WorldPosition);
-     float diffuseIntensity = saturate( dot(directionToLight, output.WorldNormal));
-     float4 diffuse = diffuseLightColor * diffuseIntensity;
-
-     output.Color = diffuse + ambientLightColor;
-
-
-     //return the output structure
-     return output;
-}
-float4 PhongPS(PixelShaderInputPerVertexDiffuse input) : COLOR
-{
-
-     float3 directionToLight = normalize(lightPosition - input.WorldPosition);
-     float3 reflectionVector = normalize(reflect(-directionToLight, input.WorldNormal));
-     float3 directionToCamera = normalize(cameraPosition - input.WorldPosition);
-     
-     //calculate specular component
-     float4 specular = specularLightColor * specularIntensity * 
-                       pow( saturate(dot(reflectionVector, directionToCamera)), 
-                       specularPower);
-     
-     float4 color = input.Color + specular;
-     color.a = 1;
-     
-     return color*=tex2D(textureSampler, input.textureCoord).rgba;
-}
 struct VS_OUTPUT
 {
     float4 position  : POSITION;
@@ -104,10 +61,24 @@ VS_OUTPUT Transform(
     return Out;
 }
 
+VS_OUTPUT InstanceTransform(
+    float4 Position  : POSITION, 
+    float4 TextureCoordinate : TEXCOORD0,
+	float3 normal : NORMAL,
+	float4x4 instances : BLENDWEIGHT)
+{
+    VS_OUTPUT Out = (VS_OUTPUT)0;
+	float4 worldPosition = mul(Position, transpose(instances));
+	float4 viewPosition = mul(worldPosition, view);
+    Out.position = mul(viewPosition, proj);
+    Out.textureCoordinate = TextureCoordinate;
+
+    return Out;
+}
+
 float4 ApplyTexture(VS_OUTPUT vsout) : COLOR
 {
 	float4 color = ambientLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
-	color.a = tex2D(textureSampler, vsout.textureCoordinate).a;
     return color;
 }
 
@@ -120,15 +91,11 @@ technique Texture
     }
 	 
 }
-technique LightAndTexture
+technique InstanceTexture
 {
 	pass P0
-    {
-          //Per-vertex diffuse calculation and preparation of inputs
-          //for the phong pixel shader
-          VertexShader = compile vs_3_0 PerVertexDiffuseVS();
-          
-          //set the pixel shader to the per-pixel phong function      
-          PixelShader = compile ps_3_0 PhongPS();
-    }
+	{
+		vertexShader = compile vs_3_0 InstanceTransform();
+        pixelShader  = compile ps_3_0 ApplyTexture();
+	}
 }

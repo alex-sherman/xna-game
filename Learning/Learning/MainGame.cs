@@ -64,7 +64,7 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)ScreenManager.GraphicsDevice.Viewport.Width /
                 (float)ScreenManager.GraphicsDevice.Viewport.Height,
-                0.4f, 2000.0f);
+                1f, 2000.0f);
 
             worldViewProjection = projection;
             newWorld.projection = projection;
@@ -118,7 +118,7 @@ namespace Learning
             if (IsActive)
             {
                 player.Update(gameTime);
-                newWorld.Update(gameTime);//player.getCameraMatrix());
+                newWorld.Update(gameTime);
             }
         }
 
@@ -279,12 +279,12 @@ namespace Learning
             rasterizerState.CullMode = CullMode.None;
             rasterizerState.DepthBias = .01f;
             ScreenManager.GraphicsDevice.RasterizerState = rasterizerState;
+            GUI.gameTime = gameTime.ElapsedGameTime.Ticks;
             newWorld.Draw();
+            GUI.timeDifference = gameTime.ElapsedGameTime.Ticks - GUI.gameTime;
             GUI.drawInventoryHotBar(player.inventory);
             GUI.Draw();
             base.Draw(gameTime);
-            GUI.timeDifference = gameTime.ElapsedGameTime.Ticks - GUI.gameTime;
-            GUI.gameTime = gameTime.ElapsedGameTime.Ticks;
         }
 
         #endregion

@@ -19,6 +19,7 @@ namespace Learning
         public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
         public OctreeNode objectTree;
+        Mapgen.Mapgen generator;
 
         public AIManager aiManager;
 
@@ -38,11 +39,11 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 10f, GameConstants.OctreeBlockLimit);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 50f, GameConstants.OctreeBlockLimit);
+            generator = new Mapgen.Mapgen(objectTree);
             aiManager = new AIManager(this);
-            Mapgen.Mapgen generator = new Mapgen.Mapgen(objectTree);
-            generator.generateRock(4, 5);
-            updateBlocks(objectTree.getAllBlocks());
+            generator.generateRock(100, 5);
+            generator.generateVertices();
         }
         public void saveGame(String location)
         {
@@ -51,19 +52,6 @@ namespace Learning
             GUI.print("Saving game to: " + location);
             bformatter.Serialize(stream, objectTree);
             stream.Close();
-        }
-        public void updateBlocks(List<GameObject> blockList)
-        {
-            foreach (GameObject poo in blockList)
-            {
-                if (poo.GetType() == typeof(Block))
-                {
-                    Block objBlock = (Block)poo;
-                    {
-                        objBlock.updateIndexBuffer(objectTree.getNeighborBlocks(objBlock));
-                    }
-                }
-            }
         }
         public void loadGame(String location)
         {
@@ -106,7 +94,7 @@ namespace Learning
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            objectTree.Draw(toDraw);
+            objectTree.drawChild(toDraw);
             Item.Draw(this);
         }
 
@@ -133,7 +121,7 @@ namespace Learning
         #region Collision Detection
         public void collisionCheck(ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)
         {
-            BoundingBox endAABB = new BoundingBox(
+            /*BoundingBox endAABB = new BoundingBox(
                 endPos - GameConstants.PlayerSize / 2,
                 endPos + GameConstants.PlayerSize / 2);
 
@@ -153,7 +141,9 @@ namespace Learning
                     if (correction.Y > 0) onGround = true;
                 }
                 if (!correction.Equals(Vector3.Zero)) return;
-            }
+            }*/
+            onGround = true;
+            outsideVel = Vector3.Zero;
         }
 
         /// <summary>
