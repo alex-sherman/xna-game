@@ -140,8 +140,8 @@ namespace Learning
                 //actorAABB.Min += correction;
                 if (correction.Y != 0)
                 {
-                    outsideVel.Y = 0;
                     GUI.print("hit ground");
+                    outsideVel.Y = 0;
                     if (correction.Y > 0)
                     {
                         onGround = true;
@@ -149,7 +149,6 @@ namespace Learning
                     if (correction.X != 0 && correction.Z != 0)
                     {
                         return true;
-                        GUI.print("collided!");
                     }
                 }
             }

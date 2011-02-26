@@ -15,7 +15,7 @@ namespace Learning
         public BoundingBox fallBox = new BoundingBox();
         public float speed = .1f;
         public Inventory inventory;
-        public Vector3 position = new Vector3(0, 7, 0);
+        public Vector3 position = new Vector3(0, 25, 0);
         public Vector3 velocity = new Vector3(0, 0, 0);
         public Vector3 outsideV = new Vector3(0, 0, 0);
         public Vector3 currentVelocity;

@@ -45,8 +45,8 @@ namespace Learning
             //GuiComponents.ComponentManager.init(
             //    Content, screenManager.Font, screenManager.SpriteBatch);
 
-            //screenManager.AddScreen(new Menus.MainMenu());
-            screenManager.AddScreen(new MainGame());
+            screenManager.AddScreen(new Menus.MainMenu());
+            //screenManager.AddScreen(new MainGame());
         }
 
         protected override void Initialize()
