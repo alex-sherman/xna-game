@@ -139,6 +139,7 @@
     <Compile Include="Physics\OctreeBroadPhaseCollider.cs" />
     <Compile Include="Physics\PhysicsEngine.cs" />
     <Compile Include="Physics\PhysicsObject.cs" />
+    <Compile Include="Physics\PhysicsOctreeNode.cs" />
     <Compile Include="Physics\Pool.cs" />
     <Compile Include="Physics\SAT.cs" />
     <Compile Include="Player.cs" />

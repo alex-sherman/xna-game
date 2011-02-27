@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Learning.Physics
 {
-    class PhysicsObject
+    class PhysicsObject : IIsDisposable
     {
         private Vector3 _position = Vector3.Zero;
         private float _yRotation;
@@ -21,6 +21,8 @@ namespace Learning.Physics
         public BoundingBox hitBox;
         public Vector3 LinearVelocity = Vector3.Zero;
         public bool IsStatic = false;
+
+        public event EventHandler<EventArgs> OnDisposed;
 
         public Vector3 Position
         {
@@ -57,7 +59,10 @@ namespace Learning.Physics
             get { return _force; }
         }
 
-        public PhysicsObject() { }
+        public PhysicsObject()
+        {
+            IsDisposed = false;
+        }
 
         public void ApplyForce(ref Vector3 amount)
         {
@@ -80,7 +85,8 @@ namespace Learning.Physics
             _impulse.Z += amount.Z;
         }
 
-        public void ClearImpulse() {
+        public void ClearImpulse()
+        {
             _impulse.X = 0;
             _impulse.Y = 0;
             _impulse.Z = 0;
@@ -115,6 +121,27 @@ namespace Learning.Physics
                              gameTime.ElapsedGameTime.Milliseconds,
                              out _dx);
             Vector3.Add(ref _dx, ref _position, out _position);
+        }
+
+        public bool IsDisposed
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+            if (OnDisposed != null)
+            {
+                OnDisposed(this, EventArgs.Empty);
+            }
         }
     }
 }
