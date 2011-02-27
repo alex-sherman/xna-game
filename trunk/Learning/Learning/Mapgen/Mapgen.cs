@@ -11,6 +11,8 @@ namespace Learning.Mapgen
     {
         public int[,] rockHeight;
         public int[,] landHeight;
+        public int[,] lastRockHeight;
+        public int[,] lastLandHeight;
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
         public OctreeNode node;
@@ -23,12 +25,16 @@ namespace Learning.Mapgen
             this.size = (int)node.nodeSize*2;
             rockHeight = new int[size, size];
             landHeight = new int[size, size];
+            lastLandHeight = new int[size, size];
+            lastRockHeight = new int[size, size];
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
                     rockHeight[i, j] = RockAgent.maxHeight - RockAgent.variance;
                     landHeight[i, j] = CoastAgent.minHeight;
+                    lastRockHeight[i, j] = RockAgent.maxHeight - RockAgent.variance;
+                    lastLandHeight[i, j] = CoastAgent.minHeight;
                 }
             }
         }
@@ -39,7 +45,37 @@ namespace Learning.Mapgen
             {
                 for (int k = 0; k < size; k++)
                 {
-                    if (landHeight[i, k] == CoastAgent.coastHeight) { coastLine.Add(new Vector2(i, k)); }
+                    if (isCoast(i,k)) { coastLine.Add(new Vector2(i, k)); }
+                }
+            }
+        }
+        public void findLand()
+        {
+            coastLine = new List<Vector2>();
+            for (int i = 0; i < size; i++)
+            {
+                for (int k = 0; k < size; k++)
+                {
+                    if (landHeight[i,k]>=CoastAgent.coastHeight) { coastLine.Add(new Vector2(i, k)); }
+                }
+            }
+        }
+        public void step()
+        {
+            findLand();
+             foreach (MapgenAgent agent in currentAgents)
+            {
+                agent.step();
+            }
+            for (int i = 0; i < size; i++)
+            {
+                for (int k = 0; k < size; k++)
+                {
+                    if (landHeight[i, k] != lastLandHeight[i, k])
+                    {
+                        node.addVisibleBlock(i - size / 2, landHeight[i, k], k - size / 2, 1);
+                        lastLandHeight[i, k] = landHeight[i, k];
+                    }
                 }
             }
         }
@@ -61,9 +97,36 @@ namespace Learning.Mapgen
                 }
             }
         }
+        public bool isCoast(int x, int y)
+        {
+            List<Vector2> toReturn = new List<Vector2>();
+            if (landHeight[x, y] >= CoastAgent.coastHeight) { return false; }
+            bool land = false;
+            bool notLand = false;
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int k = -1; k <= 1; k++)
+                {
+                    int curX = i + x;
+                    int curY = k + y;
+                    if (curX > 0 && curX < size && curY > 0 && curY < size)
+                    {
+                        if (landHeight[curX, curY] < CoastAgent.coastHeight)
+                        {
+                            notLand = true;
+                        }
+                        else
+                        {
+                            land = true;
+                        }
+                    }
+                }
+            }
+            return land && notLand;
+        }
         public float getEdgeDistance(Vector2 point)
         {
-            return (float)Math.Min(Math.Pow(point.X - size, 2), Math.Pow(point.Y - size,2));
+            return (float)Math.Min(Math.Min(Math.Pow(point.X, 2) - Math.Pow(size, 2), Math.Pow(point.Y, 2) - Math.Pow(size, 2)), Math.Min(Math.Pow(point.X, 2), Math.Pow(point.Y, 2)));
         }
         public List<Vector2> getCoastInArea(Vector2 point, int radius)
         {
@@ -74,13 +137,17 @@ namespace Learning.Mapgen
                 {
                     int curX = (int)point.X + i;
                     int curY = (int)point.Y + k;
-                    if (curY>=0 && curY<size && curX>=0 && curX<size && landHeight[curX, curY] == CoastAgent.coastHeight)
+                    if (curY>=0 && curY<size && curX>=0 && curX<size && isCoast(curX, curY))
                     {
-                        toReturn.Add(new Vector2(i, k));
+                        toReturn.Add(new Vector2(curX, curY));
                     }
                 }
             }
             return toReturn;
+        }
+        public bool isLand(int x, int y)
+        {
+            return landHeight[x,y]>=CoastAgent.coastHeight;
         }
         public List<Vector2> getAdjacentNotCoast(Vector2 point)
         {
@@ -91,7 +158,7 @@ namespace Learning.Mapgen
                 {
                     int curX = i + (int)point.X;
                     int curY = k + (int)point.Y;
-                    if (curX>0 && curX<size && curY>0 && curY<size && landHeight[curX, curY] != CoastAgent.coastHeight)
+                    if (curX > 0 && curX < size && curY > 0 && curY < size && landHeight[curX, curY] < CoastAgent.coastHeight)
                     {
                         toReturn.Add(new Vector2(curX, curY));
                     }
@@ -103,10 +170,11 @@ namespace Learning.Mapgen
         {
             currentAgents.Add(new CoastAgent(tokens, this));
             bool alive = true;
-            while (alive)
+            /*while (alive)
             {
                 alive = false;
-                findCurrentCoastline();
+                //findCurrentCoastline();
+                findLand();
                 foreach (MapgenAgent agent in currentAgents)
                 {
                     if (agent.step()) { alive = true; }
@@ -117,7 +185,8 @@ namespace Learning.Mapgen
             {
                 for (int k = 0; k < node.nodeSize * 2; k++)
                 {
-                    for (int j = rockHeight[i,k]; j <= landHeight[i,k]; j++)
+                    node.addVisibleBlock(i - size / 2, landHeight[i,k], k - size / 2, 1);
+                    for (int j = 0; j <= landHeight[i,k]; j++)
                     {
                         //if (j == landHeight[i, k])
                         //{
@@ -129,7 +198,7 @@ namespace Learning.Mapgen
                         //}
                     }
                 }
-            }
+            }*/
         }
         public void generateRock(int agents, int tokens)
         {
