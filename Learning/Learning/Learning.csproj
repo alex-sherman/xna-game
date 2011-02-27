@@ -135,6 +135,7 @@
     <Compile Include="Physics\CollisionPair.cs" />
     <Compile Include="Physics\Contact.cs" />
     <Compile Include="Physics\IBroadPhaseCollider.cs" />
+    <Compile Include="Physics\IIsDisposable.cs" />
     <Compile Include="Physics\INarrowPhaseCollider.cs" />
     <Compile Include="Physics\OctreeBroadPhaseCollider.cs" />
     <Compile Include="Physics\PhysicsEngine.cs" />
