@@ -92,18 +92,19 @@ namespace Learning.Physics
         {
             float dt = gameTime.ElapsedGameTime.Milliseconds * 0.001f; // in seconds.
             float inverseDt = 1.0f / dt;
+            
             /*
             foreach (CollisionPair pair in ActiveCollisions)
             {
                 pair.PreStepImpulse(ref inverseDt);
             }
-
-             */
+            */
+             
             //for (int i = 0; i < Iterations; i++)
             {
-                //foreach (CollisionPair pair in ActiveCollisions)
+                foreach (CollisionPair pair in ActiveCollisions)
                 {
-               //     pair.ApplyImpulse();
+                    pair.ApplyImpulse();
                 }
             }
 
