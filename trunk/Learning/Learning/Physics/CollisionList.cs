@@ -10,6 +10,15 @@ namespace Learning.Physics
 
         public CollisionList() : base() { }
 
+        // TODO check that a pair isn't already in the list
+        public void AddPair(PhysicsObject objA, PhysicsObject objB, PhysicsEngine engine)
+        {
+            CollisionPair newPair = engine.collisionPool.Get();
+            newPair.ConstructPair(objA, objB, engine);
+            Add(newPair);
+        }
+
+
         public void RemoveInactiveCollisions(Pool<CollisionPair> pool)
         {
             for (int i = Count - 1; i >= 0; i--)
