@@ -22,6 +22,7 @@ namespace Learning.Physics
         public Vector3 LinearVelocity = Vector3.Zero;
         public bool IsStatic = false;
         public Int64 CollisionID;
+        public bool Enabled = true;
 
         public event EventHandler<EventArgs> OnDisposed;
 
@@ -111,15 +112,15 @@ namespace Learning.Physics
         {
             Vector3.Multiply(ref _force, _inverseMass, out _acceleration);
             Vector3.Multiply(ref _acceleration,
-                             gameTime.ElapsedGameTime.Milliseconds,
+                             gameTime.ElapsedGameTime.Milliseconds * 0.001f,
                              out _dv);
             Vector3.Add(ref LinearVelocity, ref _dv, out LinearVelocity);
         }
 
         internal void IntegratePosition(GameTime gameTime)
         {
-            Vector3.Multiply(ref _dv,
-                             gameTime.ElapsedGameTime.Milliseconds,
+            Vector3.Multiply(ref LinearVelocity,
+                             gameTime.ElapsedGameTime.Milliseconds * 0.001f,
                              out _dx);
             Vector3.Add(ref _dx, ref _position, out _position);
         }

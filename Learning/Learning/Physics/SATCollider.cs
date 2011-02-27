@@ -15,7 +15,7 @@ namespace Learning.Physics
         {
             get
             {
-                if (_instance == null) 
+                if (_instance == null)
                     _instance = new SATCollider();
                 return _instance;
             }
@@ -32,8 +32,16 @@ namespace Learning.Physics
             }
             else
             {
-                Intersect = true;
                 penetration = getMinimumPenetrationVector(a.AABB, b.AABB);
+                if (penetration.Length() > 0.001f)
+                {
+                    Intersect = true;
+                }
+                else
+                {
+                    Intersect = false;
+                    penetration = Vector3.Zero;
+                }
             }
             contact = new Contact(penetration);
         }
