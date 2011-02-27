@@ -30,6 +30,7 @@ namespace Learning
         public Player()
         {
             IsStatic = false;
+            Enabled = false;
             this.inventory = new Inventory();
             Position = new Vector3(0, 25, 0);
         }
@@ -45,7 +46,9 @@ namespace Learning
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
             lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
             lookAt.Position = Position;
-            currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
+            //currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
+            currentVelocity = Vector3.Transform(relativeVelocity, rotation);
+            Vector3.Add(ref currentVelocity, ref LinearVelocity, out LinearVelocity);
             /*
             outsideV.Y -= GameConstants.Gravity;
             //currentVelocity += outsideV;
@@ -81,9 +84,14 @@ namespace Learning
             {
                 outsideV = Vector3.Zero;
             }
+             */
             // and update the player's position
-            Position = endPos;
-             * */
+            // if not enabled, update positions manually
+            if (!Enabled)
+            {
+                Position = Position + currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            }
+            
         }
 
         public Matrix getCameraMatrix()
