@@ -28,6 +28,13 @@ namespace Learning.Physics
             ObjectB = objB;
         }
 
+        internal void Reset()
+        {
+            ObjectA = null;
+            ObjectB = null;
+            contact = null;
+        }
+
         private Vector3 _dv, _normalImpulse;
         private Vector3 _normal;
         private float _vn;
@@ -50,6 +57,11 @@ namespace Learning.Physics
         {
             contact = null;
             _engine.NarrowPhaseCollider.Collide(ObjectA, ObjectB, out isColliding, out contact);
+        }
+
+        internal bool isInvalid()
+        {
+            return (ObjectA.IsDisposed || ObjectB.IsDisposed);
         }
 
         #region IEquatable

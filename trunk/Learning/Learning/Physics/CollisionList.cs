@@ -23,13 +23,16 @@ namespace Learning.Physics
             }
         }
 
-        public void ClearList(Pool<CollisionPair> pool)
+        public void CleanList(Pool<CollisionPair> pool)
         {
             for (int i = Count - 1; i >= 0; i--)
             {
-                CollisionPair current = this[i];
-                RemoveAt(i);
-                pool.Replace(current);
+                if (this[i].isInvalid())
+                {
+                    CollisionPair current = this[i];
+                    RemoveAt(i);
+                    pool.Replace(current);
+                }
             }
         }
     }
