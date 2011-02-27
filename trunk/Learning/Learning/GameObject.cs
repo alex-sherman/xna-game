@@ -25,11 +25,13 @@ namespace Learning
 
         #region Constructors and Initialization
 
+        /*
         public GameObject(Vector3 position) : base()
         {
             Position = position;
             hitBox = new BoundingBox();
         }
+        */
 
         public GameObject()
         {

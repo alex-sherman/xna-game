@@ -21,7 +21,7 @@ namespace Learning
         public static GraphicsDevice device;
         public OctreeNode objectTree;
         public Mapgen.Mapgen generator;
-        PhysicsEngine engine;
+        internal PhysicsEngine engine;
 
         public AIManager aiManager;
 
@@ -43,7 +43,7 @@ namespace Learning
             OctreeNode.world = this;
             engine = new PhysicsEngine(-0.0005f);
             objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
-            generator = new Mapgen.Mapgen(objectTree);
+            generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
             generator.generateRock(10, 40);
             generator.generateLand(300);
@@ -56,6 +56,7 @@ namespace Learning
             bformatter.Serialize(stream, objectTree);
             stream.Close();
         }
+
         public void loadGame(String location)
         {
             Stream stream = File.Open(location, FileMode.Open);
@@ -64,10 +65,18 @@ namespace Learning
             this.objectTree = (OctreeNode)bformatter.Deserialize(stream);
             stream.Close();
         }
+
         public void spawnItem(int type, Vector3 position)
         {
             Item poo = new Item(position, type);
         }
+
+        public void addObject(GameObject obj)
+        {
+            engine.Add(obj);
+            objectTree.addObject(obj);
+        }
+
         public void addPlayer(Player player)
         {
             this.players.Add(player);

@@ -11,31 +11,45 @@ namespace Learning
     [Serializable()]
     class Block : GameObject, ISerializable
     {
-        public int type = 0;
+        public int _type = 0;
         public static Texture2D[] textureList;
         public bool[] drawSide = { true, true, true, true, true, true };
         public bool visible = true;
+
         public Block(Vector3 position, int type)
-            : base(position)
         {
             IsStatic = true;
-            this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize);
-            this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             Position = 2 * Cube.cubeSize * position;
-            this.type = type;
+            InitBlock(type);
         }
+
+        public Block(float x, float y, float z, int type)
+        {
+            IsStatic = true;
+            Vector3 pos = new Vector3(x, y, z);
+            Position = pos;
+            InitBlock(type);
+        }
+
+        internal void InitBlock(int type)
+        {
+            _type = type;
+            this.hitBox.Max = Position + new Vector3(Cube.cubeSize);
+            this.hitBox.Min = Position - new Vector3(Cube.cubeSize);
+        }
+
         public Block(SerializationInfo info, StreamingContext context)
         {
             IsStatic = true;
             this.hitBox = (BoundingBox)info.GetValue("hitBox", typeof(BoundingBox));
             Position = (Vector3)info.GetValue("position", typeof(Vector3));
-            this.type = (int)info.GetValue("type", typeof(int));
+            this._type = (int)info.GetValue("type", typeof(int));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
         {
             info.AddValue("hitBox", hitBox);
             info.AddValue("position", Position);
-            info.AddValue("type", this.type);
+            info.AddValue("type", this._type);
 
         }
         public void updateIndexBuffer(List<Block> neighbors)
@@ -44,7 +58,7 @@ namespace Learning
             bool[] drawSide = { true, true, true, true, true, true };
             foreach (Block block in neighbors)
             {
-                if (block.type != 4 || this.type==4)
+                if (block._type != 4 || this._type==4)
                 {
                     relation = this.Position - block.Position;
                     if (relation.X != 0)
@@ -137,7 +151,7 @@ namespace Learning
         }
         public Texture2D getTexture()
         {
-            return Block.textureList[this.type];
+            return Block.textureList[this._type];
         }
         public int[] getDirection(Vector3 other)
         {

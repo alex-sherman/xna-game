@@ -239,7 +239,7 @@ namespace Learning
             }
             Block objBlock = (Block)destroyed;
             containingNode.gameObjects.Remove(destroyed);
-            OctreeNode.world.spawnItem(((Block)destroyed).type, destroyed.Position);
+            OctreeNode.world.spawnItem(((Block)destroyed)._type, destroyed.Position);
             return true;
         }
         /// <summary>
@@ -256,7 +256,7 @@ namespace Learning
             List<Matrix> toDraw = new List<Matrix>();
             foreach (GameObject gameObject in gameObjects)
             {
-                if (gameObject.GetType() == typeof(Block) && ((Block)gameObject).type == 4)
+                if (gameObject.GetType() == typeof(Block) && ((Block)gameObject)._type == 4)
                     drawLast.Add((Block)gameObject);
 
                 else toDraw.Add(Matrix.CreateTranslation(gameObject.Position));

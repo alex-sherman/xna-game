@@ -31,8 +31,6 @@ namespace Learning.Physics
             {
                 foreach (CollisionPair pair in list)
                 {
-                    pair.ObjectA.CollisionID = CollisionPair.generateCollisionID();
-                    pair.ObjectB.CollisionID = CollisionPair.generateCollisionID();
                     TestAndSet(pair.ObjectA, pair.ObjectB);
                 }
             }
@@ -40,14 +38,14 @@ namespace Learning.Physics
 
         public bool TestAndSet(PhysicsObject objA, PhysicsObject objB)
         {
-            int index = CalculateIndex(objA, objB);
+            Int64 index = CalculateIndex(objA, objB);
 
             bool result = _set[index];
             _set[index] = true;
             return result;
         }
 
-        internal int CalculateIndex(PhysicsObject objA, PhysicsObject objB)
+        internal Int64 CalculateIndex(PhysicsObject objA, PhysicsObject objB)
         {
             // first order the objects to ensure unique hashing
             Int64 ID1, ID2;
@@ -62,24 +60,25 @@ namespace Learning.Physics
                 ID2 = objA.CollisionID;
             }
 
-            Int64 result = ID2 * _numObjects;
+            Int64 index = ID2 * _numObjects;
             if (ID2 % 2 == 0)
             {
-                result -= ((ID2 + 1) * (ID2 / 2));
+                index -= ((ID2 + 1) * (ID2 / 2));
             }
             else
             {
-                result -= (ID2 + 1) * (ID2 / 2) + (ID2 + 1) / 2;
+                index -= (ID2 + 1) * (ID2 / 2) + (ID2 + 1) / 2;
             }
 
-            result += ID1 - ID2 - 1;
-            return (int)result;
+            index += ID1 - ID2 - 1;
+            return index;
         }
 
         internal int CalculateSetSize(int numObjects)
         {
             // n choose 2 possible collisions
-            return (numObjects * (numObjects - 1)) / 2;
+            int size = (numObjects * (numObjects - 1)) / 2;
+            return size;
         }
     }
 }

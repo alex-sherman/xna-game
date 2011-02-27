@@ -30,6 +30,7 @@ namespace Learning.Physics
 
         public void Update()
         {
+            //GUI.print(String.Format("Num dynamic objects: {0}", dynamicObjects.Count));
             foreach (PhysicsObject obj in dynamicObjects)
             {
                 List<PhysicsObject> possibleCollisions = staticObjectTree.getCollisionCandidates(obj.hitBox);

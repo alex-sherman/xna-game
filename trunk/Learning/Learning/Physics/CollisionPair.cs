@@ -9,7 +9,6 @@ namespace Learning.Physics
     class CollisionPair : IEquatable<CollisionPair>
     {
         private PhysicsEngine _engine;
-        internal static Int64 _currentID = 0;
 
         public PhysicsObject ObjectA;
         public PhysicsObject ObjectB;
@@ -30,11 +29,6 @@ namespace Learning.Physics
             ObjectB = objB;
         }
 
-        static internal Int64 generateCollisionID()
-        {
-            return CollisionPair._currentID++;
-        }
-
         internal void Reset()
         {
             ObjectA = null;
@@ -53,8 +47,9 @@ namespace Learning.Physics
             _normal = contact.Normal;
             _normal.Normalize();
             Vector3.Dot(ref _dv, ref _normal, out _vn);
-            Vector3.Multiply(ref _normal, _vn, out _normalImpulse);
+            Vector3.Multiply(ref _normal, 3 * _vn, out _normalImpulse);
             ObjectA.ApplyImpulse(ref _normalImpulse);
+            GUI.print(String.Format("Applying impulse ({0}, {1}, {2})", _normalImpulse.X, _normalImpulse.Y, _normalImpulse.Z));
 
             Vector3.Multiply(ref _normalImpulse, -1.0f, out _normalImpulse);
             ObjectB.ApplyImpulse(ref _normalImpulse);

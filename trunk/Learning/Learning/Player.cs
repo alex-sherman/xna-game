@@ -22,13 +22,14 @@ namespace Learning
         public Ray lookAt = new Ray();
         public World world;
 
-        OctreeNode containingNode, lastNode;
-        List<GameObject> curCollisionCandidates;
+        //OctreeNode containingNode, lastNode;
+        //List<GameObject> curCollisionCandidates;
 
         #endregion
 
         public Player()
         {
+            IsStatic = false;
             this.inventory = new Inventory();
             Position = new Vector3(0, 25, 0);
         }
