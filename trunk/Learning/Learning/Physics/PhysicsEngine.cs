@@ -77,7 +77,7 @@ namespace Learning.Physics
         {
             foreach (PhysicsObject obj in _objects)
             {
-                if (obj.IsStatic) continue;
+                if (obj.IsStatic || obj.IsDisposed || !obj.Enabled) continue;
                 obj.ApplyImpulses();
 
                 // gravity
@@ -90,7 +90,7 @@ namespace Learning.Physics
 
         private void ApplyImpulses(GameTime gameTime)
         {
-            float dt = gameTime.ElapsedGameTime.Milliseconds;
+            float dt = gameTime.ElapsedGameTime.Milliseconds * 0.001f; // in seconds.
             float inverseDt = 1.0f / dt;
             /*
             foreach (CollisionPair pair in ActiveCollisions)
@@ -99,7 +99,7 @@ namespace Learning.Physics
             }
 
              */
-            for (int i = 0; i < Iterations; i++)
+            //for (int i = 0; i < Iterations; i++)
             {
                 foreach (CollisionPair pair in ActiveCollisions)
                 {
@@ -113,6 +113,7 @@ namespace Learning.Physics
         {
             foreach (PhysicsObject obj in _objects)
             {
+                if (obj.IsStatic || obj.IsDisposed || !obj.Enabled) continue;
                 obj.IntegratePosition(gameTime);
             }
         }

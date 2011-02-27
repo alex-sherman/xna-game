@@ -47,12 +47,14 @@ namespace Learning.Physics
             _normal = contact.Normal;
             _normal.Normalize();
             Vector3.Dot(ref _dv, ref _normal, out _vn);
-            Vector3.Multiply(ref _normal, 3 * _vn, out _normalImpulse);
-            ObjectA.ApplyImpulse(ref _normalImpulse);
-            GUI.print(String.Format("Applying impulse ({0}, {1}, {2})", _normalImpulse.X, _normalImpulse.Y, _normalImpulse.Z));
+            Vector3.Multiply(ref _normal, 0.1f * _vn, out _normalImpulse);
+            ObjectB.ApplyImpulse(ref _normalImpulse);
+
+            if (!Vector3.Zero.Equals(_normalImpulse)) 
+                GUI.print(String.Format("Applying impulse ({0}, {1}, {2}) to {3}", _normalImpulse.X, _normalImpulse.Y, _normalImpulse.Z, ObjectA.ToString()));
 
             Vector3.Multiply(ref _normalImpulse, -1.0f, out _normalImpulse);
-            ObjectB.ApplyImpulse(ref _normalImpulse);
+            ObjectA.ApplyImpulse(ref _normalImpulse);
         }
 
         internal void Collide()

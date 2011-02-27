@@ -121,7 +121,8 @@ namespace Learning.Physics
         {
             foreach (PhysicsOctreeNode child in children)
             {
-                if (child.bounds.Contains(box) == ContainmentType.Contains)
+                Vector3 center = (box.Max + box.Min) / 2;
+                if (child.bounds.Contains(center) == ContainmentType.Contains)
                 {
                     return child.getContainingNode(box);
                 }
@@ -130,7 +131,7 @@ namespace Learning.Physics
         }
         public List<PhysicsObject> getCollisionCandidates(BoundingBox box)
         {
-            return getContainingNode(box).getAllBlocks();
+            return getContainingNode(box).Objects;
         }
     }
 }
