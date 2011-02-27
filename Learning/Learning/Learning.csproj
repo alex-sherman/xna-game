@@ -131,6 +131,7 @@
     <Compile Include="Menus\OptionsMenu.cs" />
     <Compile Include="Menus\PauseScreen.cs" />
     <Compile Include="OctreeNode.cs" />
+    <Compile Include="Physics\CollisionHashSet.cs" />
     <Compile Include="Physics\CollisionList.cs" />
     <Compile Include="Physics\CollisionPair.cs" />
     <Compile Include="Physics\Contact.cs" />

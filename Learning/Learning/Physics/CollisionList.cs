@@ -7,21 +7,31 @@ namespace Learning.Physics
 {
     class CollisionList : List<CollisionPair>
     {
-        //private CollisionHashSet hashSet;
+        private CollisionHashSet _hashSet;
 
         public CollisionList() : base() { }
 
         // TODO check that a pair isn't already in the list
         public void AddPair(PhysicsObject objA, PhysicsObject objB, PhysicsEngine engine)
         {
-            //hashSet = new CollisionHashSet();
-            CollisionPair newPair = engine.collisionPool.Get();
-            newPair.ConstructPair(objA, objB, engine);
-            Add(newPair);
+            if (!_hashSet.TestAndSet(objA, objB))
+            {
+                CollisionPair newPair = engine.collisionPool.Get();
+                newPair.ConstructPair(objA, objB, engine);
+                Add(newPair);
+            }
         }
 
         public void PrepareForBroadPhase(List<PhysicsObject> objectList)
         {
+            if (_hashSet == null)
+            {
+                _hashSet = new CollisionHashSet(objectList.Count, this);
+            }
+            else
+            {
+                _hashSet.ClearSet(objectList.Count, this);
+            }
         }
 
 
