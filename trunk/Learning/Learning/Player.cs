@@ -60,7 +60,7 @@ namespace Learning
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
             if (!noClip)
             {
-                if (octreeNodeChanged)
+               // if (octreeNodeChanged || curCollisionCandidates == null)
                 {
                     BoundingBox endAABB = new BoundingBox(
                         endPos - GameConstants.PlayerSize / 2,
@@ -84,6 +84,10 @@ namespace Learning
                 endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
                 isWalking = false;
                 world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV);
+            }
+            else
+            {
+                outsideV = Vector3.Zero;
             }
             // and update the player's position
             Position = endPos; 

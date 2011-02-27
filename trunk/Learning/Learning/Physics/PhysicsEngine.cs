@@ -44,16 +44,19 @@ namespace Learning.Physics
 
         public void Add(PhysicsObject obj)
         {
+            _objects.Add(obj);
             _broadPhaseCollider.Add(obj);
         }
 
         public void Update(GameTime gameTime)
         {
+            ActiveCollisions.PrepareForBroadPhase(_objects);
             DoBroadPhaseCollision();
             DoNarrowPhaseCollision();
             ApplyForces(gameTime);
             ApplyImpulses(gameTime);
             UpdatePositions(gameTime);
+            CleanDisposedObjects();
         }
 
         private void DoBroadPhaseCollision()
@@ -111,6 +114,15 @@ namespace Learning.Physics
             foreach (PhysicsObject obj in _objects)
             {
                 obj.IntegratePosition(gameTime);
+            }
+        }
+
+        private void CleanDisposedObjects()
+        {
+            for (int i = _objects.Count - 1; i >= 0; i--)
+            {
+                if (_objects[i].IsDisposed)
+                    _objects.RemoveAt(i);
             }
         }
 

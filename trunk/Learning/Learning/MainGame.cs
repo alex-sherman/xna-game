@@ -63,7 +63,7 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)ScreenManager.GraphicsDevice.Viewport.Width /
                 (float)ScreenManager.GraphicsDevice.Viewport.Height,
-                3f, 2000.0f);
+                1f, 2000.0f);
 
             worldViewProjection = projection;
             newWorld.projection = projection;
@@ -151,6 +151,11 @@ namespace Learning
                 {
                     newWorld.generator.step();
                 }
+            }
+            // noclip
+            if (input.IsNewKeyPress(Keys.N))
+            {
+                player.noClip = !player.noClip;
             }
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))

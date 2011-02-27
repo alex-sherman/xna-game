@@ -9,10 +9,12 @@ namespace Learning.Physics
     class CollisionPair : IEquatable<CollisionPair>
     {
         private PhysicsEngine _engine;
+        internal static Int64 _currentID = 0;
 
         public PhysicsObject ObjectA;
         public PhysicsObject ObjectB;
         public Contact contact;
+        public Int64 CollisionID;
 
         public bool isColliding;
 
@@ -26,6 +28,11 @@ namespace Learning.Physics
             _engine = engine;
             ObjectA = objA;
             ObjectB = objB;
+        }
+
+        static internal Int64 generateCollisionID()
+        {
+            return CollisionPair._currentID++;
         }
 
         internal void Reset()
