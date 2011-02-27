@@ -21,6 +21,7 @@ namespace Learning.Physics
         public BoundingBox hitBox;
         public Vector3 LinearVelocity = Vector3.Zero;
         public bool IsStatic = false;
+        public Int64 CollisionID;
 
         public event EventHandler<EventArgs> OnDisposed;
 
