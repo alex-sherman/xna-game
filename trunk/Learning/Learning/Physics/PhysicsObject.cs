@@ -123,17 +123,7 @@ namespace Learning.Physics
             Vector3.Add(ref _dx, ref _position, out _position);
         }
 
-        public bool IsDisposed
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool IsDisposed { get; set; }
 
         public void Dispose()
         {
