@@ -63,7 +63,7 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)ScreenManager.GraphicsDevice.Viewport.Width /
                 (float)ScreenManager.GraphicsDevice.Viewport.Height,
-                1f, 2000.0f);
+                3f, 2000.0f);
 
             worldViewProjection = projection;
             newWorld.projection = projection;
@@ -145,6 +145,13 @@ namespace Learning
             if(input.IsNewKeyPress(GameConstants.quickSaveKey)){
                 player.world.saveGame("save.sav");
             }
+            //Debugging terrain generation
+            if(keyboard.IsKeyDown(Keys.F)){
+                for (int i = 0; i < 5; i++)
+                {
+                    newWorld.generator.step();
+                }
+            }
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))
             {
@@ -157,34 +164,50 @@ namespace Learning
             //Movement
             if (keyboard.IsKeyDown(Keys.W))
             {
-                player.relativeVelocity.Z = 1;
+                player.velocity.Z = 1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                player.relativeVelocity.Z = -1;
+                player.velocity.Z = -1;
             }
-            else { this.player.relativeVelocity.Z = 0; }
+            else { this.player.velocity.Z = 0; }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                player.relativeVelocity.X = -1;
+                player.velocity.X = -1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                player.relativeVelocity.X = 1;
+                player.velocity.X = 1;
             }
-            else { player.relativeVelocity.X = 0; }
-            if (player.relativeVelocity.LengthSquared() > 0)
-            {
-                player.relativeVelocity.Normalize();
-                player.relativeVelocity *= player.speed;
-            }
+            else { player.velocity.X = 0; }
+            
             //Jumping
-            if (keyboard.IsKeyDown(Keys.Space) && player.isWalking)
+            if (keyboard.IsKeyDown(Keys.Space))
             {
-                player.outsideV.Y = GameConstants.PlayerJumpSpeed;
-                player.isWalking = false;
+                if (player.isWalking)
+                {
+                    player.outsideV.Y = GameConstants.PlayerJumpSpeed;
+                    player.isWalking = false;
+                }
+                else if (player.noClip)
+                {
+                    player.velocity.Y = GameConstants.PlayerJumpSpeed;
+                }
             }
+            else { player.velocity.Y = 0; }
+            if (player.velocity.LengthSquared() > 0)
+            {
+                player.velocity.Normalize();
+                if (player.noClip)
+                {
+                    player.velocity *= player.speed * 10;
 
+                }
+                else
+                {
+                    player.velocity *= player.speed;
+                }
+            }
             // select items to use
             if (keyboard.IsKeyDown(Keys.D1))
             {
