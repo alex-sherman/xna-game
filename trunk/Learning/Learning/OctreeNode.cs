@@ -250,6 +250,8 @@ namespace Learning
         /// <returns>A list of all type 4 blocks in the node</returns>
         public List<Block> drawChild(BoundingFrustum boundingFrustum)
         {
+            // the line below draws a wireframe octree
+            //Cube.Draw(center, world, true, 2 * nodeSize);
             List<Block> drawLast = new List<Block>();
             List<Matrix> toDraw = new List<Matrix>();
             foreach (GameObject gameObject in gameObjects)
@@ -292,8 +294,7 @@ namespace Learning
         }
         public List<GameObject> getCollisionCandidates(BoundingBox box)
         {
-            OctreeNode containingNode = getContainingNode(box);
-            return containingNode.getAllBlocks();
+            return getContainingNode(box).getAllBlocks();
         }
 
         /*

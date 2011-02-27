@@ -70,15 +70,16 @@ namespace Learning.Physics
                 splitTree();
                 for (int i = Objects.Count - 1; i >= 0; i--)
                 {
+                    bool addedToChild = false;
                     foreach (PhysicsOctreeNode child in children)
                     {
-                        if (child.bounds.Contains(Objects[i].hitBox) == ContainmentType.Contains)
+                        if (child.bounds.Intersects(Objects[i].hitBox))
                         {
                             child.Objects.Add(Objects[i]);
-                            Objects.RemoveAt(i);
-                            break;
+                            addedToChild = true;
                         }
                     }
+                    if (addedToChild) Objects.RemoveAt(i);
                 }
                 foreach (PhysicsOctreeNode child in children)
                 {
@@ -89,15 +90,20 @@ namespace Learning.Physics
 
         public bool addObject(PhysicsObject obj)
         {
+            bool addedToChild = false;
             foreach (PhysicsOctreeNode child in children)
             {
-                if (child.bounds.Contains(obj.hitBox) == ContainmentType.Contains)
+                if (child.bounds.Intersects(obj.hitBox))
                 {
-                    return child.addObject(obj);
+                    child.addObject(obj);
+                    addedToChild = true;
                 }
             }
-            Objects.Add(obj);
-            redistributeObjects();
+            if (!addedToChild)
+            {
+                Objects.Add(obj);
+                this.redistributeObjects();
+            }
             return true;
         }
 
@@ -117,15 +123,14 @@ namespace Learning.Physics
             {
                 if (child.bounds.Contains(box) == ContainmentType.Contains)
                 {
-                    return child.getContainingNode(box).parent;
+                    return child.getContainingNode(box);
                 }
             }
             return this;
         }
         public List<PhysicsObject> getCollisionCandidates(BoundingBox box)
         {
-            PhysicsOctreeNode containingNode = getContainingNode(box);
-            return containingNode.getAllBlocks();
+            return getContainingNode(box).getAllBlocks();
         }
     }
 }
