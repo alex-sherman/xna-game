@@ -24,6 +24,12 @@ namespace Learning.Physics
 
         public void PrepareForBroadPhase(List<PhysicsObject> objectList)
         {
+            CollisionIDGenerator idGen = new CollisionIDGenerator();
+            foreach (PhysicsObject obj in objectList)
+            {
+                obj.CollisionID = idGen.generateID();
+            }
+
             if (_hashSet == null)
             {
                 _hashSet = new CollisionHashSet(objectList.Count, this);

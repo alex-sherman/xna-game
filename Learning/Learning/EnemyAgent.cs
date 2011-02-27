@@ -39,8 +39,8 @@ namespace Learning
         }
 
         public EnemyAgent(Vector3 position, World world, AIManager manager)
-            : base(position)
         {
+            Position = position;
             this.aiManager = manager;
             this.world = world;
             hitBox = CalculateBoundingBox();

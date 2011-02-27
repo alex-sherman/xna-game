@@ -9,20 +9,22 @@ namespace Learning.Mapgen
 {
     class Mapgen
     {
+        private World _world;
         public int[,] rockHeight;
         public int[,] landHeight;
         public int[,] lastRockHeight;
         public int[,] lastLandHeight;
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
-        public OctreeNode node;
+        public OctreeNode renderTree;
         public int size;
         public static Random rand = new Random();
         public List<VertexPositionNormalTexture> vertices;
-        public Mapgen(OctreeNode node)
+        public Mapgen(World world)
         {
-            this.node = node;
-            this.size = (int)node.nodeSize*2;
+            renderTree = world.objectTree;
+            _world = world;
+            this.size = (int)renderTree.nodeSize*2;
             rockHeight = new int[size, size];
             landHeight = new int[size, size];
             lastLandHeight = new int[size, size];
@@ -73,7 +75,8 @@ namespace Learning.Mapgen
                 {
                     if (landHeight[i, k] != lastLandHeight[i, k])
                     {
-                        node.addBlock(i - size / 2, landHeight[i, k], k - size / 2, 1);
+                        Block toAdd = new Block(i - size / 2, landHeight[i, k], k - size / 2, 1);
+                        _world.addObject(toAdd);
                         lastLandHeight[i, k] = landHeight[i, k];
                     }
                 }
@@ -216,9 +219,9 @@ namespace Learning.Mapgen
                 }
             }
             currentAgents = new List<MapgenAgent>();
-            for (int i = 0; i < node.nodeSize*2; i++)
+            for (int i = 0; i < renderTree.nodeSize*2; i++)
             {
-                for (int k = 0; k < node.nodeSize * 2; k++)
+                for (int k = 0; k < renderTree.nodeSize * 2; k++)
                 {
                     for (int j = RockAgent.minHeight; j <= rockHeight[i,k]; j++)
                     {
@@ -228,7 +231,8 @@ namespace Learning.Mapgen
                         //}
                         //else
                         //{
-                            node.addBlock(i - size / 2, j, k - size / 2, 1);
+                        Block toAdd = new Block(i - size / 2, j, k - size / 2, 1);
+                        _world.addObject(toAdd);
                         //}
                     }
                 }
