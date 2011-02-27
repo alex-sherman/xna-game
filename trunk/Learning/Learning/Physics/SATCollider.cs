@@ -43,6 +43,10 @@ namespace Learning.Physics
                     penetration = Vector3.Zero;
                 }
             }
+            if (!a.IsStatic)
+                a.Position += penetration;
+            if (!b.IsStatic)
+                b.Position += penetration;
             contact = new Contact(penetration);
         }
 
