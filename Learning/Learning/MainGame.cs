@@ -164,22 +164,22 @@ namespace Learning
             //Movement
             if (keyboard.IsKeyDown(Keys.W))
             {
-                player.velocity.Z = 1;
+                player.relativeVelocity.Z = 1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                player.velocity.Z = -1;
+                player.relativeVelocity.Z = -1;
             }
-            else { this.player.velocity.Z = 0; }
+            else { this.player.relativeVelocity.Z = 0; }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                player.velocity.X = -1;
+                player.relativeVelocity.X = -1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                player.velocity.X = 1;
+                player.relativeVelocity.X = 1;
             }
-            else { player.velocity.X = 0; }
+            else { player.relativeVelocity.X = 0; }
             
             //Jumping
             if (keyboard.IsKeyDown(Keys.Space))
@@ -191,21 +191,21 @@ namespace Learning
                 }
                 else if (player.noClip)
                 {
-                    player.velocity.Y = GameConstants.PlayerJumpSpeed;
+                    player.relativeVelocity.Y = GameConstants.PlayerJumpSpeed;
                 }
             }
-            else { player.velocity.Y = 0; }
-            if (player.velocity.LengthSquared() > 0)
+            else { player.relativeVelocity.Y = 0; }
+            if (player.relativeVelocity.LengthSquared() > 0)
             {
-                player.velocity.Normalize();
+                player.relativeVelocity.Normalize();
                 if (player.noClip)
                 {
-                    player.velocity *= player.speed * 10;
+                    player.relativeVelocity *= player.speed * 10;
 
                 }
                 else
                 {
-                    player.velocity *= player.speed;
+                    player.relativeVelocity *= player.speed;
                 }
             }
             // select items to use

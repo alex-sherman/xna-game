@@ -73,7 +73,7 @@ namespace Learning.Mapgen
                 {
                     if (landHeight[i, k] != lastLandHeight[i, k])
                     {
-                        node.addVisibleBlock(i - size / 2, landHeight[i, k], k - size / 2, 1);
+                        node.addBlock(i - size / 2, landHeight[i, k], k - size / 2, 1);
                         lastLandHeight[i, k] = landHeight[i, k];
                     }
                 }

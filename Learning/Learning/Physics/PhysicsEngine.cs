@@ -8,11 +8,11 @@ namespace Learning.Physics
 {
     class PhysicsEngine
     {
-        private List<PhysicsObject> _objects;
-        private IBroadPhaseCollider _broadPhaseCollider;
-        private INarrowPhaseCollider _narrowPhaseCollider;
-        private Pool<CollisionPair> collisionPool;
-        private float _gravity;
+        internal List<PhysicsObject> _objects;
+        internal IBroadPhaseCollider _broadPhaseCollider;
+        internal INarrowPhaseCollider _narrowPhaseCollider;
+        internal Pool<CollisionPair> collisionPool;
+        internal float _gravity;
 
         public CollisionList ActiveCollisions;
 

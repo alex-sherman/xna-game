@@ -10,22 +10,33 @@ namespace Learning.Physics
     {
         private PhysicsEngine _engine;
 
-        public OctreeNode objectOctree;
+        public PhysicsOctreeNode staticObjectTree;
+        public List<PhysicsObject> dynamicObjects;
 
         public OctreeBroadPhaseCollider(PhysicsEngine engine)
         {
             _engine = engine;
-            objectOctree = new OctreeNode(Vector3.Zero, 500, GameConstants.OctreeBlockLimit);
+            staticObjectTree = new PhysicsOctreeNode(_engine, Vector3.Zero, 500, GameConstants.OctreeBlockLimit);
         }
 
         public void Add(PhysicsObject obj)
         {
-            throw new NotImplementedException();
+            if (obj.IsStatic)
+                staticObjectTree.addObject(obj);
+            else
+                dynamicObjects.Add(obj);
         }
 
         public void Update()
         {
-            throw new NotImplementedException();
+            foreach (PhysicsObject obj in dynamicObjects)
+            {
+                List<PhysicsObject> possibleCollisions = staticObjectTree.getCollisionCandidates(obj.hitBox);
+                foreach (PhysicsObject obj2 in possibleCollisions)
+                {
+                    _engine.ActiveCollisions.AddPair(obj, obj2, _engine);
+                }
+            }
         }
 
         public event BroadPhaseCollisionHandler OnBroadPhaseCollision;
