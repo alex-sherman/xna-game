@@ -15,6 +15,7 @@ namespace Learning
         public Vector3 outsideV = new Vector3(0, 0, 0);
         public Vector3 currentVelocity;
         public Matrix rotation;
+        public bool noClip = true;
         public float xRotation;
         public float yRotation;
         public bool isWalking = false;
@@ -57,32 +58,33 @@ namespace Learning
             
             Vector3 endPos = Position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
-
-            if (octreeNodeChanged)
+            if (!noClip)
             {
-                BoundingBox endAABB = new BoundingBox(
-                    endPos - GameConstants.PlayerSize / 2,
-                    endPos + GameConstants.PlayerSize / 2);
-                // move the player's camera up
-                endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
-                endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
-                curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+                if (octreeNodeChanged)
+                {
+                    BoundingBox endAABB = new BoundingBox(
+                        endPos - GameConstants.PlayerSize / 2,
+                        endPos + GameConstants.PlayerSize / 2);
+                    // move the player's camera up
+                    endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+                    endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
+                    curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+                }
+
+                // resolve non-gravity-caused collisions
+
+                //endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
+
+                int checkedCollisions = 0;
+                while (world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV) && ++checkedCollisions < 4)
+                    if (isWalking) outsideV.Y = 0;
+                //world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
+
+                //gravity (to get the true state of isWalking)
+                endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
+                isWalking = false;
+                world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV);
             }
-
-            // resolve non-gravity-caused collisions
-
-            //endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
-            
-            int checkedCollisions = 0;
-            while (world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV) && ++checkedCollisions < 4) 
-                if (isWalking) outsideV.Y = 0;
-            //world.collisionCheck(curCollisionCandidates, ref endAABB, ref endPos, ref isWalking, ref outsideV);
-
-            //gravity (to get the true state of isWalking)
-            endPos += outsideV * gameTime.ElapsedGameTime.Milliseconds;
-            isWalking = false;
-            world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV);
-
             // and update the player's position
             Position = endPos; 
         }
