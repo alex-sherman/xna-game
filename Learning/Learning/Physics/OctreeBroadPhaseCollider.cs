@@ -17,6 +17,7 @@ namespace Learning.Physics
         {
             _engine = engine;
             staticObjectTree = new PhysicsOctreeNode(_engine, Vector3.Zero, 500, GameConstants.OctreeBlockLimit);
+            dynamicObjects = new List<PhysicsObject>();
         }
 
         public void Add(PhysicsObject obj)
@@ -35,6 +36,8 @@ namespace Learning.Physics
                 foreach (PhysicsObject obj2 in possibleCollisions)
                 {
                     _engine.ActiveCollisions.AddPair(obj, obj2, _engine);
+                    if (OnBroadPhaseCollision != null)
+                        OnBroadPhaseCollision(obj, obj2);
                 }
             }
         }
