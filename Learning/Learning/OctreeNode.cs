@@ -22,7 +22,7 @@ namespace Learning
         public readonly Vector3 center;
         public readonly float nodeSize;
         public readonly int maxObjects;
-        
+
         #endregion
 
         public OctreeNode(Vector3 center, float size, int maxObjects)
@@ -93,15 +93,16 @@ namespace Learning
                 splitTree();
                 for (int i = gameObjects.Count - 1; i >= 0; i--)
                 {
+                    bool addedToChild = false;
                     foreach (OctreeNode child in children)
                     {
-                        if (child.bounds.Contains(gameObjects[i].hitBox) == ContainmentType.Contains)
+                        if (child.bounds.Intersects(gameObjects[i].hitBox))
                         {
                             child.gameObjects.Add(gameObjects[i]);
-                            gameObjects.RemoveAt(i);
-                            break;
+                            addedToChild = true;
                         }
                     }
+                    if (addedToChild) gameObjects.RemoveAt(i);
                 }
                 foreach (OctreeNode child in children)
                 {
@@ -112,15 +113,20 @@ namespace Learning
 
         public bool addObject(GameObject obj)
         {
+            bool addedToChild = false;
             foreach (OctreeNode child in children)
             {
-                if (child.bounds.Contains(obj.hitBox) == ContainmentType.Contains)
+                if (child.bounds.Intersects(obj.hitBox))
                 {
-                    return child.addObject(obj);
+                    child.addObject(obj);
+                    addedToChild = true;
                 }
             }
-            gameObjects.Add(obj);
-            this.redistributeObjects();
+            if (!addedToChild)
+            {
+                gameObjects.Add(obj);
+                this.redistributeObjects();
+            }
             return true;
         }
 
@@ -191,26 +197,32 @@ namespace Learning
             float minDist = float.PositiveInfinity;
             GameObject closest = null;
             OctreeNode containingNode = null;
-            foreach (GameObject obj in gameObjects)
+            if (children.Count == 0)
             {
-                float? distance = lookAt.Intersects(obj.hitBox);
-                if (distance != null && distance < minDist)
+                foreach (GameObject obj in gameObjects)
                 {
-                    closest = obj;
-                    minDist = (float)distance;
-                    containingNode = this;
+                    float? distance = lookAt.Intersects(obj.hitBox);
+                    if (distance != null && distance < minDist)
+                    {
+                        closest = obj;
+                        minDist = (float)distance;
+                        containingNode = this;
+                    }
                 }
             }
-            foreach (OctreeNode child in children)
+            else
             {
-                float childDist;
-                OctreeNode node;
-                GameObject hit = child.getBlock(lookAt, out childDist, out node);
-                if (childDist < minDist)
+                foreach (OctreeNode child in children)
                 {
-                    minDist = childDist;
-                    closest = hit;
-                    containingNode = node;
+                    float childDist;
+                    OctreeNode node;
+                    GameObject hit = child.getBlock(lookAt, out childDist, out node);
+                    if (childDist < minDist)
+                    {
+                        minDist = childDist;
+                        closest = hit;
+                        containingNode = node;
+                    }
                 }
             }
             dist = minDist;
@@ -273,7 +285,7 @@ namespace Learning
             {
                 if (child.bounds.Contains(box) == ContainmentType.Contains)
                 {
-                    return child.getContainingNode(box).parent;
+                    return child.getContainingNode(box);
                 }
             }
             return this;
@@ -303,16 +315,20 @@ namespace Learning
         }
          * */
 
-        public Block getBlockAtPoint(Vector3 vec) {
+        public Block getBlockAtPoint(Vector3 vec)
+        {
             // assumes vec is the center of a block of width 1
             Vector3 diagonal = new Vector3(0.5f);
             BoundingBox box = new BoundingBox(vec - diagonal, vec + diagonal);
-            foreach (OctreeNode child in children) {
-                if (child.bounds.Contains(box) == ContainmentType.Contains) {
+            foreach (OctreeNode child in children)
+            {
+                if (child.bounds.Contains(box) == ContainmentType.Contains)
+                {
                     return child.getBlockAtPoint(vec);
                 }
             }
-            foreach (GameObject obj in gameObjects) {
+            foreach (GameObject obj in gameObjects)
+            {
                 if (obj.GetType() != typeof(Block))
                     continue;
                 if (obj.hitBox.Contains(vec) == ContainmentType.Contains)
