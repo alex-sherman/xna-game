@@ -101,9 +101,9 @@ namespace Learning.Physics
              */
             //for (int i = 0; i < Iterations; i++)
             {
-                foreach (CollisionPair pair in ActiveCollisions)
+                //foreach (CollisionPair pair in ActiveCollisions)
                 {
-                    pair.ApplyImpulse();
+               //     pair.ApplyImpulse();
                 }
             }
 
