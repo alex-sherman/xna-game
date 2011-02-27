@@ -20,12 +20,11 @@ namespace Learning.Physics
 
         public void Add(PhysicsObject obj)
         {
-            objectOctree.addObject(obj);
+            throw new NotImplementedException();
         }
 
         public void Update()
         {
-            
             throw new NotImplementedException();
         }
 
