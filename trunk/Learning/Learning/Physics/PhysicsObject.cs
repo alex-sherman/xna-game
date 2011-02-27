@@ -10,15 +10,15 @@ namespace Learning.Physics
     {
         private Vector3 _position = Vector3.Zero;
         private float _yRotation;
-        private float _mass = 1;
+        internal float _mass = 1;
         private float _inverseMass = 1;
-        private Vector3 _force = Vector3.Zero;
-        private Vector3 _impulse;
-        private Vector3 _acceleration;
-        private Vector3 _dv; // change in velocity
-        private Vector3 _dx; // change in position
+        internal Vector3 _force = Vector3.Zero;
+        private Vector3 _impulse = Vector3.Zero;
+        private Vector3 _acceleration = Vector3.Zero;
+        private Vector3 _dv = Vector3.Zero; // change in velocity
+        private Vector3 _dx = Vector3.Zero; // change in position
 
-        public BoundingBox AABB;
+        public BoundingBox hitBox;
         public Vector3 LinearVelocity = Vector3.Zero;
         public bool IsStatic = false;
 
@@ -34,11 +34,10 @@ namespace Learning.Physics
             set { _yRotation = value; }
         }
 
-        // property for compatability
-        public BoundingBox hitBox
+        public BoundingBox AABB
         {
-            get { return AABB; }
-            set { AABB = value; }
+            get { return hitBox; }
+            set { hitBox = value; }
         }
 
         public float Mass
@@ -103,6 +102,7 @@ namespace Learning.Physics
 
         internal void IntegrateVelocity(GameTime gameTime)
         {
+            Vector3.Multiply(ref _force, _inverseMass, out _acceleration);
             Vector3.Multiply(ref _acceleration,
                              gameTime.ElapsedGameTime.Milliseconds,
                              out _dv);

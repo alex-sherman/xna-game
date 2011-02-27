@@ -131,6 +131,16 @@
     <Compile Include="Menus\OptionsMenu.cs" />
     <Compile Include="Menus\PauseScreen.cs" />
     <Compile Include="OctreeNode.cs" />
+    <Compile Include="Physics\CollisionList.cs" />
+    <Compile Include="Physics\CollisionPair.cs" />
+    <Compile Include="Physics\Contact.cs" />
+    <Compile Include="Physics\IBroadPhaseCollider.cs" />
+    <Compile Include="Physics\INarrowPhaseCollider.cs" />
+    <Compile Include="Physics\OctreeBroadPhaseCollider.cs" />
+    <Compile Include="Physics\PhysicsEngine.cs" />
+    <Compile Include="Physics\PhysicsObject.cs" />
+    <Compile Include="Physics\Pool.cs" />
+    <Compile Include="Physics\SAT.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

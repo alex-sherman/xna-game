@@ -52,7 +52,7 @@ namespace Learning
                 }
                 foreach (Player player in world.players)
                 {
-                    if ((player.position - item.Position).Length() < 2.5f)
+                    if ((player.Position - item.Position).Length() < 2.5f)
                     {
                         player.inventory.addItem(item);
                         Item.itemList.Remove(item);

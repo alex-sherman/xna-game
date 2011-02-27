@@ -10,33 +10,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Learning
 {
     [Serializable()]
-    abstract class GameObject
+    abstract class GameObject : Physics.PhysicsObject
     {
         #region Fields
-        Vector3 _position;
-        // if this isn't public a ton of headaches are created! Why
-        // did microsoft decide to make BoundingBox a mutable struct?
-        public BoundingBox hitBox;
         bool _visible = true;
         #endregion Fields
-
-        #region Properties
-
-        public Vector3 Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-        /*
-        public BoundingBox HitBox
-        {
-            get { return hitBox; }
-            set
-            {
-                hitBox = value;
-            }
-        }
-         * */
 
         public bool Visible
         {
@@ -44,7 +22,6 @@ namespace Learning
             set { _visible = value; }
         }
 
-        #endregion Properties
 
         #region Constructors and Initialization
 

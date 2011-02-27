@@ -157,26 +157,26 @@ namespace Learning
             //Movement
             if (keyboard.IsKeyDown(Keys.W))
             {
-                player.velocity.Z = 1;
+                player.relativeVelocity.Z = 1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                player.velocity.Z = -1;
+                player.relativeVelocity.Z = -1;
             }
-            else { this.player.velocity.Z = 0; }
+            else { this.player.relativeVelocity.Z = 0; }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                player.velocity.X = -1;
+                player.relativeVelocity.X = -1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                player.velocity.X = 1;
+                player.relativeVelocity.X = 1;
             }
-            else { player.velocity.X = 0; }
-            if (player.velocity.LengthSquared() > 0)
+            else { player.relativeVelocity.X = 0; }
+            if (player.relativeVelocity.LengthSquared() > 0)
             {
-                player.velocity.Normalize();
-                player.velocity *= player.speed;
+                player.relativeVelocity.Normalize();
+                player.relativeVelocity *= player.speed;
             }
             //Jumping
             if (keyboard.IsKeyDown(Keys.Space) && player.isWalking)

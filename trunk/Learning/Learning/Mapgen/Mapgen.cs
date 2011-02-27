@@ -119,14 +119,14 @@ namespace Learning.Mapgen
                 {
                     for (int j = rockHeight[i,k]; j <= landHeight[i,k]; j++)
                     {
-                        if (j == landHeight[i, k])
-                        {
-                            node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
-                        }
-                        else
-                        {
+                        //if (j == landHeight[i, k])
+                        //{
+                        //    node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
+                        //}
+                        //else
+                        //{
                             node.addBlock(i - size / 2, j, k - size / 2, 1);
-                        }
+                        //}
                     }
                 }
             }
@@ -153,14 +153,14 @@ namespace Learning.Mapgen
                 {
                     for (int j = RockAgent.minHeight; j <= rockHeight[i,k]; j++)
                     {
-                        if (j == rockHeight[i, k])
-                        {
-                            node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
-                        }
-                        else
-                        {
+                        //if (j == rockHeight[i, k])
+                        //{
+                        //    node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
+                        //}
+                        //else
+                        //{
                             node.addBlock(i - size / 2, j, k - size / 2, 1);
-                        }
+                        //}
                     }
                 }
             }
