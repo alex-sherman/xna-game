@@ -7,14 +7,15 @@ namespace Learning.Physics
 {
     class CollisionList : List<CollisionPair>
     {
-        private CollisionHashSet _hashSet;
+        //private CollisionHashSet _hashSet;
 
         public CollisionList() : base() { }
 
         // TODO check that a pair isn't already in the list
+        // TODO figure out how to implement efficient hashing. is it necessary?
         public void AddPair(PhysicsObject objA, PhysicsObject objB, PhysicsEngine engine)
         {
-            if (!_hashSet.TestAndSet(objA, objB))
+            //if (!_hashSet.TestAndSet(objA, objB))
             {
                 CollisionPair newPair = engine.collisionPool.Get();
                 newPair.ConstructPair(objA, objB, engine);
@@ -29,7 +30,8 @@ namespace Learning.Physics
             {
                 obj.CollisionID = idGen.generateID();
             }
-
+            // TODO figure out a way to do this efficiently.
+            /*
             if (_hashSet == null)
             {
                 _hashSet = new CollisionHashSet(objectList.Count, this);
@@ -38,6 +40,7 @@ namespace Learning.Physics
             {
                 _hashSet.ClearSet(objectList.Count, this);
             }
+             */
         }
 
 
