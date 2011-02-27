@@ -6,17 +6,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 namespace Learning
 {
-    class Player
+    class Player : Physics.PhysicsObject
     {
         #region Declarations
-        public BoundingBox hitBox = new BoundingBox();
-        public BoundingBox vForward = new BoundingBox();
-        public BoundingBox vLeft = new BoundingBox();
-        public BoundingBox fallBox = new BoundingBox();
         public float speed = .1f;
         public Inventory inventory;
-        public Vector3 position = new Vector3(0, 25, 0);
-        public Vector3 velocity = new Vector3(0, 0, 0);
+        public Vector3 relativeVelocity = new Vector3(0, 0, 0);
         public Vector3 outsideV = new Vector3(0, 0, 0);
         public Vector3 currentVelocity;
         public Matrix rotation;
@@ -34,6 +29,7 @@ namespace Learning
         public Player()
         {
             this.inventory = new Inventory();
+            Position = new Vector3(0, 25, 0);
         }
 
         public void Update(GameTime gameTime)
@@ -44,8 +40,8 @@ namespace Learning
             if (lastNode == containingNode)
                 octreeNodeChanged = false;
 
-            hitBox.Max = position + GameConstants.PlayerSize;
-            hitBox.Min = position - GameConstants.PlayerSize;
+            hitBox.Max = Position + GameConstants.PlayerSize;
+            hitBox.Min = Position - GameConstants.PlayerSize;
             // now account for the higher location of the camera
             //hitBox.Max.Y -= GameConstants.PlayerSize.Y / 3;
             hitBox.Min.Y -= GameConstants.PlayerSize.Y / 3;
@@ -53,13 +49,13 @@ namespace Learning
 
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
             lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
-            lookAt.Position = position;
-            currentVelocity = Vector3.Transform(velocity, Matrix.CreateRotationY(xRotation));
+            lookAt.Position = Position;
+            currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
 
             outsideV.Y -= GameConstants.Gravity;
             //currentVelocity += outsideV;
             
-            Vector3 endPos = position;
+            Vector3 endPos = Position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
 
             if (octreeNodeChanged)
@@ -88,14 +84,14 @@ namespace Learning
             world.collisionCheck(curCollisionCandidates, ref endPos, ref isWalking, ref outsideV);
 
             // and update the player's position
-            position = endPos; 
+            Position = endPos; 
         }
 
         public Matrix getCameraMatrix()
         {
             return Matrix.CreateLookAt(
-                   position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
-                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.position,
+                   Position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
+                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.Position,
                    Vector3.Transform(Vector3.Up, this.rotation));
         }
 

@@ -14,7 +14,7 @@ namespace Learning
     {
         #region Declarations
         public List<GameObject> gameObjects;
-        public List<GameObject> visibleObjects = new List<GameObject>();
+        //public List<GameObject> visibleObjects = new List<GameObject>();
         public List<OctreeNode> children;
         public static World world;
         public OctreeNode parent;
@@ -36,6 +36,7 @@ namespace Learning
             gameObjects = new List<GameObject>();
             children = new List<OctreeNode>();
         }
+
         #region Serialization
         public OctreeNode(SerializationInfo info, StreamingContext context)
         {
@@ -87,7 +88,6 @@ namespace Learning
         }
         public void redistributeObjects()
         {
-            GameObject curObj;
             if (gameObjects.Count > maxObjects)
             {
                 splitTree();
@@ -97,8 +97,6 @@ namespace Learning
                     {
                         if (child.bounds.Contains(gameObjects[i].hitBox) == ContainmentType.Contains)
                         {
-                            curObj = gameObjects[i];
-                            if (visibleObjects.Contains(curObj)) { visibleObjects.Remove(curObj); child.visibleObjects.Add(curObj);  }
                             child.gameObjects.Add(gameObjects[i]);
                             gameObjects.RemoveAt(i);
                             break;
@@ -125,20 +123,25 @@ namespace Learning
             this.redistributeObjects();
             return true;
         }
+
+        /*
         public void addVisible(GameObject obj)
         {
             visibleObjects.Add(obj);
             addObject(obj);
         }
-        public void addBlock(Vector3 pos, int type)
-        {
-            Block poo = new Block(pos, type);
-            addObject(poo);
-        }
+        
         public void addVisibleBlock(int x, int y, int z, int type)
         {
             Block poo = new Block(new Vector3(x, y, z), type);
             addVisible(poo);
+        }
+        */
+
+        public void addBlock(Vector3 pos, int type)
+        {
+            Block poo = new Block(pos, type);
+            addObject(poo);
         }
         public bool addBlock(int x, int y, int z, int type)
         {
@@ -237,7 +240,7 @@ namespace Learning
         {
             List<Block> drawLast = new List<Block>();
             List<Matrix> toDraw = new List<Matrix>();
-            foreach (GameObject gameObject in visibleObjects)
+            foreach (GameObject gameObject in gameObjects)
             {
                 if (gameObject.GetType() == typeof(Block) && ((Block)gameObject).type == 4)
                     drawLast.Add((Block)gameObject);

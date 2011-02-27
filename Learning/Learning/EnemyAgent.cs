@@ -84,7 +84,7 @@ namespace Learning
                 octreeNodeChanged = false;
 
             float turnSpeed = 0.1f;
-            Vector3 desiredHeading = aiManager.getHeading(this, world.players[0].position);
+            Vector3 desiredHeading = aiManager.getHeading(this, world.players[0].Position);
             Vector3 headingDifference = desiredHeading - heading;
             headingDifference.Normalize();
             heading += headingDifference * turnSpeed;
