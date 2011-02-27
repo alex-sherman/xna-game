@@ -23,7 +23,7 @@ namespace Learning.Physics
             _gravity = gravity;
             _objects = new List<PhysicsObject>();
             _broadPhaseCollider = new OctreeBroadPhaseCollider(this);
-            _narrowPhaseCollider = SAT.Instance;
+            _narrowPhaseCollider = SATCollider.Instance;
             ActiveCollisions = new CollisionList();
             collisionPool = new Pool<CollisionPair>(50);
         }

@@ -18,6 +18,7 @@ namespace Learning
         public Block(Vector3 position, int type)
             : base(position)
         {
+            IsStatic = true;
             this.hitBox.Max = 2 * Cube.cubeSize * position + new Vector3(Cube.cubeSize);
             this.hitBox.Min = 2 * Cube.cubeSize * position - new Vector3(Cube.cubeSize);
             Position = 2 * Cube.cubeSize * position;
@@ -25,6 +26,7 @@ namespace Learning
         }
         public Block(SerializationInfo info, StreamingContext context)
         {
+            IsStatic = true;
             this.hitBox = (BoundingBox)info.GetValue("hitBox", typeof(BoundingBox));
             Position = (Vector3)info.GetValue("position", typeof(Vector3));
             this.type = (int)info.GetValue("type", typeof(int));

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Learning.Physics;
 
 namespace Learning
 {
@@ -20,6 +21,7 @@ namespace Learning
         public static GraphicsDevice device;
         public OctreeNode objectTree;
         public Mapgen.Mapgen generator;
+        PhysicsEngine engine;
 
         public AIManager aiManager;
 
@@ -39,11 +41,12 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 100f, GameConstants.OctreeBlockLimit);
+            engine = new PhysicsEngine(-0.0005f);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(objectTree);
             aiManager = new AIManager(this);
-            //generator.generateRock(10, 40);
-            generator.generateLand(20000);
+            generator.generateRock(10, 40);
+            generator.generateLand(300);
         }
         public void saveGame(String location)
         {
@@ -68,6 +71,7 @@ namespace Learning
         public void addPlayer(Player player)
         {
             this.players.Add(player);
+            engine.Add(player);
             player.world = this;
         }
 
@@ -78,6 +82,7 @@ namespace Learning
                 //player.Update();
             }
             Item.Update(this);
+            engine.Update(gameTime);
             this.partialWorld = players[0].getCameraMatrix();// partialWorld;
             //objectTree.Update(gameTime);
 
@@ -140,7 +145,7 @@ namespace Learning
                 //actorAABB.Min += correction;
                 if (correction.Y != 0)
                 {
-                    GUI.print("hit ground");
+                    //GUI.print("hit ground");
                     outsideVel.Y = 0;
                     if (correction.Y > 0)
                     {

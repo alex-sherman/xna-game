@@ -35,41 +35,32 @@ namespace Learning
 
         public void Update(GameTime gameTime)
         {
-            lastNode = containingNode;
-            containingNode = world.objectTree.getContainingNode(hitBox);
-            bool octreeNodeChanged = true;
-            if (lastNode == containingNode)
-                octreeNodeChanged = false;
-
             hitBox.Max = Position + GameConstants.PlayerSize;
             hitBox.Min = Position - GameConstants.PlayerSize;
             // now account for the higher location of the camera
             //hitBox.Max.Y -= GameConstants.PlayerSize.Y / 3;
             hitBox.Min.Y -= GameConstants.PlayerSize.Y / 3;
 
-
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
             lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
             lookAt.Position = Position;
             currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
-
+            /*
             outsideV.Y -= GameConstants.Gravity;
             //currentVelocity += outsideV;
-            
+
             Vector3 endPos = Position;
             endPos += currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
             if (!noClip)
             {
-               // if (octreeNodeChanged || curCollisionCandidates == null)
-                {
-                    BoundingBox endAABB = new BoundingBox(
-                        endPos - GameConstants.PlayerSize / 2,
-                        endPos + GameConstants.PlayerSize / 2);
-                    // move the player's camera up
-                    endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
-                    endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
-                    curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
-                }
+                BoundingBox endAABB = new BoundingBox(
+                    endPos - GameConstants.PlayerSize / 2,
+                    endPos + GameConstants.PlayerSize / 2);
+                // move the player's camera up
+                endAABB.Min.Y -= GameConstants.PlayerSize.Y / 3;
+                endAABB.Max.Y -= GameConstants.PlayerSize.Y / 3;
+                curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+
 
                 // resolve non-gravity-caused collisions
 
@@ -90,7 +81,8 @@ namespace Learning
                 outsideV = Vector3.Zero;
             }
             // and update the player's position
-            Position = endPos; 
+            Position = endPos;
+             * */
         }
 
         public Matrix getCameraMatrix()

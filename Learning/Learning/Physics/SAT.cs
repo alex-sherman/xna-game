@@ -6,21 +6,20 @@ using Microsoft.Xna.Framework;
 
 namespace Learning.Physics
 {
-    class SAT : INarrowPhaseCollider
+    class SATCollider : INarrowPhaseCollider
     {
-        private static SAT _instance;
-        private SAT() { }
+        private static SATCollider _instance;
+        private SATCollider() { }
 
-        public static SAT Instance
+        public static SATCollider Instance
         {
             get
             {
                 if (_instance == null) 
-                    _instance = new SAT();
+                    _instance = new SATCollider();
                 return _instance;
             }
         }
-
 
 
         public void Collide(PhysicsObject a, PhysicsObject b, out bool Intersect, out Contact contact)
