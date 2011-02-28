@@ -42,11 +42,13 @@ namespace Learning
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
             engine = new PhysicsEngine(-1f);
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 75f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
             generator.generateRock(10, 40);
-            generator.generateLand(300);
+            //generator.generateLand(300);
+            objectTree.updateVertices();
+            objectTree.setBuffers();
         }
         public void saveGame(String location)
         {
@@ -91,7 +93,7 @@ namespace Learning
                 //player.Update();
             }
             Item.Update(this);
-            engine.Update(gameTime);
+            //engine.Update(gameTime);
             this.partialWorld = players[0].getCameraMatrix();// partialWorld;
             //objectTree.Update(gameTime);
 
@@ -108,7 +110,7 @@ namespace Learning
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            objectTree.drawChild(toDraw);
+            objectTree.Draw(toDraw);
             Item.Draw(this);
         }
 

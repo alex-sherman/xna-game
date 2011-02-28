@@ -112,11 +112,12 @@
     <Compile Include="EnemyAgent.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Crafting.cs" />
-    <Compile Include="Cube.cs" />
+    <Compile Include="Graphics\Cube.cs" />
     <Compile Include="GameConstants.cs" />
+    <Compile Include="Graphics\GraphicsEngine.cs" />
+    <Compile Include="Graphics\GUI.cs" />
     <Compile Include="InventoryScreen.cs" />
     <Compile Include="MainGame.cs" />
-    <Compile Include="GUI.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Mapgen\CoastAgent.cs" />

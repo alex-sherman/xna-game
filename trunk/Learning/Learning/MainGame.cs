@@ -46,6 +46,8 @@ namespace Learning
             newWorld.addPlayer(player);
             InitializeTransform();
             GUI.Init(this);
+            Graphics.GraphicsEngine.effect = InitializeEffect();
+            Graphics.GraphicsEngine.world = newWorld;
 
             base.LoadContent();
         }
@@ -63,7 +65,7 @@ namespace Learning
                 // so this is 45 degrees.
                 (float)ScreenManager.GraphicsDevice.Viewport.Width /
                 (float)ScreenManager.GraphicsDevice.Viewport.Height,
-                1f, 2000.0f);
+                3f, 2000.0f);
 
             worldViewProjection = projection;
             newWorld.projection = projection;
