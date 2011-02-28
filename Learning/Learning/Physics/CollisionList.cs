@@ -29,6 +29,7 @@ namespace Learning.Physics
             foreach (PhysicsObject obj in objectList)
             {
                 obj.CollisionID = idGen.generateID();
+                obj.OnGround = false;
             }
             // TODO figure out a way to do this efficiently.
             /*

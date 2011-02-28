@@ -21,33 +21,33 @@ namespace Learning.Physics
             }
         }
 
-
         public void Collide(PhysicsObject a, PhysicsObject b, out bool Intersect, out Contact contact)
         {
-            Vector3 penetration;
+            Vector3 penetration = Vector3.Zero;
             if (!a.AABB.Intersects(b.AABB))
-            {
                 Intersect = false;
-                penetration = Vector3.Zero;
-            }
             else
             {
                 penetration = getMinimumPenetrationVector(a.AABB, b.AABB);
-                if (penetration.Length() > 0.001f)
-                {
+
+                //if (penetration.Length() > 0.00001f)
                     Intersect = true;
-                }
-                else
-                {
-                    Intersect = false;
-                    penetration = Vector3.Zero;
-                }
+                //else
+                //    Intersect = false;
             }
-            //if (!a.IsStatic)
-            //    a.Position += penetration;
-            //if (!b.IsStatic)
-            //    b.Position += penetration;
-            contact = new Contact(penetration);
+
+            // correct positions
+            if (!a.IsStatic && Intersect)
+            {
+                //a.Position += penetration;
+                a.LinearVelocity.Y = 0;
+            }
+            if (!b.IsStatic && Intersect)
+            {
+                //b.Position -= penetration;
+                b.LinearVelocity.Y = 0f;
+            }
+            contact = Intersect ? new Contact(penetration) : null;
         }
 
         private Vector3 getMinimumPenetrationVector(BoundingBox box1, BoundingBox box2)

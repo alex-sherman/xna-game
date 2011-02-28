@@ -157,7 +157,7 @@ namespace Learning
             // noclip
             if (input.IsNewKeyPress(Keys.N))
             {
-                player.noClip = !player.noClip;
+                player.Enabled = !player.Enabled;
             }
             //Run/walk
             if (keyboard.IsKeyDown(Keys.LeftShift))
@@ -191,12 +191,12 @@ namespace Learning
             //Jumping
             if (keyboard.IsKeyDown(Keys.Space))
             {
-                if (player.isWalking)
+                if (player.OnGround)
                 {
                     player.outsideV.Y = GameConstants.PlayerJumpSpeed;
-                    player.isWalking = false;
+                    player.OnGround = false;
                 }
-                else if (player.noClip)
+                else if (!player.Enabled) //noclip
                 {
                     player.relativeVelocity.Y = GameConstants.PlayerJumpSpeed;
                 }
@@ -205,10 +205,9 @@ namespace Learning
             if (player.relativeVelocity.LengthSquared() > 0)
             {
                 player.relativeVelocity.Normalize();
-                if (player.noClip)
+                if (!player.Enabled) //noclip
                 {
                     player.relativeVelocity *= player.speed * 10;
-
                 }
                 else
                 {
