@@ -52,7 +52,7 @@ namespace Learning
             info.AddValue("type", this._type);
 
         }
-        public void updateIndexBuffer(List<Block> neighbors)
+        public List<VertexPositionNormalTexture> getVertices(List<Block> neighbors)
         {
             Vector3 relation;
             bool[] drawSide = { true, true, true, true, true, true };
@@ -63,28 +63,33 @@ namespace Learning
                     relation = this.Position - block.Position;
                     if (relation.X != 0)
                     {
-                        if (relation.X > 0) { drawSide[2] = false; }
-                        else { drawSide[3] = false; }
+                        if (relation.X > 0) { drawSide[0] = false; }
+                        else { drawSide[1] = false; }
                     }
                     if (relation.Y != 0)
                     {
-                        if (relation.Y > 0) { drawSide[4] = false; }
-                        else { drawSide[5] = false; }
+                        if (relation.Y < 0) { drawSide[2] = false; }
+                        else { drawSide[3] = false; }
                     }
                     if (relation.Z != 0)
                     {
-                        if (relation.Z > 0) { drawSide[0] = false; }
-                        else { drawSide[1] = false; }
+                        if (relation.Z < 0) { drawSide[4] = false; }
+                        else { drawSide[5] = false; }
                     }
                 }
             }
-            int length = 0;
-            foreach (bool side in drawSide)
+            List<VertexPositionNormalTexture> visibleVertices = new List<VertexPositionNormalTexture>(36);
+            for (int i = 0; i<6; i++)
             {
-                if (side) { length += 6; }
+                if (drawSide[i]) {
+                    foreach (VertexPositionNormalTexture vertex in Cube.getFace(i,Position))
+                    {
+                        visibleVertices.Add(vertex);
+                    }
+                }
             }
-            if (length == 0) { this.visible = false; return; }
-            else { this.visible = true; }
+            if (visibleVertices.Count == 0) { this.visible = false; }
+            return visibleVertices;
         }
         public static void initTextures(Texture2D[] textureList)
         {

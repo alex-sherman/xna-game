@@ -46,6 +46,7 @@ namespace Learning
             //    Content, screenManager.Font, screenManager.SpriteBatch);
 
             screenManager.AddScreen(new Menus.MainMenu());
+            Graphics.GraphicsEngine.device = graphics.GraphicsDevice;
             //screenManager.AddScreen(new MainGame());
         }
 

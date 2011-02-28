@@ -54,8 +54,10 @@ VS_OUTPUT Transform(
 	float3 normal : NORMAL )
 {
     VS_OUTPUT Out = (VS_OUTPUT)0;
-
-    Out.position = mul(Position, WorldViewProj);
+	
+	float4 worldPosition = mul(Position, world);
+	float4 viewPosition = mul(Position, view);
+    Out.position = mul(viewPosition, proj);
     Out.textureCoordinate = TextureCoordinate;
 
     return Out;

@@ -14,7 +14,10 @@ namespace Learning
     {
         #region Declarations
         public List<GameObject> gameObjects;
-        //public List<GameObject> visibleObjects = new List<GameObject>();
+        public List<GameObject> visibleObjects = new List<GameObject>();
+        public List<VertexPositionNormalTexture>[] vertices;
+        public VertexBuffer[] vBuffers;
+        public IndexBuffer[] iBuffers;
         public List<OctreeNode> children;
         public static World world;
         public OctreeNode parent;
@@ -127,9 +130,60 @@ namespace Learning
                 gameObjects.Add(obj);
                 this.redistributeObjects();
             }
+
             return true;
         }
+        public void updateVertices()
+        {
+            vertices = new List<VertexPositionNormalTexture>[Block.textureList.Length];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = new List<VertexPositionNormalTexture>();
+            }
 
+            foreach (Block block in gameObjects)
+            {
+                
+                vertices[block._type].AddRange(block.getVertices(world.objectTree.getNeighborBlocks(block)));
+                
+            }
+            foreach (OctreeNode child in children)
+            {
+                child.updateVertices();
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    foreach (VertexPositionNormalTexture vertex in child.vertices[i])
+                    {
+                        vertices[i].Add(vertex);
+                    }
+                    child.vertices[i].Clear();
+                }
+            }
+        }
+        public void setBuffers()
+        {
+            vBuffers = new VertexBuffer[Block.textureList.Length];
+            iBuffers = new IndexBuffer[Block.textureList.Length];
+            List<int> indices = new List<int>();
+            
+            for (int i = 0; i < vBuffers.Length; i++)
+            {
+                if (vertices[i].Count > 0)
+                {
+                    vBuffers[i] = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, vertices[i].Count, BufferUsage.WriteOnly);
+                    vBuffers[i].SetData(vertices[i].ToArray());
+                    for (int j = 0; j < vertices[i].Count * 3 / 2; j++)
+                    {
+                        int offset = (j * 4);
+                        indices.AddRange(new int[] { 0 + offset, 1 + offset, 2 + offset, 2 + offset, 1 + offset, 3 + offset });
+                    }
+                    iBuffers[i] = new IndexBuffer(Cube.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
+                    iBuffers[i].SetData(indices.ToArray());
+                    vertices[i].Clear();
+                }
+            }
+
+        }
         /*
         public void addVisible(GameObject obj)
         {
@@ -240,6 +294,8 @@ namespace Learning
             Block objBlock = (Block)destroyed;
             containingNode.gameObjects.Remove(destroyed);
             OctreeNode.world.spawnItem(((Block)destroyed)._type, destroyed.Position);
+            world.objectTree.updateVertices();
+            world.objectTree.setBuffers();
             return true;
         }
         /// <summary>
@@ -248,27 +304,11 @@ namespace Learning
         /// </summary>
         /// <param name="boundingFrustum">The frustum containing the player's view</param>
         /// <returns>A list of all type 4 blocks in the node</returns>
-        public List<Block> drawChild(BoundingFrustum boundingFrustum)
+        public void Draw(BoundingFrustum boundingFrustum)
         {
-            // the line below draws a wireframe octree
-            //Cube.Draw(center, world, true, 2 * nodeSize);
-            List<Block> drawLast = new List<Block>();
-            List<Matrix> toDraw = new List<Matrix>();
-            foreach (GameObject gameObject in gameObjects)
-            {
-                if (gameObject.GetType() == typeof(Block) && ((Block)gameObject)._type == 4)
-                    drawLast.Add((Block)gameObject);
-
-                else toDraw.Add(Matrix.CreateTranslation(gameObject.Position));
+            for(int i =0; i<vBuffers.Length;i++){
+                Graphics.GraphicsEngine.Draw(vBuffers[i], iBuffers[i],Block.textureList[i]);
             }
-            Cube.Draw(toDraw.ToArray(), world, Block.textureList[2]);
-            foreach (OctreeNode child in children)
-            {
-                if (child.bounds.Intersects(boundingFrustum))
-                    drawLast.AddRange(child.drawChild(boundingFrustum));
-            }
-
-            return drawLast;
         }
 
         public List<GameObject> getAllBlocks()
@@ -297,33 +337,14 @@ namespace Learning
             return getContainingNode(box).getAllBlocks();
         }
 
-        /*
-        public List<GameObject> getMobileObjects()
-        {
-            List<GameObject> result = new List<GameObject>();
-            foreach (GameObject obj in gameObjects)
-            {
-                if (obj.GetType() != typeof(Block))
-                {
-                    result.Add(obj);
-                }
-            }
-            foreach (OctreeNode child in children)
-            {
-                result.AddRange(child.getMobileObjects());
-            }
-            return result;
-        }
-         * */
 
         public Block getBlockAtPoint(Vector3 vec)
         {
             // assumes vec is the center of a block of width 1
             Vector3 diagonal = new Vector3(0.5f);
-            BoundingBox box = new BoundingBox(vec - diagonal, vec + diagonal);
             foreach (OctreeNode child in children)
             {
-                if (child.bounds.Contains(box) == ContainmentType.Contains)
+                if (child.bounds.Contains(vec) == ContainmentType.Contains)
                 {
                     return child.getBlockAtPoint(vec);
                 }
