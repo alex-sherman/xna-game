@@ -13,12 +13,10 @@ namespace Learning
         public Inventory inventory;
         public Vector3 relativeVelocity = new Vector3(0, 0, 0);
         public Vector3 outsideV = new Vector3(0, 0, 0);
-        public Vector3 currentVelocity;
+        public Vector3 walkVelocity, lastWalkVelocity = Vector3.Zero;
         public Matrix rotation;
-        public bool noClip = true;
         public float xRotation;
         public float yRotation;
-        public bool isWalking = false;
         public Ray lookAt = new Ray();
         public World world;
 
@@ -30,7 +28,7 @@ namespace Learning
         public Player()
         {
             IsStatic = false;
-            Enabled = false;
+            Enabled = true;
             this.inventory = new Inventory();
             Position = new Vector3(0, 25, 0);
         }
@@ -47,8 +45,11 @@ namespace Learning
             lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
             lookAt.Position = Position;
             //currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
-            currentVelocity = Vector3.Transform(relativeVelocity, rotation);
-            Vector3.Add(ref currentVelocity, ref LinearVelocity, out LinearVelocity);
+            lastWalkVelocity = walkVelocity;
+            walkVelocity = Vector3.Transform(relativeVelocity, rotation);
+            Vector3.Subtract(ref LinearVelocity, ref lastWalkVelocity, out LinearVelocity);
+            Vector3.Add(ref walkVelocity, ref LinearVelocity, out LinearVelocity);
+
             /*
             outsideV.Y -= GameConstants.Gravity;
             //currentVelocity += outsideV;
@@ -85,11 +86,12 @@ namespace Learning
                 outsideV = Vector3.Zero;
             }
              */
+
             // and update the player's position
             // if not enabled, update positions manually
             if (!Enabled)
             {
-                Position = Position + currentVelocity * gameTime.ElapsedGameTime.Milliseconds;
+                Position = Position + walkVelocity * gameTime.ElapsedGameTime.Milliseconds;
             }
             
         }

@@ -10,19 +10,20 @@ namespace Learning.Physics
     {
         private Vector3 _position = Vector3.Zero;
         private float _yRotation;
-        internal float _mass = 1;
-        private float _inverseMass = 1;
-        internal Vector3 _force = Vector3.Zero;
-        private Vector3 _impulse = Vector3.Zero;
-        private Vector3 _acceleration = Vector3.Zero;
         private Vector3 _dv = Vector3.Zero; // change in velocity
         private Vector3 _dx = Vector3.Zero; // change in position
+        internal float _mass = 1;
+        internal float _inverseMass = 1;
+        internal Vector3 _force = Vector3.Zero;
+        internal Vector3 _impulse = Vector3.Zero;
+        internal Vector3 _acceleration = Vector3.Zero;
 
         public BoundingBox hitBox;
         public Vector3 LinearVelocity = Vector3.Zero;
         public bool IsStatic = false;
         public Int64 CollisionID;
         public bool Enabled = true;
+        public bool OnGround = false;
 
         public event EventHandler<EventArgs> OnDisposed;
 

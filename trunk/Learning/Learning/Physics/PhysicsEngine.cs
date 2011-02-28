@@ -54,7 +54,7 @@ namespace Learning.Physics
             DoBroadPhaseCollision();
             DoNarrowPhaseCollision();
             ApplyForces(gameTime);
-            ApplyImpulses(gameTime);
+            //ApplyImpulses(gameTime);
             UpdatePositions(gameTime);
             CleanDisposedObjects();
         }
@@ -107,7 +107,6 @@ namespace Learning.Physics
                     pair.ApplyImpulse();
                 }
             }
-
         }
 
         private void UpdatePositions(GameTime gameTime)
@@ -116,6 +115,18 @@ namespace Learning.Physics
             {
                 if (obj.IsStatic || obj.IsDisposed || !obj.Enabled) continue;
                 obj.IntegratePosition(gameTime);
+            }
+            foreach (CollisionPair pair in ActiveCollisions)
+            {
+                if (pair.ObjectA.Enabled && !pair.ObjectA.IsStatic)
+                {
+                    pair.ObjectA.Position += pair.contact.Normal;
+                    if (pair.contact.Normal.Y > 0) pair.ObjectA.OnGround = true;
+                }
+                if (pair.ObjectB.Enabled && !pair.ObjectB.IsStatic)
+                {
+                    pair.ObjectB.Position -= pair.contact.Normal;
+                }
             }
         }
 

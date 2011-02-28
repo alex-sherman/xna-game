@@ -41,8 +41,8 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            engine = new PhysicsEngine(-1f);
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 75f, GameConstants.OctreeBlockLimit);
+            engine = new PhysicsEngine(GameConstants.Gravity);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
             generator.generateRock(10, 40);
@@ -93,7 +93,7 @@ namespace Learning
                 //player.Update();
             }
             Item.Update(this);
-            //engine.Update(gameTime);
+            engine.Update(gameTime);
             this.partialWorld = players[0].getCameraMatrix();// partialWorld;
             //objectTree.Update(gameTime);
 
