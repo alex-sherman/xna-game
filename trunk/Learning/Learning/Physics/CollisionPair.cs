@@ -58,9 +58,9 @@ namespace Learning.Physics
             if (!Vector3.Zero.Equals(_normalImpulse))
                 GUI.print(String.Format("Applying impulse ({0}, {1}, {2}) to {3}", _normalImpulse.X, _normalImpulse.Y, _normalImpulse.Z, ObjectA.ToString()));
             */
-            if (!ObjectA.IsStatic)
+            if (!ObjectA.IsStatic && ObjectA.Enabled)
                 ObjectA.Position += contact.Normal;
-            if (!ObjectB.IsStatic)
+            if (!ObjectB.IsStatic && ObjectB.Enabled)
                 ObjectB.Position -= contact.Normal;
         }
 
