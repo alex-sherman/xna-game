@@ -124,6 +124,7 @@
     <Compile Include="Mapgen\Mapgen.cs" />
     <Compile Include="Mapgen\MapgenAgent.cs" />
     <Compile Include="Mapgen\RockAgent.cs" />
+    <Compile Include="Mapgen\SmoothingAgent.cs" />
     <Compile Include="Menus\ConfirmationDialog.cs" />
     <Compile Include="Menus\LoadScreen.cs" />
     <Compile Include="Menus\MainMenu.cs" />

@@ -27,14 +27,12 @@ namespace Learning
     {
         GraphicsDeviceManager graphics;
         MouseState orgMouseState;
-
         ScreenManager screenManager;
-
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferHeight = 780;
-            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 1050;
+            graphics.PreferredBackBufferWidth = 1680;
             //graphics.IsFullScreen = true;
             //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";

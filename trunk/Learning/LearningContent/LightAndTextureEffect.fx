@@ -45,6 +45,7 @@ struct VS_OUTPUT
 {
     float4 position  : POSITION;
     float4 textureCoordinate : TEXCOORD0;
+	float4 color : TEXCOORD1;
 };
 
  

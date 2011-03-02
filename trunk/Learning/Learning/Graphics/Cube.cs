@@ -15,6 +15,7 @@ namespace Learning
         static VertexDeclaration vertexDeclaration;
         static VertexPositionColor[] vertices;
         static VertexBuffer vertexBuffer;
+        public static VertexBuffer stripVBuffer;
         public static DynamicVertexBuffer instanceVertexBuffer;
         public static VertexDeclaration instanceVertexDeclaration;
         static IndexBuffer indexBuffer;
@@ -134,6 +135,31 @@ namespace Learning
                 new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TbottomLeftBack),
                 new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomLeftFront)
             };
+            VertexPositionNormalTexture[] stripCube = new VertexPositionNormalTexture[] {
+                // Top Surface
+                new VertexPositionNormalTexture(topLeftBack,topNormal,TtopLeftBack),
+                new VertexPositionNormalTexture(topRightBack,topNormal,TtopRightBack),
+                new VertexPositionNormalTexture(topRightFront,topNormal,TtopRightFront),
+                new VertexPositionNormalTexture(topLeftFront,topNormal,TtopLeftFront),
+                // Front Surface
+                new VertexPositionNormalTexture(bottomLeftFront,frontNormal,frontBottomLeft),
+                new VertexPositionNormalTexture(topRightFront,frontNormal,frontTopRight),
+                //Right face
+                new VertexPositionNormalTexture(bottomRightFront,rightNormal,rightBottomLeft),
+                new VertexPositionNormalTexture(topRightFront,rightNormal,rightTopLeft),
+                //Back face
+                new VertexPositionNormalTexture(bottomLeftBack,backNormal,backBottomRight),
+                new VertexPositionNormalTexture(topLeftBack,backNormal,backTopRight),
+                //Left Face
+                new VertexPositionNormalTexture(topLeftFront,leftNormal,leftTopLeft),
+                new VertexPositionNormalTexture(bottomLeftFront,leftNormal,leftBottomLeft),
+                //Bottom face
+                new VertexPositionNormalTexture(bottomRightBack,bottomNormal,TbottomLeftBack),
+                new VertexPositionNormalTexture(bottomRightFront,bottomNormal,TbottomLeftFront)
+
+            };
+            stripVBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, 14, BufferUsage.WriteOnly);
+            stripVBuffer.SetData(stripCube);
             faces = new VertexPositionNormalTexture[][] { leftFace, rightFace, topFace, bottomFace, frontFace, backFace };
 
             indices = new short[] { 
@@ -236,7 +262,12 @@ namespace Learning
                 Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12, instances.Length);
             }
         }
-
+        public static DynamicVertexBuffer getInstanceBuffer(Matrix[] instances)
+        {
+            instanceVertexBuffer = new DynamicVertexBuffer(Cube.device, instanceVertexDeclaration, instances.Length, BufferUsage.WriteOnly);
+            instanceVertexBuffer.SetData(instances, 0, instances.Length);
+            return instanceVertexBuffer;
+        }
         public static void Draw(Vector3 position, World world, bool wireframe, float scale)
         {
             RasterizerState poo = new RasterizerState();
