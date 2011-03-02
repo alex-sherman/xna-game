@@ -11,7 +11,7 @@ namespace Learning
         #region Declarations
         public float speed = .1f;
         public Inventory inventory;
-        public Vector3 relativeVelocity = new Vector3(0, 0, 0);
+        public Vector3 relativeWalkVelocity = new Vector3(0, 0, 0);
         public Vector3 outsideV = new Vector3(0, 0, 0);
         public Vector3 walkVelocity, lastWalkVelocity = Vector3.Zero;
         public Matrix rotation;
@@ -44,9 +44,9 @@ namespace Learning
             rotation = Matrix.CreateRotationX(yRotation) * Matrix.CreateRotationY(xRotation);
             lookAt.Direction = Vector3.Transform(Vector3.UnitZ, rotation);
             lookAt.Position = Position;
-            //currentVelocity = Vector3.Transform(relativeVelocity, Matrix.CreateRotationY(xRotation));
             lastWalkVelocity = walkVelocity;
-            walkVelocity = Vector3.Transform(relativeVelocity, rotation);
+            walkVelocity = Vector3.Transform(relativeWalkVelocity, Matrix.CreateRotationY(xRotation));
+            //walkVelocity = Vector3.Transform(relativeWalkVelocity, rotation);
             Vector3.Subtract(ref LinearVelocity, ref lastWalkVelocity, out LinearVelocity);
             Vector3.Add(ref walkVelocity, ref LinearVelocity, out LinearVelocity);
 

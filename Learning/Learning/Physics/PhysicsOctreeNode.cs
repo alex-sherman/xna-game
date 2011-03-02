@@ -107,13 +107,13 @@ namespace Learning.Physics
             return true;
         }
 
-        public List<PhysicsObject> getAllBlocks()
+        public List<PhysicsObject> getAllObjects()
         {
             List<PhysicsObject> result = new List<PhysicsObject>();
             result.AddRange(Objects);
             foreach (PhysicsOctreeNode child in children)
             {
-                result.AddRange(child.getAllBlocks());
+                result.AddRange(child.getAllObjects());
             }
             return result;
         }

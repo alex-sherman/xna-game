@@ -22,10 +22,11 @@ namespace Learning.Physics
         {
             _gravity = gravity;
             _objects = new List<PhysicsObject>();
-            _broadPhaseCollider = new OctreeBroadPhaseCollider(this);
-            _narrowPhaseCollider = SATCollider.Instance;
             ActiveCollisions = new CollisionList();
             collisionPool = new Pool<CollisionPair>(50);
+
+            _broadPhaseCollider = new OctreeBroadPhaseCollider(this);
+            _narrowPhaseCollider = SATCollider.Instance;
         }
 
         public IBroadPhaseCollider BroadPhaseCollider
@@ -121,11 +122,22 @@ namespace Learning.Physics
                 if (pair.ObjectA.Enabled && !pair.ObjectA.IsStatic)
                 {
                     pair.ObjectA.Position += pair.contact.Normal;
-                    if (pair.contact.Normal.Y > 0) pair.ObjectA.OnGround = true;
+                    pair.ObjectA.LinearVelocity.Y = 0;
+                    if (pair.contact.Normal.Y > 0)
+                    {
+                        pair.ObjectA.OnGround = true;
+                        GUI.print("on ground!");
+                    }
                 }
+
                 if (pair.ObjectB.Enabled && !pair.ObjectB.IsStatic)
                 {
                     pair.ObjectB.Position -= pair.contact.Normal;
+                    pair.ObjectB.LinearVelocity.Y = 0;
+                    if (pair.contact.Normal.Y > 0)
+                    {
+                        pair.ObjectA.OnGround = true;
+                    }
                 }
             }
         }

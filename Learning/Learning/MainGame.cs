@@ -171,47 +171,48 @@ namespace Learning
             //Movement
             if (keyboard.IsKeyDown(Keys.W))
             {
-                player.relativeVelocity.Z = 1;
+                player.relativeWalkVelocity.Z = 1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                player.relativeVelocity.Z = -1;
+                player.relativeWalkVelocity.Z = -1;
             }
-            else { this.player.relativeVelocity.Z = 0; }
+            else { this.player.relativeWalkVelocity.Z = 0; }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                player.relativeVelocity.X = -1;
+                player.relativeWalkVelocity.X = -1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                player.relativeVelocity.X = 1;
+                player.relativeWalkVelocity.X = 1;
             }
-            else { player.relativeVelocity.X = 0; }
+            else { player.relativeWalkVelocity.X = 0; }
             
             //Jumping
             if (keyboard.IsKeyDown(Keys.Space))
             {
                 if (player.OnGround)
                 {
-                    player.outsideV.Y = GameConstants.PlayerJumpSpeed;
+                    GUI.print("on ground! jumping!");
+                    player.LinearVelocity.Y = GameConstants.PlayerJumpSpeed;
                     player.OnGround = false;
                 }
                 else if (!player.Enabled) //noclip
                 {
-                    player.relativeVelocity.Y = GameConstants.PlayerJumpSpeed;
+                    player.relativeWalkVelocity.Y = GameConstants.PlayerJumpSpeed;
                 }
             }
-            else { player.relativeVelocity.Y = 0; }
-            if (player.relativeVelocity.LengthSquared() > 0)
+            else { player.relativeWalkVelocity.Y = 0; }
+            if (player.relativeWalkVelocity.LengthSquared() > 0)
             {
-                player.relativeVelocity.Normalize();
+                player.relativeWalkVelocity.Normalize();
                 if (!player.Enabled) //noclip
                 {
-                    player.relativeVelocity *= player.speed * 10;
+                    player.relativeWalkVelocity *= player.speed * 10;
                 }
                 else
                 {
-                    player.relativeVelocity *= player.speed;
+                    player.relativeWalkVelocity *= player.speed;
                 }
             }
             // select items to use

@@ -263,7 +263,7 @@ namespace Learning
                     }
                 }
             }
-            player.relativeVelocity = Vector3.Zero;
+            player.relativeWalkVelocity = Vector3.Zero;
             base.HandleInput(input);
         }
         private bool snapMouse(out int X, out int Y, out bool inCrafting)
