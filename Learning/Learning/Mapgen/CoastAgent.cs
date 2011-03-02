@@ -85,11 +85,16 @@ namespace Learning.Mapgen
                 {
                     if (x >= 0 && x < man.size && y >= 0 && y < man.size)
                     {
-                        if(man.isCoast(x,y)){
+                        Vector2 curPoint = new Vector2(x, y);
+                        if ((curPoint-location).Length() <= radius)
+                        {
+                            if (man.isCoast(x, y))
+                            {
 
-                            man.coastLine.Add(new Vector2(x, y));
+                                man.coastLine.Add(curPoint);
+                            }
+                            man.landHeight[x, y] = height;
                         }
-                        man.landHeight[x, y] = height - (int)(location - new Vector2(x, y)).Length()/radius*2;
                     }
                 }
             }

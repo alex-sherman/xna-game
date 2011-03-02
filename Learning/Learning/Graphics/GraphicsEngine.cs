@@ -16,6 +16,9 @@ namespace Learning.Graphics
         {
             if (vertexBuffer != null && indexBuffer != null)
             {
+                RasterizerState poo = new RasterizerState();
+                poo.FillMode = FillMode.WireFrame;
+                //Cube.device.RasterizerState = poo;
                 effect.CurrentTechnique = effect.Techniques["Texture"];
                 effect.Parameters["UserTexture"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
@@ -43,6 +46,7 @@ namespace Learning.Graphics
         {
             if (instanceVertexBuffer!=null && instanceVertexBuffer.VertexCount>0)
             {
+                
                 effect.CurrentTechnique = effect.Techniques["InstanceTexture"];
                 effect.Parameters["UserTexture"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
