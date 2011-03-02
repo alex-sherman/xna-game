@@ -42,10 +42,9 @@ namespace Learning
             Crafting.addRecipe(req2, new Item(8, 1));
             Crafting.addRecipe(req3, new Item(9, 1));
             Crafting.addRecipe(req4, new Item(10, 1));
-            // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
-            // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            engine = new PhysicsEngine(-1f);
+            engine = new PhysicsEngine(GameConstants.Gravity);
+            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
             generator.generateLand(30000);
