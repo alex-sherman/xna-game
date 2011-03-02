@@ -52,6 +52,38 @@ namespace Learning
             info.AddValue("type", this._type);
 
         }
+        public bool isVisible(List<Block> neighbors)
+        {
+            Vector3 relation;
+            bool[] drawSide = { true, true, true, true, true, true };
+            foreach (Block block in neighbors)
+            {
+                if (block._type != 4 || this._type == 4)
+                {
+                    relation = this.Position - block.Position;
+                    if (relation.X != 0)
+                    {
+                        if (relation.X > 0) { drawSide[0] = false; }
+                        else { drawSide[1] = false; }
+                    }
+                    if (relation.Y != 0)
+                    {
+                        if (relation.Y < 0) { drawSide[2] = false; }
+                        else { drawSide[3] = false; }
+                    }
+                    if (relation.Z != 0)
+                    {
+                        if (relation.Z < 0) { drawSide[4] = false; }
+                        else { drawSide[5] = false; }
+                    }
+                }
+            }
+            foreach (bool side in drawSide)
+            {
+                if (side) { return true; }
+            }
+            return false;
+        }
         public List<VertexPositionNormalTexture> getVertices(List<Block> neighbors)
         {
             Vector3 relation;

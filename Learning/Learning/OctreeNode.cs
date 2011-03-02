@@ -17,7 +17,9 @@ namespace Learning
         public List<GameObject> visibleObjects = new List<GameObject>();
         public List<VertexPositionNormalTexture>[] vertices;
         public VertexBuffer[] vBuffers;
+        public DynamicVertexBuffer[] instanceBuffers;
         public IndexBuffer[] iBuffers;
+        public List<Matrix>[] instances;
         public List<OctreeNode> children;
         public static World world;
         public OctreeNode parent;
@@ -184,23 +186,46 @@ namespace Learning
             }
 
         }
-        /*
-        public void addVisible(GameObject obj)
+        public void buildMatrices()
         {
-            visibleObjects.Add(obj);
-            addObject(obj);
-        }
-        
-        public void addVisibleBlock(int x, int y, int z, int type)
-        {
-            Block poo = new Block(new Vector3(x, y, z), type);
-            addVisible(poo);
-        }
-        */
+            instances = new List<Matrix>[Block.textureList.Length];
+            for (int i = 0; i < instances.Length; i++)
+            {
+                instances[i] = new List<Matrix>();
+            }
 
+            foreach (Block block in gameObjects)
+            {
+               if(block.isVisible(getNeighborBlocks(block))){
+                instances[block._type].Add(Matrix.CreateTranslation(block.Position));
+               }
+            }
+            foreach (OctreeNode child in children)
+            {
+                child.buildMatrices();
+                for (int i = 0; i < instances.Length; i++)
+                {
+                    instances[i].AddRange(child.instances[i]);
+                    child.instances[i].Clear();
+                }
+            }
+        }
+        public void setInstanceBuffers()
+        {
+            instanceBuffers = new DynamicVertexBuffer[Block.textureList.Length];
+            for (int i = 0; i < instanceBuffers.Length; i++)
+            {
+                if (instances[i].Count() > 0)
+                {
+                    instanceBuffers[i] = new DynamicVertexBuffer(Cube.device, Cube.instanceVertexDeclaration, instances[i].Count(), BufferUsage.WriteOnly);
+                    instanceBuffers[i].SetData(instances[i].ToArray(), 0, instances[i].Count());
+                }
+            }
+
+        }
         public void addBlock(Vector3 pos, int type)
         {
-            Block poo = new Block(pos, type);
+            Block poo = new Block(pos+center, type);
             addObject(poo);
         }
         public bool addBlock(int x, int y, int z, int type)
@@ -304,10 +329,18 @@ namespace Learning
         /// </summary>
         /// <param name="boundingFrustum">The frustum containing the player's view</param>
         /// <returns>A list of all type 4 blocks in the node</returns>
-        public void Draw(BoundingFrustum boundingFrustum)
+        public void Draw()
         {
-            for(int i =0; i<vBuffers.Length;i++){
+            /*for(int i =0; i<vBuffers.Length;i++){
                 Graphics.GraphicsEngine.Draw(vBuffers[i], iBuffers[i],Block.textureList[i]);
+                //Graphics.GraphicsEngine.Draw(vBuffers[i], Block.textureList[i]);
+            }*/
+            
+            for (int i = 0; i < instanceBuffers.Length; i++)
+            {
+
+                Graphics.GraphicsEngine.Draw(instanceBuffers[i], Cube.stripVBuffer, Block.textureList[i]);
+                
             }
         }
 

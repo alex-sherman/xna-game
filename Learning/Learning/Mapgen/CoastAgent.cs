@@ -12,13 +12,14 @@ namespace Learning.Mapgen
         public Vector2 location;
         public int tokens = 0;
         public static int coastHeight = 10;
-        public static int variance = 5;
+        public static int variance = 3;
         public static int minHeight = 0;
-        public static int radius = 3;
-        public static int maxTokens = 2000;
+        public static int radius = 7;
+        public static int maxTokens = 1000;
         public static int nToChange = 6;
         private Vector2 attractor;
         private Vector2 repulsor;
+        int height = Mapgen.rand.Next(variance) + coastHeight;
         private Mapgen man;
         private int n = 0;
         private Vector2 direction = new Vector2(Mapgen.rand.Next(-1, 2), Mapgen.rand.Next(-1, 2));
@@ -56,7 +57,7 @@ namespace Learning.Mapgen
         }
         public bool step()
         {
-            if (tokens == 0) { return false; }
+            if (tokens <= 0) { return false; }
             List<Vector2> possiblePoints = man.getAdjacentNotCoast(location);
             direction = new Vector2(Mapgen.rand.Next(-1, 2), Mapgen.rand.Next(-1, 2));
             if (possiblePoints.Count == 0) {
@@ -75,10 +76,40 @@ namespace Learning.Mapgen
                     highestPoint = point;
                 }
             }
-            tokens--;
-            man.coastLine.Add(highestPoint);
-            man.landHeight[(int)highestPoint.X, (int)highestPoint.Y] = CoastAgent.coastHeight;
+            tokens-= radius*radius;
+            highestPoint = (highestPoint - location) * radius + location;
+            location = highestPoint;
+            for (int x = (int)highestPoint.X-radius; x <= (int)highestPoint.X + radius; x++)
+            {
+                for (int y = (int)highestPoint.Y-radius; y <= (int)highestPoint.Y + radius; y++)
+                {
+                    if (x >= 0 && x < man.size && y >= 0 && y < man.size)
+                    {
+                        if(man.isCoast(x,y)){
 
+                            man.coastLine.Add(new Vector2(x, y));
+                        }
+                        man.landHeight[x, y] = height - (int)(location - new Vector2(x, y)).Length()/radius*2;
+                    }
+                }
+            }
+            for (int x = (int)location.X - radius-1; x <= (int)location.X + radius+1; x++)
+            {
+                for (int y = (int)location.Y - radius - 1; y <= (int)location.Y + radius + 1; y++)
+                {
+                    if (x >= 0 && x < man.size && y >= 0 && y < man.size)
+                    {
+                        if (man.landHeight[x, y] >= coastHeight-2)
+                        {
+                            man.smooth(ref man.landHeight, x, y);
+                        }
+                        else
+                        {
+                            man.smooth(ref man.landHeight, x, y, (int)((location - new Vector2(x, y)).Length() / radius * 3));
+                        }
+                    }
+                }
+            }
             getNewSpot();
             n++;
             return true;
@@ -97,7 +128,7 @@ namespace Learning.Mapgen
         }
         private float score(Vector2 point)
         {
-            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 3 * man.getEdgeDistance(point);
+            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 10 * man.getEdgeDistance(point);
         }
     }
 }

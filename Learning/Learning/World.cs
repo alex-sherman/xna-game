@@ -20,6 +20,10 @@ namespace Learning
         public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
         public OctreeNode objectTree;
+        public OctreeNode objectTree1;
+        public OctreeNode objectTree2;
+        public OctreeNode objectTree3;
+        public OctreeNode objectTree4;
         public Mapgen.Mapgen generator;
         internal PhysicsEngine engine;
 
@@ -41,15 +45,15 @@ namespace Learning
             // blocks are aligned on half integers rather than integers... make the octree be the same, hence the
             // origin of (0.5, 0.5, 0.5) rather than (0,0,0)
             OctreeNode.world = this;
-            engine = new PhysicsEngine(GameConstants.Gravity);
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
+            engine = new PhysicsEngine(-1f);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
-            generator.generateRock(10, 40);
-            //generator.generateLand(300);
-            objectTree.updateVertices();
-            objectTree.setBuffers();
+            generator.generateLand(30000);
+            //generator.smoothLand(10, 100);
+            generator.getVertices();
+            generator.setBuffers();
         }
+
         public void saveGame(String location)
         {
             Stream stream = File.Open(location, FileMode.Create);
@@ -110,7 +114,7 @@ namespace Learning
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            objectTree.Draw(toDraw);
+            Graphics.GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer, Block.textureList[4]);
             Item.Draw(this);
         }
 

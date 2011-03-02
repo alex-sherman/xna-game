@@ -30,7 +30,7 @@ namespace Learning
             IsStatic = false;
             Enabled = true;
             this.inventory = new Inventory();
-            Position = new Vector3(0, 25, 0);
+            Position = new Vector3(0, 10, 0);
         }
 
         public void Update(GameTime gameTime)

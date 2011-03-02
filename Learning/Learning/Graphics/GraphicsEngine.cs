@@ -17,12 +17,12 @@ namespace Learning.Graphics
             if (vertexBuffer != null && indexBuffer != null)
             {
                 effect.CurrentTechnique = effect.Techniques["Texture"];
-                effect.CurrentTechnique.Passes[0].Apply();
+                effect.Parameters["UserTexture"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
-                effect.Parameters["UserTexture"].SetValue(texture);
                 Cube.device.SetVertexBuffers(vertexBuffer);
                 Cube.device.Indices = indexBuffer;
+                effect.CurrentTechnique.Passes[0].Apply();
 
                 for (int j = 0; j <= indexBuffer.IndexCount / 3000000; j += 1)
                 {
@@ -39,17 +39,30 @@ namespace Learning.Graphics
                 }
             }
         }
+        public static void Draw(DynamicVertexBuffer instanceVertexBuffer, VertexBuffer vBuffer, Texture2D texture)
+        {
+            if (instanceVertexBuffer!=null && instanceVertexBuffer.VertexCount>0)
+            {
+                effect.CurrentTechnique = effect.Techniques["InstanceTexture"];
+                effect.Parameters["UserTexture"].SetValue(texture);
+                effect.Parameters["view"].SetValue(world.partialWorld);
+                effect.Parameters["proj"].SetValue(world.projection);
+                Cube.device.SetVertexBuffers(new VertexBufferBinding(vBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
+                effect.CurrentTechnique.Passes[0].Apply();
+                Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 14, 0, 12, instanceVertexBuffer.VertexCount);
+            }
+        }
         public static void Draw(VertexBuffer vertexBuffer, Texture2D texture)
         {
             if (vertexBuffer != null)
             {
                 effect.CurrentTechnique = effect.Techniques["Texture"];
-                effect.CurrentTechnique.Passes[0].Apply();
+                effect.Parameters["UserTexture"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
-                effect.Parameters["UserTexture"].SetValue(texture);
                 Cube.device.SetVertexBuffers(vertexBuffer);
-                device.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount / 3);
+                effect.CurrentTechnique.Passes[0].Apply();
+                Cube.device.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount/3);
             }
         }
         /*public static void Draw(Effect effect, Matrix[] instances)

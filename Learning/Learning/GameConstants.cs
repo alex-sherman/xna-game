@@ -10,8 +10,8 @@ namespace Learning
     class GameConstants
     {
         // Player constants
-        public const float PlayerRunSpeed = 0.8f;
-        public const float PlayerWalkSpeed = 0.4f;
+        public const float PlayerRunSpeed = 0.008f;
+        public const float PlayerWalkSpeed = 0.004f;
         public const float Gravity = -5.0f;
         public const float PlayerJumpSpeed = 1.0f;
         public static Vector3 PlayerSize = new Vector3(0.6f, 1.5f, 0.6f);

@@ -19,12 +19,14 @@ namespace Learning.Mapgen
         public OctreeNode renderTree;
         public int size;
         public static Random rand = new Random();
-        public List<VertexPositionNormalTexture> vertices;
+        public List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
+        public List<int> indices = new List<int>();
+        public VertexBuffer vBuffer;
+        public IndexBuffer iBuffer;
         public Mapgen(World world)
         {
-            renderTree = world.objectTree;
             _world = world;
-            this.size = (int)renderTree.nodeSize*2;
+            this.size = 250;
             rockHeight = new int[size, size];
             landHeight = new int[size, size];
             lastLandHeight = new int[size, size];
@@ -39,6 +41,110 @@ namespace Learning.Mapgen
                     lastLandHeight[i, j] = CoastAgent.minHeight;
                 }
             }
+        }
+        public void setBuffers()
+        {
+            vBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
+            vBuffer.SetData(vertices.ToArray());
+            iBuffer = new IndexBuffer(Cube.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
+            iBuffer.SetData(indices.ToArray());
+        }
+        public void getVertices()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int k = 0; k < size; k++)
+                {
+                    int j = landHeight[i,k];
+                    if (i<size-1 && k < size-1)
+                    {
+                        int o = vertices.Count();
+                            indices.AddRange(getIndices(i,k,o));
+                            vertices.AddRange(getVertices(i, k));
+                            
+                    }
+                }
+            }
+        }
+
+        public List<VertexPositionNormalTexture> getVertices(int x, int y)
+        {
+            List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
+            float currentHeight = 0;
+            Vector2 currentPoint = new Vector2(x, y);
+            Vector2 heightPoint = new Vector2(x, y);
+            for (float i = 0; i <= 1; i += .25f)
+            {
+                for (float k = 0; k <= 1; k += .25f)
+                {
+                    currentPoint = new Vector2(i+x, k+y);
+                    for (int io = 0; io <= 1; io++)
+                    {
+                        for (int ko = 0; ko <= 1; ko++)
+                        {
+                            heightPoint = new Vector2(io, ko)+currentPoint;
+                            if ((heightPoint - currentPoint).LengthSquared() == 0)
+                            {
+                                currentHeight = landHeight[(int)heightPoint.X, (int)heightPoint.Y];
+                                io = 2;
+                                ko = 2;
+                                break;
+                            }
+                            else
+                            {
+                                currentHeight += landHeight[x + io, y + ko]*((heightPoint-currentPoint).Length());
+                            }
+                        }
+                    }
+                    vertices.Add(new VertexPositionNormalTexture(new Vector3(currentPoint.X, currentHeight, currentPoint.Y), Vector3.Zero, new Vector2(i, k)));
+                        
+                    }
+            }/*
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(x, landHeight[x, x], y), Vector3.Zero,  new Vector2(0,0)));
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(x, landHeight[x, x+1], y+1), Vector3.Zero,  new Vector2(0,1)));
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, landHeight[x + 1, y+1], y+1), Vector3.Zero, new Vector2(1,1)));
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, landHeight[x+1, y], y), Vector3.Zero,  new Vector2(1,0)));
+            */
+            
+            return vertices;
+        }
+        public int[] getIndices(int x, int y, int o)
+        {
+            return new int[] {
+                                o,o+6,o+1,
+                                o,o+6,o+5,
+                                o+1,o+7,o+2,
+                                o+1,o+7,o+6,
+                                o+2,o+8,o+3,
+                                o+2,o+8,o+7,
+                                o+3,o+9,o+4,
+                                o+3,o+9,o+8,
+                                o+5,o+11,o+6,
+                                o+5,o+11,o+10,
+                                o+6,o+12,o+7,
+                                o+6,o+12,o+11,
+                                o+7,o+13,o+8,
+                                o+7,o+13,o+12,
+                                o+8,o+14,o+9,
+                                o+8,o+14,o+13,
+                                o+10,o+16,o+11,
+                                o+10,o+16,o+15,
+                                o+11,o+17,o+12,
+                                o+11,o+17,o+16,
+                                o+12,o+18,o+13,
+                                o+12,o+18,o+17,
+                                o+13,o+19,o+14,
+                                o+13,o+19,o+18,
+                                o+15,o+21,o+16,
+                                o+15,o+21,o+20,
+                                o+16,o+22,o+17,
+                                o+16,o+22,o+21,
+                                o+17,o+23,o+18,
+                                o+17,o+23,o+22,
+                                o+18,o+24,o+19,
+                                o+18,o+24,o+23,
+
+                            };
         }
         public void findCurrentCoastline()
         {
@@ -62,43 +168,10 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void step()
-        {
-            findLand();
-             foreach (MapgenAgent agent in currentAgents)
-            {
-                agent.step();
-            }
-            for (int i = 0; i < size; i++)
-            {
-                for (int k = 0; k < size; k++)
-                {
-                    if (landHeight[i, k] != lastLandHeight[i, k])
-                    {
-                        Block toAdd = new Block(i - size / 2, landHeight[i, k], k - size / 2, 1);
-                        _world.addObject(toAdd);
-                        lastLandHeight[i, k] = landHeight[i, k];
-                    }
-                }
-            }
-        }
         public Vector2? getRandomCoast()
         {
             if (coastLine.Count == 0) { return null; }
             return coastLine[Mapgen.rand.Next(coastLine.Count)];
-        }
-        public void generateVertices()
-        {
-            vertices = new List<VertexPositionNormalTexture>();
-            for (int x = 0; x < size; x++)
-            {
-                for (int z = 0; z < size; z++)
-                {
-                    vertices.Add(new VertexPositionNormalTexture(new Vector3(x, rockHeight[x, z], z), Vector3.Zero, new Vector2(0, 0)));
-                    vertices.Add(new VertexPositionNormalTexture(new Vector3(x+1, rockHeight[x, z], z), Vector3.Zero, new Vector2(0, 0)));
-                    vertices.Add(new VertexPositionNormalTexture(new Vector3(x, rockHeight[x, z], z+1), Vector3.Zero, new Vector2(0, 0)));
-                }
-            }
         }
         public bool isCoast(int x, int y)
         {
@@ -150,7 +223,7 @@ namespace Learning.Mapgen
         }
         public bool isLand(int x, int y)
         {
-            return landHeight[x,y]>=CoastAgent.coastHeight;
+            return landHeight[x,y]>=CoastAgent.coastHeight-2;
         }
         public List<Vector2> getAdjacentNotCoast(Vector2 point)
         {
@@ -171,40 +244,69 @@ namespace Learning.Mapgen
         }
         public void generateLand(int tokens)
         {
+            currentAgents = new List<MapgenAgent>();
             currentAgents.Add(new CoastAgent(tokens, this));
             bool alive = true;
-            /*while (alive)
+            while (alive)
             {
                 alive = false;
-                //findCurrentCoastline();
                 findLand();
                 foreach (MapgenAgent agent in currentAgents)
                 {
                     if (agent.step()) { alive = true; }
                 }
             }
-            currentAgents = new List<MapgenAgent>();
-            for (int i = 0; i < node.nodeSize * 2; i++)
-            {
-                for (int k = 0; k < node.nodeSize * 2; k++)
-                {
-                    node.addVisibleBlock(i - size / 2, landHeight[i,k], k - size / 2, 1);
-                    for (int j = 0; j <= landHeight[i,k]; j++)
-                    {
-                        //if (j == landHeight[i, k])
-                        //{
-                        //    node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
-                        //}
-                        //else
-                        //{
-                            node.addBlock(i - size / 2, j, k - size / 2, 1);
-                        //}
-                    }
-                }
-            }*/
         }
-        public void generateRock(int agents, int tokens)
+        public void step()
         {
+            foreach (MapgenAgent agent in currentAgents)
+            {
+                agent.step();
+            }
+
+        }
+        
+        public void smoothLand(int number, int tokens)
+        {
+            findLand();
+            currentAgents = new List<MapgenAgent>();
+            for (int i = 0; i < number; i++)
+            {
+                currentAgents.Add(new SmoothingAgent(getRandomXY(), tokens, this));
+            }
+            bool alive = true;
+            while (alive)
+            {
+                alive = false;
+                findLand();
+                foreach (MapgenAgent agent in currentAgents)
+                {
+                    if (agent.step()) { alive = true; }
+                }
+            }
+        }
+        public void smoothCoast(int number, int tokens)
+        {
+            findCurrentCoastline();
+            currentAgents = new List<MapgenAgent>();
+            for (int i = 0; i < number; i++)
+            {
+                currentAgents.Add(new SmoothingAgent(getRandomXY(), tokens, this));
+            }
+            bool alive = true;
+            while (alive)
+            {
+                alive = false;
+                findCurrentCoastline();
+                foreach (MapgenAgent agent in currentAgents)
+                {
+                    if (agent.step()) { alive = true; }
+                }
+            }
+        }
+        public void generateRock(int agents, int tokens )
+        {
+            currentAgents = new List<MapgenAgent>();
             for (int i = 0; i < agents; i++)
             {
                 currentAgents.Add(new RockAgent(getRandomXY(), tokens,this));
@@ -218,50 +320,38 @@ namespace Learning.Mapgen
                     if (agent.step()) { alive = true; }
                 }
             }
-            currentAgents = new List<MapgenAgent>();
-            for (int i = 0; i < renderTree.nodeSize*2; i++)
-            {
-                for (int k = 0; k < renderTree.nodeSize * 2; k++)
-                {
-                    for (int j = RockAgent.minHeight; j <= rockHeight[i,k]; j++)
-                    {
-                        //if (j == rockHeight[i, k])
-                        //{
-                        //    node.addVisibleBlock(i - size / 2, j, k - size / 2, 1);
-                        //}
-                        //else
-                        //{
-                        Block toAdd = new Block(i - size / 2, j, k - size / 2, 1);
-                        _world.addObject(toAdd);
-                        //}
-                    }
-                }
-            }
         }
         public void smooth(ref int[,] heightMap, int x, int y)
         {
-            int[] toAdd = { -2, -1, 1, 2 };
-            int curX;
-            int curY;
-            int total = heightMap[x, y];
-            foreach (int add in toAdd)
+            smooth(ref heightMap, x, y, 0);
+        }
+        public void smooth(ref int[,] heightMap, int x, int y,int variance)
+        {
+            if (x >= 0 && x < size && y >= 0 && y < size)
             {
-                curX = x + add;
-                curY = y + add;
-                if (curX >= 0 && curX < size && curY >= 0 && curY < size)
+                int[] toAdd = { -2, -1, 1, 2 };
+                int curX;
+                int curY;
+                int total = heightMap[x, y];
+                foreach (int add in toAdd)
                 {
-                    total += heightMap[curX, curY];
-                }
-                else { total += heightMap[x, y]; }
-                curY = y - add;
-                if (curX >= 0 && curX < size && curY >= 0 && curY < size)
-                {
-                    total += heightMap[curX, curY];
-                }
-                else { total += heightMap[x, y]; }
+                    curX = x + add;
+                    curY = y + add;
+                    if (curX >= 0 && curX < size && curY >= 0 && curY < size)
+                    {
+                        total += heightMap[curX, curY];
+                    }
+                    else { total += heightMap[x, y]; }
+                    curY = y - add;
+                    if (curX >= 0 && curX < size && curY >= 0 && curY < size)
+                    {
+                        total += heightMap[curX, curY];
+                    }
+                    else { total += heightMap[x, y]; }
 
+                }
+                heightMap[x, y] = total / 9 + rand.Next(-1, 2) * rand.Next(variance);
             }
-            heightMap[x, y] = total / 9;
         }
         public Vector2 getRandomXY()
         {
