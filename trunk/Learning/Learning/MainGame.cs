@@ -89,7 +89,9 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Graphics.GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), Content.Load<Texture2D>(@"Textures\sand"));
+            Graphics.GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), 
+                Content.Load<Texture2D>(@"Textures\sand"),
+                Content.Load<Texture2D>(@"Textures\rock"));
         }
 
         #endregion

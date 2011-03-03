@@ -14,8 +14,8 @@ namespace Learning.Mapgen
         public static int coastHeight = 10;
         public static int variance = 3;
         public static int minHeight = 0;
-        public static int radius = 7;
-        public static int maxTokens = 1000;
+        public static int radius = 3;
+        public static int maxTokens = 500;
         public static int nToChange = 6;
         private Vector2 attractor;
         private Vector2 repulsor;
@@ -79,6 +79,7 @@ namespace Learning.Mapgen
             tokens-= radius*radius;
             highestPoint = (highestPoint - location) * radius + location;
             location = highestPoint;
+            
             for (int x = (int)highestPoint.X-radius; x <= (int)highestPoint.X + radius; x++)
             {
                 for (int y = (int)highestPoint.Y-radius; y <= (int)highestPoint.Y + radius; y++)
@@ -116,7 +117,7 @@ namespace Learning.Mapgen
         }
         private float score(Vector2 point)
         {
-            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 10 * man.getEdgeDistance(point);
+            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 50 * man.getEdgeDistance(point);
         }
     }
 }

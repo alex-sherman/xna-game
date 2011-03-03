@@ -43,7 +43,9 @@ namespace Learning
             objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
-            generator.generateLand(40000);
+            generator.generateLand(16000);
+            generator.smoothMap(ref generator.landHeight);
+            generator.generateMountain(20, 10);
             generator.smoothMap(ref generator.landHeight);
             //generator.smoothLand(10, 100);
             generator.getVertices();

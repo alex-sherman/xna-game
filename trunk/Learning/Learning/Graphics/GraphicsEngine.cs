@@ -14,10 +14,12 @@ namespace Learning.Graphics
         public static World world;
         public static Texture2D grass;
         public static Texture2D sand;
-        public static void SetTextures(Texture2D grass, Texture2D sand)
+        public static Texture2D rock;
+        public static void SetTextures(Texture2D grass, Texture2D sand, Texture2D rock)
         {
             GraphicsEngine.grass = grass;
             GraphicsEngine.sand = sand;
+            GraphicsEngine.rock = rock;
         }
         public static void Draw(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
@@ -29,7 +31,7 @@ namespace Learning.Graphics
                 effect.CurrentTechnique = effect.Techniques["MultiTexture"];
                 effect.Parameters["UserTextureA"].SetValue(sand);
                 effect.Parameters["UserTextureB"].SetValue(grass);
-                effect.Parameters["UserTextureC"].SetValue(grass);
+                effect.Parameters["UserTextureC"].SetValue(rock);
                 effect.Parameters["UserTextureD"].SetValue(grass);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);

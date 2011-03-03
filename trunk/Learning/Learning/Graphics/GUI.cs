@@ -27,7 +27,7 @@ namespace Learning
         public static void Init(MainGame game)
         {
             GUI.game = game;
-            GUI.font = game.Content.Load<SpriteFont>(@"Textures\GUIfont");
+            GUI.font = game.Content.Load<SpriteFont>(@"GUIfont");
             GUI.crosshair = game.Content.Load<Texture2D>(@"Textures\Crosshair");
             GUI.hotbar = game.Content.Load<Texture2D>(@"Textures\Hotbar");
             GUI.inventory = game.Content.Load<Texture2D>(@"Textures\Inventory");
