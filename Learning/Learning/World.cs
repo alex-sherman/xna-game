@@ -100,41 +100,16 @@ namespace Learning
             //objectTree.Update(gameTime);
 
         }
-        public bool addBlock(Ray lookAt, int type)
-        {
-            return objectTree.addBlock(lookAt, type);
-        }
-        public void destroyBlock(Ray lookAt)
-        {
-            objectTree.destroyBlock(lookAt);
-        }
 
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            Graphics.GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer);
+            GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer);
             Item.Draw(this);
         }
 
-        public void generateFloor()
-        {
-            for (int u = -10; u < 10; u++)
-            {
-                for (int v = -10; v < 10; v++)
-                {
-                    objectTree.addBlock(u, 0, v, 7);
-                    objectTree.addBlock(u, 1, v, 7);
-                    objectTree.addBlock(u, 2, v, 1);
-                    objectTree.addBlock(u, 3, v, 3);
-                    objectTree.addBlock(u, 4, v, 0);
-                    objectTree.addBlock(u, 5, v, 2);
-                    objectTree.addBlock(u, 6, v, 4);
-                }
-            }
-            //EnemyAgent enemy = new EnemyAgent(new Vector3(5, 10, 5), this, aiManager);
-            //objectTree.addObject(enemy);
             
-        }
+        
 
         #region Collision Detection
         public bool collisionCheck(List<GameObject> candidates, ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)

@@ -40,14 +40,14 @@ namespace Learning
             EnemyAgent.model = Content.Load<Model>("models/ship");
 
             InitializeTextures();
-            Cube.InitializeCube(ScreenManager.GraphicsDevice, InitializeEffect());
+            GraphicsEngine.Initialize(ScreenManager.GraphicsDevice, InitializeEffect());
             newWorld = new World(ScreenManager.GraphicsDevice);
             player = new Player();
             newWorld.addPlayer(player);
             InitializeTransform();
             GUI.Init(this);
-            Graphics.GraphicsEngine.effect = InitializeEffect();
-            Graphics.GraphicsEngine.world = newWorld;
+            GraphicsEngine.effect = InitializeEffect();
+            GraphicsEngine.world = newWorld;
 
             base.LoadContent();
         }
@@ -89,7 +89,7 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Graphics.GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), 
+            GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), 
                 Content.Load<Texture2D>(@"Textures\sand"),
                 Content.Load<Texture2D>(@"Textures\rock"));
         }
@@ -265,19 +265,13 @@ namespace Learning
             }
 
             //Use items and such
-            if (input.IsNewLeftClick())
-            {
-                this.player.world.destroyBlock(this.player.lookAt);
-            }
+            
             if (input.IsNewRightClick())
             {
                 Item item = this.player.inventory.getItem();
                 if (item != null)
                 {
-                    if (this.player.world.addBlock(this.player.lookAt, item.type))
-                    {
-                        this.player.inventory.useItem();
-                    }
+                    
                 }
             }
 

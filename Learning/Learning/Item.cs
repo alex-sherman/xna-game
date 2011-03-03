@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Learning
 {
@@ -15,6 +16,7 @@ namespace Learning
         public static List<Item> itemList = new List<Item>();
         public float rotation = 0f;
         public int amount;
+        public static Texture2D[] textureList;
         public Item(Vector3 position,int type)
         {
             this.type = type;
@@ -29,14 +31,14 @@ namespace Learning
             this.amount = amount;
             Visible = false;
         }
-
+        
         public static void Draw(World world)
         {
             foreach (Item item in Item.itemList)
             {
                 if (item.Visible)
                 {
-                    Cube.Draw(item.Position, world, Block.textureList[item.type], .5f, item.rotation);
+                    //Graphics.GraphicsEngine.Draw(item.Position, world, Item.textureList[item.type], .5f, item.rotation);
                 }
             }
         }

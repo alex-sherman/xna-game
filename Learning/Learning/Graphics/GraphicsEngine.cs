@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Learning.Graphics
+namespace Learning
 {
     class GraphicsEngine
     {
@@ -21,6 +21,11 @@ namespace Learning.Graphics
             GraphicsEngine.sand = sand;
             GraphicsEngine.rock = rock;
         }
+        public static void Initialize(GraphicsDevice device, Effect effect)
+        {
+            GraphicsEngine.device = device;
+            GraphicsEngine.effect = effect;
+        }
         public static void Draw(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
             if (vertexBuffer != null && indexBuffer != null)
@@ -35,20 +40,20 @@ namespace Learning.Graphics
                 effect.Parameters["UserTextureD"].SetValue(grass);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
-                Cube.device.SetVertexBuffers(vertexBuffer);
-                Cube.device.Indices = indexBuffer;
+                device.SetVertexBuffers(vertexBuffer);
+                device.Indices = indexBuffer;
                 effect.CurrentTechnique.Passes[0].Apply();
 
                 for (int j = 0; j <= indexBuffer.IndexCount / 3000000; j += 1)
                 {
                     if ((j + 1) * 3000000 >= indexBuffer.IndexCount)
                     {
-                        Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, j * 3000000, indexBuffer.IndexCount - j * 3000000, j * 3000000, (indexBuffer.IndexCount - j * 3000000) / 3);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, j * 3000000, indexBuffer.IndexCount - j * 3000000, j * 3000000, (indexBuffer.IndexCount - j * 3000000) / 3);
                         break;
                     }
                     else
                     {
-                        Cube.device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, j * 3000000, 3000000, j * 3000000, (3000000) / 3);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, j * 3000000, 3000000, j * 3000000, (3000000) / 3);
 
                     }
                 }
@@ -65,9 +70,9 @@ namespace Learning.Graphics
                 effect.Parameters["UserTextureA"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
-                Cube.device.SetVertexBuffers(new VertexBufferBinding(vBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
+                device.SetVertexBuffers(new VertexBufferBinding(vBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
                 effect.CurrentTechnique.Passes[0].Apply();
-                Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 14, 0, 12, instanceVertexBuffer.VertexCount);
+                device.DrawInstancedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 14, 0, 12, instanceVertexBuffer.VertexCount);
             }
         }
 
@@ -80,9 +85,9 @@ namespace Learning.Graphics
                 effect.Parameters["UserTextureA"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
-                Cube.device.SetVertexBuffers(vertexBuffer);
+                device.SetVertexBuffers(vertexBuffer);
                 effect.CurrentTechnique.Passes[0].Apply();
-                Cube.device.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount/3);
+                device.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount/3);
             }
         }
     }

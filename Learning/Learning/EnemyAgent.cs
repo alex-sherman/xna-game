@@ -108,7 +108,7 @@ namespace Learning
                 endPos - GameConstants.PlayerSize / 2,
                 endPos + GameConstants.PlayerSize / 2);
             if (octreeNodeChanged)
-                curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
+                //curCollisionCandidates = world.objectTree.getCollisionCandidates(endAABB);
 
             // resolve non-gravity-caused collisions
             OnGround = false;

@@ -108,11 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIManager.cs" />
-    <Compile Include="Block.cs" />
     <Compile Include="EnemyAgent.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Crafting.cs" />
-    <Compile Include="Graphics\Cube.cs" />
     <Compile Include="GameConstants.cs" />
     <Compile Include="Graphics\GraphicsEngine.cs" />
     <Compile Include="Graphics\GUI.cs" />
@@ -132,7 +130,9 @@
     <Compile Include="Menus\MenuScreen.cs" />
     <Compile Include="Menus\OptionsMenu.cs" />
     <Compile Include="Menus\PauseScreen.cs" />
-    <Compile Include="OctreeNode.cs" />
+    <Compile Include="OctreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Physics\CollisionHashSet.cs" />
     <Compile Include="Physics\CollisionIDGenerator.cs" />
     <Compile Include="Physics\CollisionList.cs" />
