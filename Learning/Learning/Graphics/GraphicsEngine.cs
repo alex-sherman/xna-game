@@ -52,6 +52,8 @@ namespace Learning.Graphics
                 }
             }
         }
+
+        //Not currently used
         public static void Draw(DynamicVertexBuffer instanceVertexBuffer, VertexBuffer vBuffer, Texture2D texture)
         {
             if (instanceVertexBuffer!=null && instanceVertexBuffer.VertexCount>0)
@@ -66,6 +68,8 @@ namespace Learning.Graphics
                 Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 14, 0, 12, instanceVertexBuffer.VertexCount);
             }
         }
+
+        //Probably useless
         public static void Draw(VertexBuffer vertexBuffer, Texture2D texture)
         {
             if (vertexBuffer != null)
@@ -79,18 +83,5 @@ namespace Learning.Graphics
                 Cube.device.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount/3);
             }
         }
-        /*public static void Draw(Effect effect, Matrix[] instances)
-        {
-            if (instances.Length != 0)
-            {
-                instanceVertexBuffer = new DynamicVertexBuffer(Cube.device, instanceVertexDeclaration, instances.Length, BufferUsage.WriteOnly);
-                instanceVertexBuffer.SetData(instances, 0, instances.Length);
-                effect.CurrentTechnique = effect.Techniques["InstanceTexture"];
-                Cube.device.SetVertexBuffers(new VertexBufferBinding(vertexBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
-                Cube.device.Indices = indexBuffer;
-                effect.CurrentTechnique.Passes[0].Apply();
-                Cube.device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 24, 0, 12, instances.Length);
-            }
-        }*/
     }
 }
