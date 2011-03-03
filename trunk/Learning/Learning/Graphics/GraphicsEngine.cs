@@ -26,7 +26,7 @@ namespace Learning.Graphics
             if (vertexBuffer != null && indexBuffer != null)
             {
                 RasterizerState poo = new RasterizerState();
-                //poo.FillMode = FillMode.WireFrame;
+                poo.FillMode = FillMode.WireFrame;
                 //Cube.device.RasterizerState = poo;
                 effect.CurrentTechnique = effect.Techniques["MultiTexture"];
                 effect.Parameters["UserTextureA"].SetValue(sand);

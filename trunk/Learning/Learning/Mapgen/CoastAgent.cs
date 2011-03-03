@@ -117,7 +117,7 @@ namespace Learning.Mapgen
         }
         private float score(Vector2 point)
         {
-            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 50 * man.getEdgeDistance(point);
+            return (point - repulsor).LengthSquared() - (point - attractor).LengthSquared() + 3 * man.getEdgeDistance(point);
         }
     }
 }
