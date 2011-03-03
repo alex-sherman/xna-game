@@ -44,7 +44,7 @@ namespace Learning.Mapgen
             for(int x = (int)location.X-radius;x<=(int)location.X+radius;x++){
                 for (int y = (int)location.Y - radius; y <= (int)location.Y + radius; y++)
                 {
-                    man.smooth(ref man.landHeight, x, y);
+                    man.smooth(ref man.landHeight, x, y,man.size);
                 }
             }
             n++;

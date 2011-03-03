@@ -11,7 +11,8 @@ namespace Learning.Mapgen
     {
         private World _world;
         public int[,] rockHeight;
-        public int[,] landHeight;
+        public float[,] landHeight;
+        public float[,] highResLandHeight;
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
         public int size;
@@ -49,9 +50,9 @@ namespace Learning.Mapgen
         public Mapgen(World world)
         {
             _world = world;
-            this.size = 200;
+            this.size = 220;
             rockHeight = new int[size, size];
-            landHeight = new int[size, size];
+            landHeight = new float[size, size];
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
@@ -71,17 +72,29 @@ namespace Learning.Mapgen
         }
         public void getVertices()
         {
+            highResLandHeight = new float[size * 10, size * 10];
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    for(int x = i*10;x<i*10+10;x++){
+                        for (int y = j*10; y<j*10 + 10; y++)
+                        {
+                            highResLandHeight[x, y] = landHeight[i, j];
+                        }
+                    }
+                }
+            }
+            smoothMap(ref highResLandHeight, size * 10,5);
             for (int i = 0; i < size; i++)
             {
                 for (int k = 0; k < size; k++)
                 {
-                    int j = landHeight[i,k];
                     if (i<size-1 && k < size-1)
                     {
                         int o = vertices.Count();
                             indices.AddRange(getIndices(i,k,o));
-                            vertices.AddRange(getVertices(i, k));
-                            
+                            vertices.AddRange(getVertices(i*4, k*4));
                     }
                 }
             }
@@ -92,17 +105,16 @@ namespace Learning.Mapgen
             List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
-            float poo = getHeight(1, 1, 0, 1, 1, 2);
-            for (float i = 0; i <= 1; i += .25f)
+            for (int i = 0; i <= 4; i += 1)
             {
                 
                 
-                for (float k = 0; k <= 1; k += .25f)
+                for (int k = 0; k <= 4; k += 1)
                 {
-                    float height = getHeight(i,k,landHeight[x,y],landHeight[x+1,y],landHeight[x,y+1],landHeight[x+1,y+1]);
-                    MultiTex vertex = new MultiTex(new Vector3(i + x, height, k + y), Vector3.Zero, new Vector2(i / 2, k / 2), new Vector4(0, 0, 0, 0));
-                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 4.0f, 0, 1);
-                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 7) / 4.0f, 0, 1);
+                    float height = highResLandHeight[x+i, y+k];
+                    MultiTex vertex = new MultiTex(new Vector3((x+i)/10.0f, highResLandHeight[x+i, y+k], (y+k)/10.0f), Vector3.Zero, new Vector2(((i+x)%10)/10f, ((k+y)%10)/10f), new Vector4(0, 0, 0, 0));
+                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 5.0f, 0, 1);
+                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 9) / 5.0f, 0, 1);
                     vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 17) / 10.0f, 0, 1);
                     vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
                     vertices.Add(vertex);
@@ -111,20 +123,6 @@ namespace Learning.Mapgen
             }
             
             return vertices;
-        }
-        public float getHeight(float x, float y, float heightXY, float heightX1Y, float heightXY1, float heightX1Y1)
-        {
-            float difference = getHeight(x, heightX1Y1 - heightXY1)+heightXY1 - getHeight(x, heightX1Y - heightXY)-heightXY;
-            float height = getHeight(x, heightX1Y - heightXY) + heightXY + getHeight(y, difference);
-            return height;
-        }
-        public float getHeight(float r, float d)
-        {
-            if(d==0){return 0;}
-            return r * r * d;
-            /*else if (d > 0) { return (r*(r-.5f)*(1-r)+r)*d; }
-            else { return (r*(r-.5f)*(r-1)+r)*d; }*/
-           
         }
         public int[] getIndices(int x, int y, int o)
         {
@@ -331,45 +329,56 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void smooth(ref int[,] heightMap, int x, int y)
+        public void smooth(ref float[,] heightMap, int x, int y, int arraySize)
         {
-            smooth(ref heightMap, x, y, 0);
+            smooth(ref heightMap, x, y, 0, arraySize);
         }
-        public void smooth(ref int[,] heightMap, int x, int y,int variance)
+        public void smooth(ref float[,] heightMap, int x, int y,int variance,int arraySize)
         {
-            if (x >= 0 && x < size && y >= 0 && y < size)
-            {
-                int[] toAdd = { -1,0, 1 };
-                int curX;
-                int curY;
-                int total = heightMap[x, y]*3;
-                foreach (int add in toAdd)
+            
+                if (x >= 0 && x < arraySize && y >= 0 && y < arraySize)
                 {
-                    curX = x + add;
-                    curY = y + add;
-                    if (curX >= 0 && curX < size && curY >= 0 && curY < size)
+                    int curX;
+                    int curY;
+                    float total = 0;
+                    for (int i = -2; i <= 2; i++)
                     {
-                        total += heightMap[curX, curY];
+                        for (int j = -2; j <= 2; j++)
+                        {
+                            curX = x + i;
+                            curY = y + j;
+                            if (curX >= 0 && curX < arraySize && curY >= 0 && curY < arraySize)
+                            {
+                                total += heightMap[curX, curY];
+                            }
+                            else { total += heightMap[x, y]; }
+                        }
                     }
-                    else { total += heightMap[x, y]; }
-                    curY = y - add;
-                    if (curX >= 0 && curX < size && curY >= 0 && curY < size)
-                    {
-                        total += heightMap[curX, curY];
-                    }
-                    else { total += heightMap[x, y]; }
-
+                    heightMap[x, y] = (total / 25 + heightMap[x, y]) / 2 + rand.Next(-1, 2) * rand.Next(variance);
                 }
-                heightMap[x, y] = total / 10 + rand.Next(-1, 2) * rand.Next(variance);
+            
+        }
+        public void smoothMap(ref float[,] heightMap,int arraySize, int repitions)
+        {
+            for (int r = 0; r < repitions; r++)
+            {
+                for (int x = 0; x < arraySize; x++)
+                {
+                    for (int y = 0; y < arraySize; y++)
+                    {
+                        smooth(ref heightMap, x, y, 0, arraySize);
+                    }
+                }
             }
         }
-        public void smoothMap(ref int[,] heightMap)
+
+        public void smoothMap(ref float[,] heightMap, int arraySize)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < arraySize; x++)
             {
-                for (int y = 0; y < size; y++)
+                for (int y = 0; y < arraySize; y++)
                 {
-                    smooth(ref heightMap, x, y, 1);
+                    smooth(ref heightMap, x, y, 0, arraySize);
                 }
             }
         }
