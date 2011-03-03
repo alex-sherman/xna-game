@@ -20,10 +20,6 @@ namespace Learning
         public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
         public OctreeNode objectTree;
-        public OctreeNode objectTree1;
-        public OctreeNode objectTree2;
-        public OctreeNode objectTree3;
-        public OctreeNode objectTree4;
         public Mapgen.Mapgen generator;
         internal PhysicsEngine engine;
 

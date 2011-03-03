@@ -4,10 +4,10 @@ Content\LightAndTextureEffect.xnb
 Content\menufont.xnb
 Content\Models\ship.xnb
 Content\Models\carriertextures_0.xnb
-Content\Textures2\grass.xnb
-Content\Textures2\sand.xnb
-Content\Textures2\blank.xnb
-Content\Textures2\Crosshair.xnb
-Content\Textures2\Hotbar.xnb
-Content\Textures2\InvCraft.xnb
-Content\Textures2\Inventory.xnb
+Content\blank.xnb
+Content\Crosshair.xnb
+Content\grass.xnb
+Content\Hotbar.xnb
+Content\InvCraft.xnb
+Content\Inventory.xnb
+Content\sand.xnb
