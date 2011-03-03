@@ -1,5 +1,8 @@
 
-uniform extern texture UserTexture;
+uniform extern texture UserTextureA;
+uniform extern texture UserTextureB;
+uniform extern texture UserTextureC;
+uniform extern texture UserTextureD;
 float4x4 WorldViewProj;
 float3 cameraPosition;
 float4x4 world;
@@ -35,24 +38,41 @@ struct PixelShaderInputPerVertexDiffuse
 };
 
 
-sampler textureSampler = sampler_state
+sampler textureSampler1 = sampler_state
 {
-    Texture = <UserTexture>;
+    Texture = <UserTextureA>;
     mipfilter = LINEAR; 
 };
-
+sampler textureSampler2 = sampler_state
+{
+    Texture = <UserTextureB>;
+    mipfilter = LINEAR; 
+};
+sampler textureSampler3 = sampler_state
+{
+    Texture = <UserTextureC>;
+    mipfilter = LINEAR; 
+};
+sampler textureSampler4 = sampler_state
+{
+    Texture = <UserTextureD>;
+    mipfilter = LINEAR; 
+};
 struct VS_OUTPUT
 {
     float4 position  : POSITION;
     float4 textureCoordinate : TEXCOORD0;
 	float4 color : TEXCOORD1;
+	float4 blend : TEXCOORD2;
+
 };
 
  
 VS_OUTPUT Transform(
     float4 Position  : POSITION, 
     float4 TextureCoordinate : TEXCOORD0,
-	float3 normal : NORMAL )
+	float3 normal : NORMAL, 
+	float4 blend : TEXCOORD1)
 {
     VS_OUTPUT Out = (VS_OUTPUT)0;
 	
@@ -60,6 +80,7 @@ VS_OUTPUT Transform(
 	float4 viewPosition = mul(Position, view);
     Out.position = mul(viewPosition, proj);
     Out.textureCoordinate = TextureCoordinate;
+	Out.blend = blend;
 
     return Out;
 }
@@ -81,10 +102,17 @@ VS_OUTPUT InstanceTransform(
 
 float4 ApplyTexture(VS_OUTPUT vsout) : COLOR
 {
-	float4 color = ambientLightColor*tex2D(textureSampler, vsout.textureCoordinate).rgba;
+	float4 color = ambientLightColor*tex2D(textureSampler1, vsout.textureCoordinate).rgba;
     return color;
 }
-
+float4 ApplyMultiTexture(VS_OUTPUT vsout) : COLOR
+{
+	float4 color = tex2D(textureSampler1, vsout.textureCoordinate).rgba*vsout.blend.x;
+	color += tex2D(textureSampler2, vsout.textureCoordinate).rgba*vsout.blend.y;
+	color += tex2D(textureSampler3, vsout.textureCoordinate).rgba*vsout.blend.z;
+	color += tex2D(textureSampler4, vsout.textureCoordinate).rgba*vsout.blend.w;
+    return color;
+}
 technique Texture
 {
 	pass P0
@@ -93,6 +121,14 @@ technique Texture
         pixelShader  = compile ps_3_0 ApplyTexture();
     }
 	 
+}
+technique MultiTexture
+{
+	pass P0
+    {
+        vertexShader = compile vs_3_0 Transform();
+        pixelShader  = compile ps_3_0 ApplyMultiTexture();
+    }
 }
 technique InstanceTexture
 {

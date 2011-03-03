@@ -98,23 +98,6 @@ namespace Learning.Mapgen
                     }
                 }
             }
-            for (int x = (int)location.X - radius-1; x <= (int)location.X + radius+1; x++)
-            {
-                for (int y = (int)location.Y - radius - 1; y <= (int)location.Y + radius + 1; y++)
-                {
-                    if (x >= 0 && x < man.size && y >= 0 && y < man.size)
-                    {
-                        if (man.landHeight[x, y] >= coastHeight-2)
-                        {
-                            man.smooth(ref man.landHeight, x, y);
-                        }
-                        else
-                        {
-                            man.smooth(ref man.landHeight, x, y, (int)((location - new Vector2(x, y)).Length() / radius * 3));
-                        }
-                    }
-                }
-            }
             getNewSpot();
             n++;
             return true;

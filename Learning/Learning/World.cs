@@ -47,7 +47,8 @@ namespace Learning
             objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
             generator = new Mapgen.Mapgen(this);
             aiManager = new AIManager(this);
-            generator.generateLand(30000);
+            generator.generateLand(40000);
+            generator.smoothMap(ref generator.landHeight);
             //generator.smoothLand(10, 100);
             generator.getVertices();
             generator.setBuffers();
@@ -113,7 +114,7 @@ namespace Learning
         public void Draw()
         {
             BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            Graphics.GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer, Block.textureList[4]);
+            Graphics.GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer);
             Item.Draw(this);
         }
 
