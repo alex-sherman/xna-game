@@ -80,7 +80,7 @@ namespace Learning
                     itemRec.Width = 62;
                     itemRec.Height = 62;
                     itemRec.X = device.Viewport.Width / 2 + i * 66 - 328;
-                    batch.Draw(Block.textureList[inventory.items[i].type], itemRec, Color.White);
+                    batch.Draw(Item.textureList[inventory.items[i].type], itemRec, Color.White);
 
                     batch.DrawString(
                         font,

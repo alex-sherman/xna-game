@@ -65,9 +65,9 @@ namespace Learning.Mapgen
         public void setBuffers()
         {
             
-            vBuffer = new VertexBuffer(Cube.device, MultiTex.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
+            vBuffer = new VertexBuffer(GraphicsEngine.device, MultiTex.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
             vBuffer.SetData(vertices.ToArray());
-            iBuffer = new IndexBuffer(Cube.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
+            iBuffer = new IndexBuffer(GraphicsEngine.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
             iBuffer.SetData(indices.ToArray());
         }
         public void getVertices()

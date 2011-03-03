@@ -316,7 +316,7 @@ namespace Learning
             {
 
                 ScreenManager.SpriteBatch.Draw(
-                    Block.textureList[movingItem.type],
+                    Item.textureList[movingItem.type],
                     new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 60, 57),
                     Color.White);
             }
@@ -330,7 +330,7 @@ namespace Learning
             ScreenManager.SpriteBatch.Draw(GUI.crafting, craftRec, Color.White);
             if (craftItems[0] != null)
             {
-                ScreenManager.SpriteBatch.Draw(Block.textureList[craftItems[0].type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.Draw(Item.textureList[craftItems[0].type], itemRec, Color.White);
                 ScreenManager.SpriteBatch.DrawString(
                         GUI.font,
                         craftItems[0].amount.ToString(),
@@ -340,7 +340,7 @@ namespace Learning
             itemRec.Y += 66;
             if (craftItems[1] != null)
             {
-                ScreenManager.SpriteBatch.Draw(Block.textureList[craftItems[1].type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.Draw(Item.textureList[craftItems[1].type], itemRec, Color.White);
                 ScreenManager.SpriteBatch.DrawString(
                         GUI.font,
                         craftItems[1].amount.ToString(),
@@ -352,7 +352,7 @@ namespace Learning
             {
                 itemRec.Y -= 33;
                 itemRec.X += 66;
-                ScreenManager.SpriteBatch.Draw(Block.textureList[recipe.craftedItem.type], itemRec, Color.White);
+                ScreenManager.SpriteBatch.Draw(Item.textureList[recipe.craftedItem.type], itemRec, Color.White);
                 ScreenManager.SpriteBatch.DrawString(
                         GUI.font,
                         recipe.canCraft(craftItems).ToString(),
@@ -373,7 +373,7 @@ namespace Learning
                     itemRec.Y = inventoryRec.Top + 92 + (inventoryRec.Height - 92) / 5 * ((i / 10) - 1);
                     
                     ScreenManager.SpriteBatch.Draw(
-                        Block.textureList[player.inventory.items[i].type],
+                        Item.textureList[player.inventory.items[i].type],
                         itemRec, 
                         Color.White);
 
