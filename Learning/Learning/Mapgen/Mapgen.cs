@@ -101,9 +101,9 @@ namespace Learning.Mapgen
                 {
                     float height = getHeight(i,k,landHeight[x,y],landHeight[x+1,y],landHeight[x,y+1],landHeight[x+1,y+1]);
                     MultiTex vertex = new MultiTex(new Vector3(i + x, height, k + y), Vector3.Zero, new Vector2(i / 2, k / 2), new Vector4(0, 0, 0, 0));
-                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 8.0f, 0, 1);
-                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 10) / 6.0f, 0, 1);
-                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 6.0f, 0, 1);
+                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 4.0f, 0, 1);
+                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 7) / 4.0f, 0, 1);
+                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 17) / 10.0f, 0, 1);
                     vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
                     vertices.Add(vertex);
                         
@@ -186,9 +186,9 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public Vector2? getRandomCoast()
+        public Vector2 getRandomCoast()
         {
-            if (coastLine.Count == 0) { return null; }
+            if (coastLine.Count == 0) { return getRandomXY(); }
             return coastLine[Mapgen.rand.Next(coastLine.Count)];
         }
         public bool isCoast(int x, int y)
@@ -220,7 +220,7 @@ namespace Learning.Mapgen
         }
         public float getEdgeDistance(Vector2 point)
         {
-            return (float)Math.Min(Math.Min(Math.Pow(point.X, 2) - Math.Pow(size, 2), Math.Pow(point.Y, 2) - Math.Pow(size, 2)), Math.Min(Math.Pow(point.X, 2), Math.Pow(point.Y, 2)));
+            return (float)Math.Min(Math.Min(Math.Pow(size-point.X, 2), Math.Pow(size-point.Y, 2)), Math.Min(Math.Pow(point.X, 2), Math.Pow(point.Y, 2)));
         }
         public List<Vector2> getCoastInArea(Vector2 point, int radius)
         {
@@ -295,19 +295,19 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void smoothCoast(int number, int tokens)
+        public void generateMountain(int number, int tokens)
         {
-            findCurrentCoastline();
+            findLand();
             currentAgents = new List<MapgenAgent>();
             for (int i = 0; i < number; i++)
             {
-                currentAgents.Add(new SmoothingAgent(getRandomXY(), tokens, this));
+                currentAgents.Add(new RockAgent(getRandomXY(), tokens, this));
             }
             bool alive = true;
             while (alive)
             {
                 alive = false;
-                findCurrentCoastline();
+                findLand();
                 foreach (MapgenAgent agent in currentAgents)
                 {
                     if (agent.step()) { alive = true; }
@@ -342,7 +342,7 @@ namespace Learning.Mapgen
                 int[] toAdd = { -1,0, 1 };
                 int curX;
                 int curY;
-                int total = heightMap[x, y];
+                int total = heightMap[x, y]*3;
                 foreach (int add in toAdd)
                 {
                     curX = x + add;
@@ -360,7 +360,7 @@ namespace Learning.Mapgen
                     else { total += heightMap[x, y]; }
 
                 }
-                heightMap[x, y] = total / 9 + rand.Next(-1, 2) * rand.Next(variance);
+                heightMap[x, y] = total / 10 + rand.Next(-1, 2) * rand.Next(variance);
             }
         }
         public void smoothMap(ref int[,] heightMap)
