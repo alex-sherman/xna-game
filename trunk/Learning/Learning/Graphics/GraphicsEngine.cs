@@ -12,15 +12,25 @@ namespace Learning.Graphics
         public static Effect effect;
         public static GraphicsDevice device;
         public static World world;
-        public static void Draw(VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D texture)
+        public static Texture2D grass;
+        public static Texture2D sand;
+        public static void SetTextures(Texture2D grass, Texture2D sand)
+        {
+            GraphicsEngine.grass = grass;
+            GraphicsEngine.sand = sand;
+        }
+        public static void Draw(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
             if (vertexBuffer != null && indexBuffer != null)
             {
                 RasterizerState poo = new RasterizerState();
-                poo.FillMode = FillMode.WireFrame;
+                //poo.FillMode = FillMode.WireFrame;
                 //Cube.device.RasterizerState = poo;
-                effect.CurrentTechnique = effect.Techniques["Texture"];
-                effect.Parameters["UserTexture"].SetValue(texture);
+                effect.CurrentTechnique = effect.Techniques["MultiTexture"];
+                effect.Parameters["UserTextureA"].SetValue(sand);
+                effect.Parameters["UserTextureB"].SetValue(grass);
+                effect.Parameters["UserTextureC"].SetValue(grass);
+                effect.Parameters["UserTextureD"].SetValue(grass);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
                 Cube.device.SetVertexBuffers(vertexBuffer);
@@ -48,7 +58,7 @@ namespace Learning.Graphics
             {
                 
                 effect.CurrentTechnique = effect.Techniques["InstanceTexture"];
-                effect.Parameters["UserTexture"].SetValue(texture);
+                effect.Parameters["UserTextureA"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
                 Cube.device.SetVertexBuffers(new VertexBufferBinding(vBuffer, 0, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
@@ -61,7 +71,7 @@ namespace Learning.Graphics
             if (vertexBuffer != null)
             {
                 effect.CurrentTechnique = effect.Techniques["Texture"];
-                effect.Parameters["UserTexture"].SetValue(texture);
+                effect.Parameters["UserTextureA"].SetValue(texture);
                 effect.Parameters["view"].SetValue(world.partialWorld);
                 effect.Parameters["proj"].SetValue(world.projection);
                 Cube.device.SetVertexBuffers(vertexBuffer);

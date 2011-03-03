@@ -12,39 +12,59 @@ namespace Learning.Mapgen
         private World _world;
         public int[,] rockHeight;
         public int[,] landHeight;
-        public int[,] lastRockHeight;
-        public int[,] lastLandHeight;
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
-        public OctreeNode renderTree;
         public int size;
         public static Random rand = new Random();
-        public List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
+        public List<MultiTex> vertices = new List<MultiTex>();
         public List<int> indices = new List<int>();
         public VertexBuffer vBuffer;
         public IndexBuffer iBuffer;
+        public static Texture2D grass;
+        public static Texture2D sand;
+        public struct MultiTex : IVertexType
+        {
+            public Vector3 Position;
+            public Vector2 TextureCoordinate;
+            public Vector3 Normal;
+            public Vector4 BlendWeight;
+
+        public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
+        (
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+            new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
+            new VertexElement(20, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
+            new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1)
+        );
+        public MultiTex(Vector3 pos, Vector3 normal, Vector2 texPos, Vector4 blendWeights)
+        {
+            Position = pos;
+            TextureCoordinate = texPos;
+            Normal = normal;
+            BlendWeight = blendWeights;
+        }
+
+        VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
+        };
         public Mapgen(World world)
         {
             _world = world;
-            this.size = 250;
+            this.size = 200;
             rockHeight = new int[size, size];
             landHeight = new int[size, size];
-            lastLandHeight = new int[size, size];
-            lastRockHeight = new int[size, size];
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
                     rockHeight[i, j] = RockAgent.maxHeight - RockAgent.variance;
                     landHeight[i, j] = CoastAgent.minHeight;
-                    lastRockHeight[i, j] = RockAgent.maxHeight - RockAgent.variance;
-                    lastLandHeight[i, j] = CoastAgent.minHeight;
                 }
             }
         }
         public void setBuffers()
         {
-            vBuffer = new VertexBuffer(Cube.device, VertexPositionNormalTexture.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
+            
+            vBuffer = new VertexBuffer(Cube.device, MultiTex.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
             vBuffer.SetData(vertices.ToArray());
             iBuffer = new IndexBuffer(Cube.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
             iBuffer.SetData(indices.ToArray());
@@ -67,46 +87,44 @@ namespace Learning.Mapgen
             }
         }
 
-        public List<VertexPositionNormalTexture> getVertices(int x, int y)
+        public List<MultiTex> getVertices(int x, int y)
         {
-            List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
-            float currentHeight = 0;
+            List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
+            float poo = getHeight(1, 1, 0, 1, 1, 2);
             for (float i = 0; i <= 1; i += .25f)
             {
+                
+                
                 for (float k = 0; k <= 1; k += .25f)
                 {
-                    currentPoint = new Vector2(i+x, k+y);
-                    for (int io = 0; io <= 1; io++)
-                    {
-                        for (int ko = 0; ko <= 1; ko++)
-                        {
-                            heightPoint = new Vector2(io, ko)+currentPoint;
-                            if ((heightPoint - currentPoint).LengthSquared() == 0)
-                            {
-                                currentHeight = landHeight[(int)heightPoint.X, (int)heightPoint.Y];
-                                io = 2;
-                                ko = 2;
-                                break;
-                            }
-                            else
-                            {
-                                currentHeight += landHeight[x + io, y + ko]*((heightPoint-currentPoint).Length());
-                            }
-                        }
-                    }
-                    vertices.Add(new VertexPositionNormalTexture(new Vector3(currentPoint.X, currentHeight, currentPoint.Y), Vector3.Zero, new Vector2(i, k)));
+                    float height = getHeight(i,k,landHeight[x,y],landHeight[x+1,y],landHeight[x,y+1],landHeight[x+1,y+1]);
+                    MultiTex vertex = new MultiTex(new Vector3(i + x, height, k + y), Vector3.Zero, new Vector2(i / 2, k / 2), new Vector4(0, 0, 0, 0));
+                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 8.0f, 0, 1);
+                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 10) / 6.0f, 0, 1);
+                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 6.0f, 0, 1);
+                    vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
+                    vertices.Add(vertex);
                         
-                    }
-            }/*
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(x, landHeight[x, x], y), Vector3.Zero,  new Vector2(0,0)));
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(x, landHeight[x, x+1], y+1), Vector3.Zero,  new Vector2(0,1)));
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, landHeight[x + 1, y+1], y+1), Vector3.Zero, new Vector2(1,1)));
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, landHeight[x+1, y], y), Vector3.Zero,  new Vector2(1,0)));
-            */
+                }
+            }
             
             return vertices;
+        }
+        public float getHeight(float x, float y, float heightXY, float heightX1Y, float heightXY1, float heightX1Y1)
+        {
+            float difference = getHeight(x, heightX1Y1 - heightXY1)+heightXY1 - getHeight(x, heightX1Y - heightXY)-heightXY;
+            float height = getHeight(x, heightX1Y - heightXY) + heightXY + getHeight(y, difference);
+            return height;
+        }
+        public float getHeight(float r, float d)
+        {
+            if(d==0){return 0;}
+            return r * r * d;
+            /*else if (d > 0) { return (r*(r-.5f)*(1-r)+r)*d; }
+            else { return (r*(r-.5f)*(r-1)+r)*d; }*/
+           
         }
         public int[] getIndices(int x, int y, int o)
         {
@@ -257,14 +275,6 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void step()
-        {
-            foreach (MapgenAgent agent in currentAgents)
-            {
-                agent.step();
-            }
-
-        }
         
         public void smoothLand(int number, int tokens)
         {
@@ -329,7 +339,7 @@ namespace Learning.Mapgen
         {
             if (x >= 0 && x < size && y >= 0 && y < size)
             {
-                int[] toAdd = { -2, -1, 1, 2 };
+                int[] toAdd = { -1,0, 1 };
                 int curX;
                 int curY;
                 int total = heightMap[x, y];
@@ -351,6 +361,16 @@ namespace Learning.Mapgen
 
                 }
                 heightMap[x, y] = total / 9 + rand.Next(-1, 2) * rand.Next(variance);
+            }
+        }
+        public void smoothMap(ref int[,] heightMap)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    smooth(ref heightMap, x, y, 1);
+                }
             }
         }
         public Vector2 getRandomXY()

@@ -28,10 +28,10 @@ namespace Learning
         {
             GUI.game = game;
             GUI.font = game.Content.Load<SpriteFont>("GUIfont");
-            GUI.crosshair = game.Content.Load<Texture2D>("Textures\\Crosshair");
-            GUI.hotbar = game.Content.Load<Texture2D>("Textures\\Hotbar");
-            GUI.inventory = game.Content.Load<Texture2D>("Textures\\Inventory");
-            GUI.crafting = game.Content.Load<Texture2D>("Textures\\InvCraft");
+            GUI.crosshair = game.Content.Load<Texture2D>("Textures2\\Crosshair");
+            GUI.hotbar = game.Content.Load<Texture2D>("Textures2\\Hotbar");
+            GUI.inventory = game.Content.Load<Texture2D>("Textures2\\Inventory");
+            GUI.crafting = game.Content.Load<Texture2D>("Textures2\\InvCraft");
             GUI.device = World.device;
             GUI.batch = game.ScreenManager.SpriteBatch;
 

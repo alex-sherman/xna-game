@@ -89,19 +89,7 @@ namespace Learning
         }
         void InitializeTextures()
         {
-            Texture2D[] textures = { Content.Load<Texture2D>("Textures\\Grass"), //0
-                                     Content.Load<Texture2D>("Textures\\Stone"), //1
-                                     Content.Load<Texture2D>("Textures\\Wood"), //2
-                                     Content.Load<Texture2D>("Textures\\Sand"), //3
-                                     Content.Load<Texture2D>("Textures\\leaves"), //4
-                                     Content.Load<Texture2D>("Textures\\CraftingTable"), //5
-                                     Content.Load<Texture2D>("Textures\\Oven"), //6
-                                     Content.Load<Texture2D>("Textures\\IronOre"), //7
-                                     Content.Load<Texture2D>("Textures\\Furnace"), //8
-                                     Content.Load<Texture2D>("Textures\\IronBlock"), //9
-                                     Content.Load<Texture2D>("Textures\\MiniFridge") //10
-                                   };
-            Block.initTextures(textures);
+            Graphics.GraphicsEngine.SetTextures(Content.Load<Texture2D>("Textures2\\grass"), Content.Load<Texture2D>("Textures2\\sand"));
         }
 
         #endregion
@@ -147,13 +135,7 @@ namespace Learning
             if(input.IsNewKeyPress(GameConstants.quickSaveKey)){
                 player.world.saveGame("save.sav");
             }
-            //Debugging terrain generation
-            if(keyboard.IsKeyDown(Keys.F)){
-                for (int i = 0; i < 5; i++)
-                {
-                    newWorld.generator.step();
-                }
-            }
+
             // noclip
             if (input.IsNewKeyPress(Keys.N))
             {
