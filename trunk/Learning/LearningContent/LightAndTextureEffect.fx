@@ -38,24 +38,26 @@ struct PixelShaderInputPerVertexDiffuse
 };
 
 
-sampler textureSampler1 = sampler_state
+sampler sand = sampler_state
 {
     Texture = <UserTextureA>;
     mipfilter = LINEAR; 
+	AddressU = wrap;
+	AddressV = wrap;
 };
-sampler textureSampler2 = sampler_state
+sampler grass = sampler_state
 {
     Texture = <UserTextureB>;
     mipfilter = LINEAR; 
 };
-sampler textureSampler3 = sampler_state
+sampler rock = sampler_state
 {
     Texture = <UserTextureC>;
     mipfilter = LINEAR; 
 };
 sampler textureSampler4 = sampler_state
 {
-    Texture = <UserTextureD>;
+    Texture = <UserTextureA>;
     mipfilter = LINEAR; 
 };
 struct VS_OUTPUT
@@ -102,14 +104,14 @@ VS_OUTPUT InstanceTransform(
 
 float4 ApplyTexture(VS_OUTPUT vsout) : COLOR
 {
-	float4 color = ambientLightColor*tex2D(textureSampler1, vsout.textureCoordinate).rgba;
+	float4 color = ambientLightColor*tex2D(textureSampler4, vsout.textureCoordinate).rgba;
     return color;
 }
 float4 ApplyMultiTexture(VS_OUTPUT vsout) : COLOR
 {
-	float4 color = tex2D(textureSampler1, vsout.textureCoordinate).rgba*vsout.blend.x;
-	color += tex2D(textureSampler2, vsout.textureCoordinate).rgba*vsout.blend.y;
-	color += tex2D(textureSampler3, vsout.textureCoordinate).rgba*vsout.blend.z;
+	float4 color = tex2D(sand, vsout.textureCoordinate).rgba*vsout.blend.x;
+	color += tex2D(grass, vsout.textureCoordinate).rgba*vsout.blend.y;
+	color += tex2D(rock, vsout.textureCoordinate).rgba*vsout.blend.z;
 	color += tex2D(textureSampler4, vsout.textureCoordinate).rgba*vsout.blend.w;
     return color;
 }

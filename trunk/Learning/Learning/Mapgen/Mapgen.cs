@@ -47,10 +47,10 @@ namespace Learning.Mapgen
 
         VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
         };
-        public Mapgen(World world)
+        public Mapgen(World world,int size)
         {
             _world = world;
-            this.size = 220;
+            this.size = size;
             rockHeight = new int[size, size];
             landHeight = new float[size, size];
             for (int i = 0; i < size; i++)
@@ -85,7 +85,7 @@ namespace Learning.Mapgen
                     }
                 }
             }
-            smoothMap(ref highResLandHeight, size * 10,5);
+            smoothMap(ref highResLandHeight, size * 10,25);
             for (int i = 0; i < size; i++)
             {
                 for (int k = 0; k < size; k++)
@@ -112,11 +112,13 @@ namespace Learning.Mapgen
                 for (int k = 0; k <= 4; k += 1)
                 {
                     float height = highResLandHeight[x+i, y+k];
-                    MultiTex vertex = new MultiTex(new Vector3((x+i)/10.0f, highResLandHeight[x+i, y+k], (y+k)/10.0f), Vector3.Zero, new Vector2(((i+x)%10)/10f, ((k+y)%10)/10f), new Vector4(0, 0, 0, 0));
+                    MultiTex vertex = new MultiTex(new Vector3((x+i)/10.0f, highResLandHeight[x+i, y+k], (y+k)/10.0f), Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
                     vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 5.0f, 0, 1);
                     vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 9) / 5.0f, 0, 1);
                     vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 17) / 10.0f, 0, 1);
                     vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
+                    if (height > 8) { 
+                    }
                     vertices.Add(vertex);
                         
                 }
@@ -341,9 +343,9 @@ namespace Learning.Mapgen
                     int curX;
                     int curY;
                     float total = 0;
-                    for (int i = -2; i <= 2; i++)
+                    for (int i = -1; i <= 1; i++)
                     {
-                        for (int j = -2; j <= 2; j++)
+                        for (int j = -1; j <= 1; j++)
                         {
                             curX = x + i;
                             curY = y + j;
@@ -354,7 +356,7 @@ namespace Learning.Mapgen
                             else { total += heightMap[x, y]; }
                         }
                     }
-                    heightMap[x, y] = (total / 25 + heightMap[x, y]) / 2 + rand.Next(-1, 2) * rand.Next(variance);
+                    heightMap[x, y] = (total / 9 + heightMap[x, y]) / 2 + rand.Next(-1, 2) * rand.Next(variance);
                 }
             
         }

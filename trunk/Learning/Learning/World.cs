@@ -40,13 +40,12 @@ namespace Learning
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
             engine = new PhysicsEngine(GameConstants.Gravity);
-            objectTree = new OctreeNode(new Vector3(0.5f, 0.5f, 0.5f), 20f, GameConstants.OctreeBlockLimit);
-            generator = new Mapgen.Mapgen(this);
+            generator = new Mapgen.Mapgen(this,100);
             aiManager = new AIManager(this);
-            generator.generateLand(20000);
+            generator.generateLand(3000);
             //generator.smoothMap(ref generator.landHeight);
-            //generator.generateMountain(20, 10);
-            generator.smoothMap(ref generator.landHeight, generator.size,5);
+            generator.generateMountain(2, 10);
+            generator.smoothMap(ref generator.landHeight, generator.size,1);
             //generator.smoothLand(10, 100);
             generator.getVertices();
             generator.setBuffers();

@@ -15,7 +15,7 @@ namespace Learning.Mapgen
         public static int variance = 3;
         public static int minHeight = 0;
         public static int radius = 3;
-        public static int maxTokens = 500;
+        public static int maxTokens = 100;
         public static int nToChange = 6;
         private Vector2 attractor;
         private Vector2 repulsor;
@@ -31,10 +31,6 @@ namespace Learning.Mapgen
             this.man = man;
             attractor = man.getRandomXY();
             repulsor = man.getRandomXY();
-            for (int i = 0; i < tokens; i++)
-            {
-
-            }
             while (this.tokens > maxTokens)
             {
                 man.currentAgents.Add(new CoastAgent(man.getCoastInArea(location,10), this.tokens / 2, man));
@@ -76,7 +72,6 @@ namespace Learning.Mapgen
                     highestPoint = point;
                 }
             }
-            tokens-= radius*radius;
             highestPoint = (highestPoint - location) * radius + location;
             location = highestPoint;
             
@@ -91,9 +86,9 @@ namespace Learning.Mapgen
                         {
                             if (man.isCoast(x, y))
                             {
-
                                 man.coastLine.Add(curPoint);
                             }
+                            if (man.landHeight[x, y] < coastHeight) { tokens--; }
                             man.landHeight[x, y] = height;
                         }
                     }
