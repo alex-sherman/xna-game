@@ -28,7 +28,7 @@ namespace Learning
         public Player()
         {
             IsStatic = false;
-            Enabled = true;
+            Enabled = false;
             this.inventory = new Inventory();
             Position = new Vector3(0, 10, 0);
         }

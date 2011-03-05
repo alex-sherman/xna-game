@@ -61,7 +61,7 @@ namespace Learning
                 Vector3.Zero, Vector3.Up);
 
             Matrix projection = Matrix.CreatePerspectiveFieldOfView(
-                (float)Math.PI / 4.0f,  // 2 PI Radians is 360 degrees,
+                (float)Math.PI / 3.0f,  // 2 PI Radians is 360 degrees,
                 // so this is 45 degrees.
                 (float)ScreenManager.GraphicsDevice.Viewport.Width /
                 (float)ScreenManager.GraphicsDevice.Viewport.Height,
@@ -138,7 +138,9 @@ namespace Learning
             if(input.IsNewKeyPress(GameConstants.quickSaveKey)){
                 player.world.saveGame("save.sav");
             }
-
+            if(input.IsNewKeyPress(Keys.F)){
+                newWorld.updateWater = !newWorld.updateWater;
+            }
             // noclip
             if (input.IsNewKeyPress(Keys.N))
             {
@@ -248,7 +250,7 @@ namespace Learning
 
             int dx = mouse.X - ScreenManager.GraphicsDevice.Viewport.Width / 2;
             int dy = mouse.Y - ScreenManager.GraphicsDevice.Viewport.Height / 2;
-
+            
             Mouse.SetPosition(
                 ScreenManager.GraphicsDevice.Viewport.Width / 2,
                 ScreenManager.GraphicsDevice.Viewport.Height / 2);

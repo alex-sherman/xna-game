@@ -61,8 +61,8 @@ namespace Learning
         }
         public static void UpdateWater(VertexBuffer vertexBuffer, IndexBuffer indexBuffer,RenderTarget2D reflection, RenderTarget2D refraction)
         {
-            device.SetVertexBuffers(vertexBuffer);
-            device.Indices = indexBuffer;
+            //device.SetVertexBuffers(vertexBuffer);
+            //device.Indices = indexBuffer;
             effect.CurrentTechnique = effect.Techniques["MultiTextureClip"];
             effect.Parameters["view"].SetValue(world.view);
             effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, -1, 0, 10));
