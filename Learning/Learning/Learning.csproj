@@ -114,6 +114,7 @@
     <Compile Include="GameConstants.cs" />
     <Compile Include="Graphics\GraphicsEngine.cs" />
     <Compile Include="Graphics\GUI.cs" />
+    <Compile Include="Graphics\Water.cs" />
     <Compile Include="InventoryScreen.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Inventory.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Landchunk.cs" />
     <Compile Include="ScreenManager\GameScreen.cs" />
     <Compile Include="ScreenManager\InputState.cs" />
     <Compile Include="ScreenManager\ScreenManager.cs" />

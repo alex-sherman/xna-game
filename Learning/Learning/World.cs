@@ -14,15 +14,17 @@ namespace Learning
 {
     class World
     {
-        public Matrix partialWorld;
+        public Matrix view;
+        public Matrix reflectionView;
         public Matrix projection;
         public List<Player> players = new List<Player>();
         public List<Item> itemList = new List<Item>();
         public static GraphicsDevice device;
         public OctreeNode objectTree;
-        public Mapgen.Mapgen generator;
+        public Landchunk chunk;
+        public Landchunk chunk2;
         internal PhysicsEngine engine;
-
+        public int waterUpdate = 0;
         public AIManager aiManager;
 
         public World(GraphicsDevice device)
@@ -40,15 +42,10 @@ namespace Learning
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
             engine = new PhysicsEngine(GameConstants.Gravity);
-            generator = new Mapgen.Mapgen(this,100);
+            chunk = new Landchunk(this, Vector3.Zero, 200);
+            chunk2 = new Landchunk(this, new Vector3(0,0,200), 200);
             aiManager = new AIManager(this);
-            generator.generateLand(3000);
-            //generator.smoothMap(ref generator.landHeight);
-            generator.generateMountain(2, 10);
-            generator.smoothMap(ref generator.landHeight, generator.size,1);
-            //generator.smoothLand(10, 100);
-            generator.getVertices();
-            generator.setBuffers();
+            
         }
 
         public void saveGame(String location)
@@ -95,15 +92,19 @@ namespace Learning
             }
             Item.Update(this);
             engine.Update(gameTime);
-            this.partialWorld = players[0].getCameraMatrix();// partialWorld;
-            //objectTree.Update(gameTime);
+            this.view = players[0].getCameraMatrix();// partialWorld;
+                this.reflectionView = players[0].getReflectionMatrix();
+            
 
         }
 
         public void Draw()
         {
-            BoundingFrustum toDraw = new BoundingFrustum(partialWorld * projection);
-            GraphicsEngine.Draw(generator.vBuffer, generator.iBuffer);
+
+            BoundingFrustum toDraw = new BoundingFrustum(view * projection);
+            //chunk.DrawWater();
+                chunk.UpdateWater();
+                chunk.Draw();
             Item.Draw(this);
         }
 

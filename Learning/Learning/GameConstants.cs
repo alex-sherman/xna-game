@@ -16,7 +16,6 @@ namespace Learning
         public const float Gravity = -5.0f;
         public const float PlayerJumpSpeed = 5.0f;
         public static Vector3 PlayerSize = new Vector3(0.6f, 1.5f, 0.6f);
-
         #endregion
 
         #region User interface variables
