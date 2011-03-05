@@ -10,19 +10,17 @@ namespace Learning.Mapgen
     class Mapgen
     {
         private World _world;
-        public int[,] rockHeight;
         public float[,] landHeight;
         public float[,] highResLandHeight;
+        public static Random rand = new Random();
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
         public int size;
-        public static Random rand = new Random();
         public List<MultiTex> vertices = new List<MultiTex>();
         public List<int> indices = new List<int>();
         public VertexBuffer vBuffer;
         public IndexBuffer iBuffer;
-        public static Texture2D grass;
-        public static Texture2D sand;
+        public Vector3 location;
         public struct MultiTex : IVertexType
         {
             public Vector3 Position;
@@ -47,17 +45,16 @@ namespace Learning.Mapgen
 
         VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
         };
-        public Mapgen(World world,int size)
+        public Mapgen(World world,int size,Vector3 location)
         {
             _world = world;
             this.size = size;
-            rockHeight = new int[size, size];
+            this.location = location;
             landHeight = new float[size, size];
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    rockHeight[i, j] = RockAgent.maxHeight - RockAgent.variance;
                     landHeight[i, j] = CoastAgent.minHeight;
                 }
             }
@@ -69,6 +66,10 @@ namespace Learning.Mapgen
             vBuffer.SetData(vertices.ToArray());
             iBuffer = new IndexBuffer(GraphicsEngine.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
             iBuffer.SetData(indices.ToArray());
+        }
+        public float[,] getHeightmap()
+        {
+            return landHeight;
         }
         public void getVertices()
         {
@@ -85,7 +86,7 @@ namespace Learning.Mapgen
                     }
                 }
             }
-            smoothMap(ref highResLandHeight, size * 10,25);
+            //smoothMap(ref highResLandHeight, size * 10,15);
             for (int i = 0; i < size; i++)
             {
                 for (int k = 0; k < size; k++)
@@ -112,11 +113,11 @@ namespace Learning.Mapgen
                 for (int k = 0; k <= 4; k += 1)
                 {
                     float height = highResLandHeight[x+i, y+k];
-                    MultiTex vertex = new MultiTex(new Vector3((x+i)/10.0f, highResLandHeight[x+i, y+k], (y+k)/10.0f), Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
-                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 5.0f, 0, 1);
-                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 9) / 5.0f, 0, 1);
-                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 17) / 10.0f, 0, 1);
-                    vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
+                    MultiTex vertex = new MultiTex(new Vector3((x+i), highResLandHeight[x+i, y+k], (y+k))+location, Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
+                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
+                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
+                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
+                    //vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
                     if (height > 8) { 
                     }
                     vertices.Add(vertex);

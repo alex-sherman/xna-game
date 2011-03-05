@@ -11,12 +11,11 @@ namespace Learning.Mapgen
     {
         public Vector2 location;
         public int tokens = 0;
-        public static int coastHeight = 10;
-        public static int variance = 3;
+        public static int coastHeight = 13;
+        public static int variance = 10;
         public static int minHeight = 0;
         public static int radius = 3;
         public static int maxTokens = 100;
-        public static int nToChange = 6;
         private Vector2 attractor;
         private Vector2 repulsor;
         int height = Mapgen.rand.Next(variance) + coastHeight;

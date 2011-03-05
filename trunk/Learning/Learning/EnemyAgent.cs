@@ -133,14 +133,14 @@ namespace Learning
         {
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
-            Matrix worldMatrix = world.partialWorld;
+            Matrix worldMatrix = world.view;
             World.device.RasterizerState = RasterizerState.CullCounterClockwise;
             foreach (ModelMesh mesh in model.Meshes)
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = Matrix.CreateTranslation(Position) * transforms[mesh.ParentBone.Index];// *rotation;
-                    effect.View = world.partialWorld;
+                    effect.View = world.view;
                     effect.Projection = world.projection;
 
                     effect.EnableDefaultLighting();

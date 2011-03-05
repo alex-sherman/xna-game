@@ -91,7 +91,8 @@ namespace Learning
         {
             GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), 
                 Content.Load<Texture2D>(@"Textures\sand"),
-                Content.Load<Texture2D>(@"Textures\rock"));
+                Content.Load<Texture2D>(@"Textures\rock"),
+                Content.Load<Texture2D>(@"Textures\waterbump"));
         }
 
         #endregion
@@ -155,20 +156,20 @@ namespace Learning
             //Movement
             if (keyboard.IsKeyDown(Keys.W))
             {
-                player.relativeWalkVelocity.Z = 1;
+                player.relativeWalkVelocity.Z = -1;
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
-                player.relativeWalkVelocity.Z = -1;
+                player.relativeWalkVelocity.Z = 1;
             }
             else { this.player.relativeWalkVelocity.Z = 0; }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                player.relativeWalkVelocity.X = -1;
+                player.relativeWalkVelocity.X = 1;
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
-                player.relativeWalkVelocity.X = 1;
+                player.relativeWalkVelocity.X = -1;
             }
             else { player.relativeWalkVelocity.X = 0; }
             
@@ -254,10 +255,10 @@ namespace Learning
 
             player.xRotation -= dx * .00175f;
 
-            if (player.yRotation > -MathHelper.PiOver2 && dy < 0 || 
-                player.yRotation < MathHelper.PiOver2 && dy > 0)
+            if (player.yRotation > -MathHelper.PiOver2 && dy > 0 || 
+                player.yRotation < MathHelper.PiOver2 && dy < 0)
             {
-                player.yRotation += dy * .00175f;
+                player.yRotation -= dy * .00175f;
             }
             if (player.xRotation >= 2 * MathHelper.Pi)
             {

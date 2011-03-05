@@ -99,9 +99,23 @@ namespace Learning
         public Matrix getCameraMatrix()
         {
             return Matrix.CreateLookAt(
-                   Position + Vector3.Transform(new Vector3(0, 0f, -.4f), this.rotation),
-                   Vector3.Transform(new Vector3(0, 0, .5f), this.rotation) + this.Position,
+                   Position,
+                   Vector3.Transform(new Vector3(0, 0, -1f), this.rotation) + this.Position,
                    Vector3.Transform(Vector3.Up, this.rotation));
+        }
+        public Matrix getReflectionMatrix()
+        {
+            Vector3 refCP = new Vector3(Position.X, Position.Y, Position.Z);
+            refCP.Y = -refCP.Y + 2*Graphics.Water.waterHeight;
+
+            Vector3 refTP = Vector3.Transform(new Vector3(0, 0, -1f), this.rotation) + this.Position;
+            refTP.Y = -refTP.Y + 2 * Graphics.Water.waterHeight;
+
+            Vector3 cameraRight = Vector3.Transform(new Vector3(1, 0, 0), this.rotation);
+            Vector3 invUpVector = Vector3.Cross(cameraRight, refTP - refCP);
+
+            return Matrix.CreateLookAt(refCP, refTP, invUpVector);
+
         }
 
     }
