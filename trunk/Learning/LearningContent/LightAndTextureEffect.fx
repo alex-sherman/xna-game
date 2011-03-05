@@ -165,13 +165,14 @@ float4 ApplyWaterTexture(WaterVSOutput vsout) : COLOR
 	float2 reflTexCoord;
 	float4 bumpColor = tex2D(waterBump, vsout.BumpMapSamplingPos);
 	float2 perturbation = (bumpColor.rg - 0.5f)*2;
-	reflTexCoord.x = vsout.textureCoordinate.x/vsout.textureCoordinate.w/2.0f+.5f;
-	reflTexCoord.y = -vsout.textureCoordinate.y/vsout.textureCoordinate.w/2.0f+.5f;
-	float2 perturbatedTexCoords = reflTexCoord +  perturbation*.1f;
 
 	float2 ProjectedRefrTexCoords;
-	ProjectedRefrTexCoords.x = vsout.textureCoordinate.x/vsout.textureCoordinate.w/2.0f+.5f;
-	ProjectedRefrTexCoords.y = vsout.textureCoordinate.y/vsout.textureCoordinate.w/2.0f+.5f;   
+	ProjectedRefrTexCoords = vsout.textureCoordinate/vsout.textureCoordinate.w/2.0f+.5f;
+	reflTexCoord = ProjectedRefrTexCoords;
+	reflTexCoord.y = - reflTexCoord.y;
+	float2 perturbatedTexCoords = reflTexCoord +  perturbation*.1f;
+
+
 	float2 perturbatedRefrTexCoords = ProjectedRefrTexCoords + perturbation;    
 	float4 refractiveColor = tex2D(waterRefraction, perturbatedRefrTexCoords);
 

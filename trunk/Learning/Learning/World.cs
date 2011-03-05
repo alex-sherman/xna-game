@@ -26,6 +26,7 @@ namespace Learning
         internal PhysicsEngine engine;
         public int waterUpdate = 0;
         public AIManager aiManager;
+        public bool updateWater = true;
 
         public World(GraphicsDevice device)
         {
@@ -41,8 +42,7 @@ namespace Learning
             Crafting.addRecipe(req3, new Item(9, 1));
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
-            engine = new PhysicsEngine(GameConstants.Gravity);
-            chunk = new Landchunk(this, Vector3.Zero, 200);
+            chunk = new Landchunk(this, Vector3.Zero, 500);
             chunk2 = new Landchunk(this, new Vector3(0,0,200), 200);
             aiManager = new AIManager(this);
             
@@ -80,7 +80,7 @@ namespace Learning
         public void addPlayer(Player player)
         {
             this.players.Add(player);
-            engine.Add(player);
+            //engine.Add(player);
             player.world = this;
         }
 
@@ -91,10 +91,12 @@ namespace Learning
                 //player.Update();
             }
             Item.Update(this);
-            engine.Update(gameTime);
+            //engine.Update(gameTime);
             this.view = players[0].getCameraMatrix();// partialWorld;
+            //if (waterUpdate == 0)
+            {
                 this.reflectionView = players[0].getReflectionMatrix();
-            
+            }
 
         }
 
@@ -103,8 +105,18 @@ namespace Learning
 
             BoundingFrustum toDraw = new BoundingFrustum(view * projection);
             //chunk.DrawWater();
-                chunk.UpdateWater();
+            waterUpdate = (waterUpdate + 1) % 2;
+            //if (waterUpdate == 1)
+            {
                 chunk.Draw();
+                chunk.UpdateWater();
+                chunk.DrawWater();
+            }
+            //else
+            {
+                chunk.Draw();
+                chunk.DrawWater();
+            }
             Item.Draw(this);
         }
 

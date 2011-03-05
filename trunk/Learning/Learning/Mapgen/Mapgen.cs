@@ -94,7 +94,7 @@ namespace Learning.Mapgen
                     if (i<size-1 && k < size-1)
                     {
                         int o = vertices.Count();
-                            indices.AddRange(getIndices(i,k,o));
+                            indices.AddRange(getIndices(i,k,o,2));
                             vertices.AddRange(getVertices(i*4, k*4));
                     }
                 }
@@ -106,20 +106,18 @@ namespace Learning.Mapgen
             List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
-            for (int i = 0; i <= 4; i += 1)
+            for (int i = 0; i <= 1; i += 1)
             {
                 
                 
-                for (int k = 0; k <= 4; k += 1)
+                for (int k = 0; k <= 1; k += 1)
                 {
                     float height = highResLandHeight[x+i, y+k];
-                    MultiTex vertex = new MultiTex(new Vector3((x+i), highResLandHeight[x+i, y+k], (y+k))+location, Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
+                    MultiTex vertex = new MultiTex(new Vector3((x+i*4), highResLandHeight[x+i*4, y+k*4], (y+k*4))+location, Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
                     vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
                     vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
                     vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
                     //vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
-                    if (height > 8) { 
-                    }
                     vertices.Add(vertex);
                         
                 }
@@ -127,43 +125,20 @@ namespace Learning.Mapgen
             
             return vertices;
         }
-        public int[] getIndices(int x, int y, int o)
+        public int[] getIndices(int x, int y, int o,int squareSize)
         {
-            return new int[] {
-                                o,o+6,o+1,
-                                o,o+6,o+5,
-                                o+1,o+7,o+2,
-                                o+1,o+7,o+6,
-                                o+2,o+8,o+3,
-                                o+2,o+8,o+7,
-                                o+3,o+9,o+4,
-                                o+3,o+9,o+8,
-                                o+5,o+11,o+6,
-                                o+5,o+11,o+10,
-                                o+6,o+12,o+7,
-                                o+6,o+12,o+11,
-                                o+7,o+13,o+8,
-                                o+7,o+13,o+12,
-                                o+8,o+14,o+9,
-                                o+8,o+14,o+13,
-                                o+10,o+16,o+11,
-                                o+10,o+16,o+15,
-                                o+11,o+17,o+12,
-                                o+11,o+17,o+16,
-                                o+12,o+18,o+13,
-                                o+12,o+18,o+17,
-                                o+13,o+19,o+14,
-                                o+13,o+19,o+18,
-                                o+15,o+21,o+16,
-                                o+15,o+21,o+20,
-                                o+16,o+22,o+17,
-                                o+16,o+22,o+21,
-                                o+17,o+23,o+18,
-                                o+17,o+23,o+22,
-                                o+18,o+24,o+19,
-                                o+18,o+24,o+23,
+            int[] toReturn = new int[(squareSize-1) * (squareSize-1) * 6];
+            for (int i = 0; i < toReturn.Length/6; i++)
+            {
+                toReturn[i * 6] = i + ((i) / (squareSize-1)) + o;
+                toReturn[i * 6 + 1] = toReturn[i * 6] + squareSize + 1;
+                toReturn[i * 6 + 2] = toReturn[i * 6] + 1;
+                toReturn[i * 6 + 3] = toReturn[i * 6];
+                toReturn[i * 6 + 4] = toReturn[i * 6] + squareSize + 1;
+                toReturn[i * 6 + 5] = toReturn[i * 6] + squareSize;
+            }
 
-                            };
+            return toReturn;
         }
         public void findCurrentCoastline()
         {
