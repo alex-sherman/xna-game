@@ -73,13 +73,13 @@ namespace Learning.Mapgen
         }
         public void getVertices()
         {
-            highResLandHeight = new float[size * 10, size * 10];
+            highResLandHeight = new float[size * 2, size * 2];
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    for(int x = i*10;x<i*10+10;x++){
-                        for (int y = j*10; y<j*10 + 10; y++)
+                    for(int x = i*2;x<i*2;x++){
+                        for (int y = j * 2; y < j * 2 ; y++)
                         {
                             highResLandHeight[x, y] = landHeight[i, j];
                         }
@@ -91,41 +91,30 @@ namespace Learning.Mapgen
             {
                 for (int k = 0; k < size; k++)
                 {
-                    if (i<size-1 && k < size-1)
-                    {
-                        int o = vertices.Count();
-                            indices.AddRange(getIndices(i,k,o,2));
-                            vertices.AddRange(getVertices(i*4, k*4));
-                    }
+                    vertices.AddRange(getVertices(i, k ));
+                    
                 }
             }
+            indices.AddRange(getIndices(0, size));
         }
 
         public List<MultiTex> getVertices(int x, int y)
         {
+            int a = 20;
+            int b = 10;
             List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
-            for (int i = 0; i <= 1; i += 1)
-            {
-                
-                
-                for (int k = 0; k <= 1; k += 1)
-                {
-                    float height = highResLandHeight[x+i, y+k];
-                    MultiTex vertex = new MultiTex(new Vector3((x+i*4), highResLandHeight[x+i*4, y+k*4], (y+k*4))+location, Vector3.Zero, new Vector2(((i+x))/10f, ((k+y))/10f), new Vector4(0, 0, 0, 0));
-                    vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
-                    vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
-                    vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
-                    //vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
-                    vertices.Add(vertex);
-                        
-                }
-            }
-            
+            float height = landHeight[x, y];
+            MultiTex vertex = new MultiTex(new Vector3((x * a), landHeight[x, y]*1.1f, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
+            vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
+            vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
+            vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
+            //vertex.BlendWeight.W = MathHelper.Clamp(1.0f - Math.Abs(height - 30) / 6.0f, 0, 1);
+            vertices.Add(vertex);
             return vertices;
         }
-        public int[] getIndices(int x, int y, int o,int squareSize)
+        public int[] getIndices(int o,int squareSize)
         {
             int[] toReturn = new int[(squareSize-1) * (squareSize-1) * 6];
             for (int i = 0; i < toReturn.Length/6; i++)
