@@ -80,6 +80,7 @@ namespace Learning
             RasterizerState poo = new RasterizerState();
             //poo.FillMode = FillMode.WireFrame;
             poo.CullMode = CullMode.None;
+            poo.MultiSampleAntiAlias = false;
             device.RasterizerState = poo;
             if (vertexBuffer != null && indexBuffer != null)
             {
