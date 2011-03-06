@@ -157,7 +157,7 @@ WaterVSOutput WaterVS(
 	Out.vPosition = Position;
 	float4x4 reflectionViewProj = mul(reflView, proj);
     Out.textureCoordinate = mul(Position,reflectionViewProj);
-	Out.BumpMapSamplingPos = TextureCoordinate*5;
+	Out.BumpMapSamplingPos = TextureCoordinate*50;
     return Out;
 }
 float4 ApplyWaterTexture(WaterVSOutput vsout) : COLOR
