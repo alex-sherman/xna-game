@@ -42,7 +42,7 @@ namespace Learning
             Crafting.addRecipe(req3, new Item(9, 1));
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
-            chunk = new Landchunk(this, Vector3.Zero, 80);
+            chunk = new Landchunk(this, Vector3.Zero, 400);
             //chunk2 = new Landchunk(this, new Vector3(0,0,200), 200);
             aiManager = new AIManager(this);
             
