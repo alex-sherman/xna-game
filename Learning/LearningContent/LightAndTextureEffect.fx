@@ -8,6 +8,8 @@ uniform extern texture Reflection;
 uniform extern texture Refraction;
 float4x4 WorldViewProj;
 float3 cameraPosition;
+float2 windDirection;
+float time;
 float4 ClipPlane1;
 float4 ClipPlane2;
 float4x4 world;
@@ -19,7 +21,7 @@ float3 lightPosition;
 float4 ambientLightColor;
 float4 diffuseLightColor;
 float4 specularLightColor;
-
+bool aboveWater = true;
 //material properties
 float specularPower;
 float specularIntensity;
@@ -106,6 +108,23 @@ VS_OUTPUT Transform(
 
     return Out;
 }
+VS_OUTPUT TransformMulti(
+    float4 Position  : POSITION, 
+    float4 TextureCoordinate : TEXCOORD0,
+	float3 normal : NORMAL, 
+	float4 blend : TEXCOORD1)
+{
+    VS_OUTPUT Out = (VS_OUTPUT)0;
+	
+	
+	float4 worldPosition = mul(Position, world);
+	float4 viewPosition = mul(worldPosition, view);
+    Out.position =mul(viewPosition, proj);
+    Out.textureCoordinate = TextureCoordinate;
+	Out.blend = blend;
+
+    return Out;
+}
 VS_OUTPUT TransformClip1(
     float4 Position  : POSITION, 
     float4 TextureCoordinate : TEXCOORD0,
@@ -116,8 +135,8 @@ VS_OUTPUT TransformClip1(
 	
 	
 	float4 worldPosition = mul(Position, world);
-	float4 viewPosition = mul(Position, view);
-    Out.position = mul(viewPosition, proj);
+	float4 viewPosition = mul(worldPosition, view);
+    Out.position =mul(viewPosition, proj);
 	Out.clipDistance.x = dot(Position, ClipPlane1);
 	Out.clipDistance.y = 0;
 	Out.clipDistance.z = 0;
@@ -152,12 +171,15 @@ WaterVSOutput WaterVS(
     float4 TextureCoordinate : TEXCOORD0)
 {
     WaterVSOutput Out = (WaterVSOutput)0;
-	float4 viewPosition = mul(Position, view);
-    Out.position = mul(viewPosition, proj);
-	Out.vPosition = Position;
+	float4x4 preViewProjection = mul (view, proj);
+    float4x4 preWorldViewProjection = mul (world, preViewProjection);
+    Out.position = mul(Position, preWorldViewProjection);
+	Out.vPosition = mul(Position, world);
+
 	float4x4 reflectionViewProj = mul(reflView, proj);
-    Out.textureCoordinate = mul(Position,reflectionViewProj);
-	Out.BumpMapSamplingPos = TextureCoordinate*50;
+	float4x4 reflectionWorldViewProj = mul(world, reflectionViewProj);
+    Out.textureCoordinate = mul(Position,reflectionWorldViewProj);
+	Out.BumpMapSamplingPos = TextureCoordinate*50+windDirection*time;
     return Out;
 }
 float4 ApplyWaterTexture(WaterVSOutput vsout) : COLOR
@@ -173,8 +195,8 @@ float4 ApplyWaterTexture(WaterVSOutput vsout) : COLOR
 	float2 perturbatedTexCoords = reflTexCoord +  perturbation*.1f;
 
 
-	float2 perturbatedRefrTexCoords = ProjectedRefrTexCoords + perturbation;    
-	float4 refractiveColor = tex2D(waterRefraction, perturbatedRefrTexCoords);
+	float2 perturbatedRefrTexCoords = ProjectedRefrTexCoords +  perturbation*.02f; 
+	float4 refractiveColor;
 
 	float3 eyeVector = normalize(cameraPosition - vsout.vPosition);
 
@@ -184,8 +206,11 @@ float4 ApplyWaterTexture(WaterVSOutput vsout) : COLOR
 	float4 refractionColor;
 	float4 color;
 	reflectionColor = tex2D(waterReflection,perturbatedTexCoords);
-	refractionColor = tex2D(waterRefraction,ProjectedRefrTexCoords);
+	refractionColor = tex2D(waterRefraction,perturbatedRefrTexCoords);
+	if(aboveWater){
 	color = lerp(reflectionColor, refractionColor, fresnelTerm);
+	}
+	else{color = refractionColor;}
 	color = lerp(color,float4(0.3f, 0.3f, 0.5f, 1.0f),.2f);
     return color;
 }
@@ -221,7 +246,7 @@ technique MultiTexture
 {
 	pass P0
     {
-        vertexShader = compile vs_3_0 Transform();
+        vertexShader = compile vs_3_0 TransformMulti();
         pixelShader  = compile ps_3_0 ApplyMultiTexture();
     }
 }

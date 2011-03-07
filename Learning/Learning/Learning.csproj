@@ -114,6 +114,8 @@
     <Compile Include="GameConstants.cs" />
     <Compile Include="Graphics\GraphicsEngine.cs" />
     <Compile Include="Graphics\GUI.cs" />
+    <Compile Include="Graphics\Renderable.cs" />
+    <Compile Include="Graphics\Settings.cs" />
     <Compile Include="Graphics\Water.cs" />
     <Compile Include="InventoryScreen.cs" />
     <Compile Include="MainGame.cs" />

@@ -32,7 +32,7 @@ namespace Learning
             GUI.hotbar = game.Content.Load<Texture2D>(@"Textures\Hotbar");
             GUI.inventory = game.Content.Load<Texture2D>(@"Textures\Inventory");
             GUI.crafting = game.Content.Load<Texture2D>(@"Textures\InvCraft");
-            GUI.device = World.device;
+            GUI.device = GraphicsEngine.device;
             GUI.batch = game.ScreenManager.SpriteBatch;
 
             hotBarRec.Height = 68;

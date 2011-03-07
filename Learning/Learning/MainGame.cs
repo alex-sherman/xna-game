@@ -17,7 +17,6 @@ namespace Learning
         #region Fields
 
         public ContentManager Content;
-        Matrix worldViewProjection;
 
         Player player;
         World newWorld;
@@ -39,14 +38,11 @@ namespace Learning
             
             EnemyAgent.model = Content.Load<Model>("models/ship");
 
-            InitializeTextures();
-            GraphicsEngine.Initialize(ScreenManager.GraphicsDevice, InitializeEffect());
-            newWorld = new World(ScreenManager.GraphicsDevice);
+            GraphicsEngine.Initialize(ScreenManager,Content);
+            newWorld = new World();
             player = new Player();
             newWorld.addPlayer(player);
-            InitializeTransform();
             GUI.Init(this);
-            GraphicsEngine.effect = InitializeEffect();
             GraphicsEngine.world = newWorld;
 
             base.LoadContent();
@@ -55,46 +51,8 @@ namespace Learning
         /// <summary>
         /// Initializes the transforms used for the 3D model.
         /// </summary>
-        private void InitializeTransform()
-        {
-            Matrix view = Matrix.CreateLookAt(new Vector3(0, 2, 10),
-                Vector3.Zero, Vector3.Up);
-
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView(
-                (float)Math.PI / 3.0f,  // 2 PI Radians is 360 degrees,
-                // so this is 45 degrees.
-                (float)ScreenManager.GraphicsDevice.Viewport.Width /
-                (float)ScreenManager.GraphicsDevice.Viewport.Height,
-                3f, 2000.0f);
-
-            worldViewProjection = projection;
-            newWorld.projection = projection;
-        }
-        Effect InitializeEffect()
-        {
-            Effect effect = Content.Load<Effect>("LightAndTextureEffect");
-            effect.CurrentTechnique = effect.Techniques["Texture"];
-            effect.Parameters["ambientLightColor"].SetValue(
-                    Color.White.ToVector4() * .6f);
-            effect.Parameters["diffuseLightColor"].SetValue(
-                Color.White.ToVector4());
-            effect.Parameters["specularLightColor"].SetValue(
-                Color.White.ToVector4() / 3);
-            effect.Parameters["lightPosition"].SetValue(
-                    new Vector3(0f, 10f, 10f));
-
-            effect.Parameters["specularPower"].SetValue(12f);
-            effect.Parameters["specularIntensity"].SetValue(.5f);
-            return effect;
-        }
-        void InitializeTextures()
-        {
-            GraphicsEngine.SetTextures(Content.Load<Texture2D>(@"Textures\grass"), 
-                Content.Load<Texture2D>(@"Textures\sand"),
-                Content.Load<Texture2D>(@"Textures\rock"),
-                Content.Load<Texture2D>(@"Textures\waterbump"));
-        }
-
+        
+       
         #endregion
 
         #region Updating and Drawing
@@ -139,7 +97,7 @@ namespace Learning
                 player.world.saveGame("save.sav");
             }
             if(input.IsNewKeyPress(Keys.F)){
-                newWorld.updateWater = !newWorld.updateWater;
+                GraphicsEngine.wireFrame = !GraphicsEngine.wireFrame;
             }
             // noclip
             if (input.IsNewKeyPress(Keys.N))
@@ -187,6 +145,17 @@ namespace Learning
                 else if (!player.Enabled) //noclip
                 {
                     player.relativeWalkVelocity.Y = GameConstants.PlayerJumpSpeed;
+                }
+            }
+            else if (keyboard.IsKeyDown(Keys.LeftControl))
+            {
+                if (player.OnGround)
+                {
+                    
+                }
+                else if (!player.Enabled) //noclip
+                {
+                    player.relativeWalkVelocity.Y = -GameConstants.PlayerJumpSpeed;
                 }
             }
             else { player.relativeWalkVelocity.Y = 0; }

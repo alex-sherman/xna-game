@@ -131,23 +131,7 @@ namespace Learning
 
         public override void Draw(World world)
         {
-            Matrix[] transforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
-            Matrix worldMatrix = world.view;
-            World.device.RasterizerState = RasterizerState.CullCounterClockwise;
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.World = Matrix.CreateTranslation(Position) * transforms[mesh.ParentBone.Index];// *rotation;
-                    effect.View = world.view;
-                    effect.Projection = world.projection;
-
-                    effect.EnableDefaultLighting();
-                    effect.PreferPerPixelLighting = true;
-                }
-                mesh.Draw();
-            }
+           
         }
     }
 }

@@ -10,10 +10,10 @@ namespace Learning.Graphics
 {
     class Water
     {
-        public const float waterHeight = 10.0f;
+        public const float waterHeight = 50f;
         public RenderTarget2D refractionRenderTarget;
         public RenderTarget2D reflectionRenderTarget;
-        private VertexBuffer waterV;
+        public VertexBuffer waterV;
         World _world;
         public Water(int size,World world)
         {
@@ -40,10 +40,6 @@ namespace Learning.Graphics
             {
                 reflectionRenderTarget.SaveAsJpeg(stream, reflectionRenderTarget.Width, reflectionRenderTarget.Height);
             }
-        }
-        public void Draw()
-        {
-            GraphicsEngine.DrawWater(waterV, reflectionRenderTarget, refractionRenderTarget);
         }
 
     }
