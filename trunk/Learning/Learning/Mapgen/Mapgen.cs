@@ -18,8 +18,6 @@ namespace Learning.Mapgen
         public int size;
         public List<MultiTex> vertices = new List<MultiTex>();
         public List<int> indices = new List<int>();
-        public VertexBuffer vBuffer;
-        public IndexBuffer iBuffer;
         public Vector3 location;
         public struct MultiTex : IVertexType
         {
@@ -59,9 +57,8 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void setBuffers()
+        public void setBuffers(out VertexBuffer vBuffer, out IndexBuffer iBuffer)
         {
-            
             vBuffer = new VertexBuffer(GraphicsEngine.device, MultiTex.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
             vBuffer.SetData(vertices.ToArray());
             iBuffer = new IndexBuffer(GraphicsEngine.device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
@@ -92,7 +89,6 @@ namespace Learning.Mapgen
                 for (int k = 0; k < size; k++)
                 {
                     vertices.AddRange(getVertices(i, k ));
-                    
                 }
             }
             indices.AddRange(getIndices(0, size));
@@ -100,13 +96,13 @@ namespace Learning.Mapgen
 
         public List<MultiTex> getVertices(int x, int y)
         {
-            int a = 5;
-            float b = .2f;
+            int a = 30;
+            float b = .5f;
             List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
             float height = landHeight[x, y];
-            MultiTex vertex = new MultiTex(new Vector3((x * a), landHeight[x, y], (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
+            MultiTex vertex = new MultiTex(new Vector3((x * a), landHeight[x, y]*5, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
             vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
             vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
             vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
@@ -233,7 +229,7 @@ namespace Learning.Mapgen
             while (alive)
             {
                 alive = false;
-                findLand();
+                findCurrentCoastline();
                 foreach (MapgenAgent agent in currentAgents)
                 {
                     if (agent.step()) { alive = true; }
@@ -279,23 +275,7 @@ namespace Learning.Mapgen
                 }
             }
         }
-        public void generateRock(int agents, int tokens )
-        {
-            currentAgents = new List<MapgenAgent>();
-            for (int i = 0; i < agents; i++)
-            {
-                currentAgents.Add(new RockAgent(getRandomXY(), tokens,this));
-            }
-            bool alive = true;
-            while (alive)
-            {
-                alive = false;
-                foreach (MapgenAgent agent in currentAgents)
-                {
-                    if (agent.step()) { alive = true; }
-                }
-            }
-        }
+
         public void smooth(ref float[,] heightMap, int x, int y, int arraySize)
         {
             smooth(ref heightMap, x, y, 0, arraySize);

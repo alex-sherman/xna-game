@@ -16,10 +16,8 @@ namespace Learning
     {
         public Matrix view;
         public Matrix reflectionView;
-        public Matrix projection;
         public List<Player> players = new List<Player>();
         public List<Item> itemList = new List<Item>();
-        public static GraphicsDevice device;
         public OctreeNode objectTree;
         public Landchunk chunk;
         public Landchunk chunk2;
@@ -28,9 +26,8 @@ namespace Learning
         public AIManager aiManager;
         public bool updateWater = true;
 
-        public World(GraphicsDevice device)
+        public World()
         {
-            World.device = device;
             Item[] req = {new Item(2,2), new Item(2,2)};
             Item[] req1 = { new Item(7, 2), new Item(7, 2) };
             Item[] req2 = { new Item(1, 2), new Item(1, 2) };
@@ -90,6 +87,7 @@ namespace Learning
             {
                 //player.Update();
             }
+            GraphicsEngine.time += .0005f;
             Item.Update(this);
             //engine.Update(gameTime);
             this.view = players[0].getCameraMatrix();// partialWorld;
@@ -103,20 +101,10 @@ namespace Learning
         public void Draw()
         {
 
-            BoundingFrustum toDraw = new BoundingFrustum(view * projection);
+            BoundingFrustum toDraw = new BoundingFrustum(view * Graphics.Settings.projection);
             //chunk.DrawWater();
             waterUpdate = (waterUpdate + 1) % 2;
-            //if (waterUpdate == 1)
-            {
-                chunk.Draw();
-                chunk.UpdateWater();
-                chunk.DrawWater();
-            }
-            //else
-            {
-                chunk.Draw();
-                chunk.DrawWater();
-            }
+            GraphicsEngine.Draw(chunk);
             Item.Draw(this);
         }
 
