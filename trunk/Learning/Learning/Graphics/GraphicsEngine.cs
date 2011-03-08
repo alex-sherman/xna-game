@@ -48,66 +48,85 @@ namespace Learning
         {
             effect.Parameters["world"].SetValue(location);
         }
-        public static void Draw(Graphics.Renderable renderable)
+        
+        public static void DrawWorld(List<GenRend> scene, List<GenRend> water)
         {
-            SetWorld(renderable.getWorld());
-            setBuffers(renderable.getVbuffer(), renderable.getIbuffer());
-        }
-        public static void Draw(Landchunk land)
-        {
-            setBuffers(land.getVbuffer(), land.getIbuffer());
-            SetWorld(land.getWorld());
-            UpdateWater(land.water.reflectionRenderTarget, land.water.refractionRenderTarget);
-            DrawLand();
-            setBuffers(land.water.waterV, null);
-            DrawWater(land.water.reflectionRenderTarget, land.water.refractionRenderTarget);
+            Color poopy = Color.CornflowerBlue;
+            poopy.A = (byte).01f;
+
+
+            UpdateWater(Graphics.Water.reflectionRenderTarget, Graphics.Water.refractionRenderTarget, scene);
+            GraphicsEngine.device.Clear(poopy);
+            effect.Parameters["view"].SetValue(world.view);
+            effect.CurrentTechnique = effect.Techniques["MultiTexture"];
+            Render(scene);
+            Render(water);
         }
         public static void setBuffers(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
             device.SetVertexBuffers(vertexBuffer);
             device.Indices = indexBuffer;
         }
-        public static void DrawLand()
+        public static void DrawModel(ModelRend modelRend)
         {
-            effect.Parameters["view"].SetValue(world.view);
-            effect.CurrentTechnique = effect.Techniques["MultiTexture"];
-            effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, 1, 0, -Graphics.Water.waterHeight));
-            _draw(null);
+            foreach (ModelMesh mesh in modelRend.model.Meshes)
+            {
+                // This is where the mesh orientation is set, as well 
+                // as our camera and projection.
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+                    effect.World = modelRend.getWorld();
+                    effect.View = world.view;
+                    effect.Projection = Graphics.Settings.projection;
+                }
+                // Draw the mesh, using the effects set above.
+                mesh.Draw();
+            }
         }
-        public static void DrawWater(Texture2D reflection, Texture2D refraction)
+        public static void DrawWater(Graphics.Water water)
         {
+            setBuffers(water.waterV, null);
+            SetWorld(Matrix.CreateTranslation(new Vector3(-800, 0, -800)));
             effect.Parameters["aboveWater"].SetValue(world.players[0].Position.Y > Graphics.Water.waterHeight);
             effect.Parameters["cameraPosition"].SetValue(world.players[0].Position);
             effect.Parameters["view"].SetValue(world.view);
             effect.Parameters["reflView"].SetValue(world.reflectionView);
             effect.CurrentTechnique = effect.Techniques["WaterEffect"];
-            effect.Parameters["Reflection"].SetValue(reflection);
-            effect.Parameters["Refraction"].SetValue(refraction);
+            effect.Parameters["Reflection"].SetValue(Graphics.Water.reflectionRenderTarget);
+            effect.Parameters["Refraction"].SetValue(Graphics.Water.refractionRenderTarget);
             effect.Parameters["time"].SetValue(time);
             _draw(2);
         }
-        public static void UpdateWater(RenderTarget2D reflection, RenderTarget2D refraction)
+        public static void UpdateWater(RenderTarget2D reflection, RenderTarget2D refraction, List<GenRend> scene)
         {
+            Color poopy = Color.CornflowerBlue;
+            poopy.A = (byte).01f;
             effect.CurrentTechnique = effect.Techniques["MultiTextureClip"];
             effect.Parameters["view"].SetValue(world.view);
             if(world.players[0].Position.Y > Graphics.Water.waterHeight)
                 effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, -1, 0, Graphics.Water.waterHeight));
             else
                 effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, 1, 0, -Graphics.Water.waterHeight));
-            _draw(refraction);
+            device.SetRenderTarget(refraction);
+            GraphicsEngine.device.Clear(poopy);
+            Render(scene);
             effect.Parameters["view"].SetValue(world.reflectionView);
             effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, 1, 0, -Graphics.Water.waterHeight));
-            
-            effect.Parameters["world"].SetValue(Matrix.CreateTranslation(new Vector3(0, 0, 0)));
-            _draw(reflection);
+            device.SetRenderTarget(reflection);
+            GraphicsEngine.device.Clear(poopy);
+            Render(scene);
+            device.SetRenderTarget(null);
         }
-        public static void _draw(RenderTarget2D target)
+
+        public static void Render()
         {
             RasterizerState poo = new RasterizerState();
 
             if (wireFrame)
             {
                 poo.FillMode = FillMode.WireFrame;
+
             }
             poo.CullMode = CullMode.None;
             poo.MultiSampleAntiAlias = false;
@@ -115,11 +134,7 @@ namespace Learning
             int IndexCount = device.Indices.IndexCount;
             if (IndexCount>0)
             {
-                effect.Parameters["proj"].SetValue(Graphics.Settings.projection);
-                device.SetRenderTarget(target);
-                Color poopy = Color.CornflowerBlue;
-                poopy.A = (byte).01f;
-                GraphicsEngine.device.Clear(poopy);
+                effect.Parameters["proj"].SetValue(Graphics.Settings.projection);               
                 effect.CurrentTechnique.Passes[0].Apply();
 
                 for (int j = 0; j <= IndexCount / 3000000; j += 1)
@@ -136,7 +151,27 @@ namespace Learning
                     }
                 }
             }
-            device.SetRenderTarget(null);
+        }
+        public static void Render(Renderable renderable)
+        {
+            if (renderable.Visible(world.viewFrustrum))
+            {
+                SetWorld(renderable.getWorld());
+                setBuffers(renderable.getVbuffer(), renderable.getIbuffer());
+                Render();
+            }
+        }
+        public static void Render(GenRend renderable)
+        {
+            if (renderable.Visible(world.viewFrustrum)) { renderable.Draw(); }
+        }
+        public static void Render(List<Renderable> scene)
+        {
+            foreach (Renderable facet in scene) { Render(facet); }
+        }
+        public static void Render(List<GenRend> scene)
+        {
+            foreach (GenRend facet in scene) { Render(facet); }
         }
         public static void _draw(int count)
         {

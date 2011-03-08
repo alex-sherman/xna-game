@@ -46,12 +46,12 @@ namespace Learning.Mapgen
         public Mapgen(World world,int size,Vector3 location)
         {
             _world = world;
-            this.size = size;
+            this.size = size+1;
             this.location = location;
-            landHeight = new float[size, size];
-            for (int i = 0; i < size; i++)
+            landHeight = new float[this.size, this.size];
+            for (int i = 0; i < this.size; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (int j = 0; j < this.size; j++)
                 {
                     landHeight[i, j] = CoastAgent.minHeight;
                 }
@@ -70,20 +70,7 @@ namespace Learning.Mapgen
         }
         public void getVertices()
         {
-            highResLandHeight = new float[size * 2, size * 2];
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    for(int x = i*2;x<i*2;x++){
-                        for (int y = j * 2; y < j * 2 ; y++)
-                        {
-                            highResLandHeight[x, y] = landHeight[i, j];
-                        }
-                    }
-                }
-            }
-            //smoothMap(ref highResLandHeight, size * 10,15);
+            vertices = new List<MultiTex>();
             for (int i = 0; i < size; i++)
             {
                 for (int k = 0; k < size; k++)
@@ -91,18 +78,23 @@ namespace Learning.Mapgen
                     vertices.AddRange(getVertices(i, k ));
                 }
             }
-            indices.AddRange(getIndices(0, size));
+
+            indices = new List<int>(getIndices(0, size));
         }
 
         public List<MultiTex> getVertices(int x, int y)
         {
-            int a = 30;
+            int a = 4;
             float b = .5f;
+            int x1 = x;
+            int y1 = y;
+            if (x1 >= size) { x1 = size - 1; }
+            if (y1 >= size) { y1 = size - 1; }
             List<MultiTex> vertices = new List<MultiTex>();
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
-            float height = landHeight[x, y];
-            MultiTex vertex = new MultiTex(new Vector3((x * a), landHeight[x, y]*5, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
+            float height = landHeight[x1, y1];
+            MultiTex vertex = new MultiTex(new Vector3((x * a), height*1.6f, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
             vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
             vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
             vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);
@@ -256,6 +248,47 @@ namespace Learning.Mapgen
                 }
             }
         }
+        public void merge(ref float[,] outer, Vector3 direction)
+        {
+            float difference;
+            if (direction.Z > 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    
+                    difference = outer[i, size - 1]-landHeight[i, 0];
+                    outer[i, size - 1] -= difference / 2f;
+                    landHeight[i, 0] += difference / 2f;
+                }
+            }
+            if (direction.Z < 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    difference = outer[i, 0] - landHeight[i, size - 1];
+                    outer[i, 0] -= difference/2f;
+                    landHeight[i, size - 1]+=difference/2f;
+                }
+            }
+            if (direction.X < 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    difference = outer[0, i] - landHeight[size - 1, i];
+                    outer[0, i] -= difference / 2f;
+                    landHeight[size - 1, i] += difference / 2f;
+                }
+            }
+            if (direction.X > 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    difference = outer[size - 1, i] - landHeight[0, i];
+                    outer[size - 1, i] -= difference/2f;
+                    landHeight[0, i] += difference / 2f;
+                }
+            }
+        }
         public void generateMountain(int number, int tokens)
         {
             findLand();
@@ -275,15 +308,10 @@ namespace Learning.Mapgen
                 }
             }
         }
-
-        public void smooth(ref float[,] heightMap, int x, int y, int arraySize)
-        {
-            smooth(ref heightMap, x, y, 0, arraySize);
-        }
-        public void smooth(ref float[,] heightMap, int x, int y,int variance,int arraySize)
+        public void smooth(ref float[,] heightMap, int x, int y,int variance)
         {
             
-                if (x >= 0 && x < arraySize && y >= 0 && y < arraySize)
+                if (x >= 0 && x < size && y >= 0 && y < size)
                 {
                     int curX;
                     int curY;
@@ -294,7 +322,7 @@ namespace Learning.Mapgen
                         {
                             curX = x + i;
                             curY = y + j;
-                            if (curX >= 0 && curX < arraySize && curY >= 0 && curY < arraySize)
+                            if (curX >= 0 && curX < size && curY >= 0 && curY < size)
                             {
                                 total += heightMap[curX, curY];
                             }
@@ -313,7 +341,7 @@ namespace Learning.Mapgen
                 {
                     for (int y = 0; y < arraySize; y++)
                     {
-                        smooth(ref heightMap, x, y, 0, arraySize);
+                        smooth(ref heightMap, x, y, 0);
                     }
                 }
             }
@@ -321,13 +349,7 @@ namespace Learning.Mapgen
 
         public void smoothMap(ref float[,] heightMap, int arraySize)
         {
-            for (int x = 0; x < arraySize; x++)
-            {
-                for (int y = 0; y < arraySize; y++)
-                {
-                    smooth(ref heightMap, x, y, 0, arraySize);
-                }
-            }
+            smoothMap(ref heightMap, arraySize, 1);
         }
         public Vector2 getRandomXY()
         {

@@ -112,8 +112,10 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="Crafting.cs" />
     <Compile Include="GameConstants.cs" />
+    <Compile Include="Graphics\GenRend.cs" />
     <Compile Include="Graphics\GraphicsEngine.cs" />
     <Compile Include="Graphics\GUI.cs" />
+    <Compile Include="Graphics\ModelRend.cs" />
     <Compile Include="Graphics\Renderable.cs" />
     <Compile Include="Graphics\Settings.cs" />
     <Compile Include="Graphics\Water.cs" />

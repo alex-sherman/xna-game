@@ -21,7 +21,11 @@ namespace Learning
         public OctreeNode objectTree;
         public Landchunk chunk;
         public Landchunk chunk2;
+        public Landchunk chunk3;
+        public Landchunk chunk4;
+        public BoundingFrustum viewFrustrum;
         internal PhysicsEngine engine;
+        public Graphics.Water water;
         public int waterUpdate = 0;
         public AIManager aiManager;
         public bool updateWater = true;
@@ -39,12 +43,33 @@ namespace Learning
             Crafting.addRecipe(req3, new Item(9, 1));
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
-            chunk = new Landchunk(this, Vector3.Zero, 400);
-            //chunk2 = new Landchunk(this, new Vector3(0,0,200), 200);
+            water = new Graphics.Water(400, this);
+            chunk = new Landchunk(this, new Vector3(-400, 0, -400), 800);
+            chunk2 = new Landchunk(this, new Vector3(-400, 0, 400), 800);
+            chunk3 = new Landchunk(this, new Vector3(400, 0, 400), 800);
+            chunk4 = new Landchunk(this, new Vector3(400, 0, -400), 800);
+            chunk.resetBuffers();
+            chunk2.resetBuffers();
+            chunk3.resetBuffers();
+            chunk4.resetBuffers();
             aiManager = new AIManager(this);
             
         }
-
+        public void merge()
+        {
+            chunk.generator.smoothMap(ref chunk.generator.landHeight, chunk.generator.size);
+            chunk2.generator.smoothMap(ref chunk2.generator.landHeight, chunk2.generator.size);
+            chunk3.generator.smoothMap(ref chunk3.generator.landHeight, chunk3.generator.size);
+            chunk4.generator.smoothMap(ref chunk4.generator.landHeight, chunk4.generator.size);
+            chunk.generator.merge(ref chunk2.generator.landHeight, -chunk2.location + chunk.location);
+            chunk2.generator.merge(ref chunk3.generator.landHeight, -chunk3.location + chunk2.location);
+            chunk3.generator.merge(ref chunk4.generator.landHeight, -chunk4.location + chunk3.location);
+            chunk4.generator.merge(ref chunk.generator.landHeight, -chunk.location + chunk4.location);
+            chunk.resetBuffers();
+            chunk2.resetBuffers();
+            chunk3.resetBuffers();
+            chunk4.resetBuffers();
+        }
         public void saveGame(String location)
         {
             Stream stream = File.Open(location, FileMode.Create);
@@ -95,21 +120,16 @@ namespace Learning
             {
                 this.reflectionView = players[0].getReflectionMatrix();
             }
+            viewFrustrum = new BoundingFrustum(view * Graphics.Settings.projection);
 
         }
 
         public void Draw()
         {
-
-            BoundingFrustum toDraw = new BoundingFrustum(view * Graphics.Settings.projection);
-            //chunk.DrawWater();
-            waterUpdate = (waterUpdate + 1) % 2;
-            GraphicsEngine.Draw(chunk);
+            
+            GraphicsEngine.DrawWorld(new List<GenRend>(new GenRend[] {chunk,chunk2,chunk3, chunk4}), new List<GenRend>(new GenRend[] {water}));
             Item.Draw(this);
         }
-
-            
-        
 
         #region Collision Detection
         public bool collisionCheck(List<GameObject> candidates, ref Vector3 endPos, ref bool onGround, ref Vector3 outsideVel)

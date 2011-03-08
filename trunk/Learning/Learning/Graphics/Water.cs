@@ -8,17 +8,17 @@ using System.IO;
 
 namespace Learning.Graphics
 {
-    class Water
+    class Water : GenRend
     {
-        public const float waterHeight = 50f;
-        public RenderTarget2D refractionRenderTarget;
-        public RenderTarget2D reflectionRenderTarget;
+        public const float waterHeight = 18f;
+        public static RenderTarget2D refractionRenderTarget;
+        public static RenderTarget2D reflectionRenderTarget;
         public VertexBuffer waterV;
         World _world;
         public Water(int size,World world)
         {
             _world = world;
-            int a = 30;
+            int a = 20;
             waterV = new VertexBuffer(GraphicsEngine.device, VertexPositionTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
             waterV.SetData(new VertexPositionTexture[] {
                 new VertexPositionTexture(new Vector3(0,waterHeight,0), new Vector2(0,0)),
@@ -40,6 +40,10 @@ namespace Learning.Graphics
             {
                 reflectionRenderTarget.SaveAsJpeg(stream, reflectionRenderTarget.Width, reflectionRenderTarget.Height);
             }
+        }
+        public override void Draw()
+        {
+            GraphicsEngine.DrawWater(this);
         }
 
     }
