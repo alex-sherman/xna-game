@@ -14,7 +14,7 @@ namespace Learning.Mapgen
         public static int coastHeight = 20;
         public static int variance = 10;
         public static int minHeight = -10;
-        public static int radius = 6;
+        public static int radius = 7;
         public static int maxTokens = 100;
         private Vector2 attractor;
         private Vector2 repulsor;

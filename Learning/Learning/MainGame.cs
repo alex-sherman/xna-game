@@ -99,6 +99,10 @@ namespace Learning
             if(input.IsNewKeyPress(Keys.F)){
                 GraphicsEngine.wireFrame = !GraphicsEngine.wireFrame;
             }
+            if (input.IsNewKeyPress(Keys.E))
+            {
+                newWorld.merge();
+            }
             // noclip
             if (input.IsNewKeyPress(Keys.N))
             {
