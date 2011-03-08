@@ -13,7 +13,7 @@ namespace Learning.Mapgen
         public int tokens = 0;
         public static int maxHeight = 55;
         public static int variance = 5;
-        public static int minHeight = 15;
+        public static int minHeight = 30;
         public static int initialRadius = 4;
         private int radius = 5;
         public static int radiusVariance = 2;
