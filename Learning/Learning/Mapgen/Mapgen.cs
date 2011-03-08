@@ -341,7 +341,10 @@ namespace Learning.Mapgen
                 {
                     for (int y = 0; y < arraySize; y++)
                     {
-                        smooth(ref heightMap, x, y, 0);
+                        if (heightMap[x, y] >= RockAgent.minHeight)
+                            smooth(ref heightMap, x, y, 3);
+                        else
+                            smooth(ref heightMap, x, y, 0);
                     }
                 }
             }
