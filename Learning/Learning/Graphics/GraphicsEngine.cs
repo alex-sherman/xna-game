@@ -67,7 +67,7 @@ namespace Learning
             device.SetVertexBuffers(vertexBuffer);
             device.Indices = indexBuffer;
         }
-        public static void DrawModel(ModelRend modelRend)
+        public static void Draw(ModelRend modelRend)
         {
             foreach (ModelMesh mesh in modelRend.model.Meshes)
             {
@@ -77,7 +77,7 @@ namespace Learning
                 {
                     effect.EnableDefaultLighting();
                     effect.World = modelRend.getWorld();
-                    effect.View = world.view;
+                    effect.View = GraphicsEngine.effect.Parameters["view"].GetValueMatrix();
                     effect.Projection = Graphics.Settings.projection;
                 }
                 // Draw the mesh, using the effects set above.
@@ -167,11 +167,11 @@ namespace Learning
         }
         public static void Render(List<Renderable> scene)
         {
-            foreach (Renderable facet in scene) { Render(facet); }
+            foreach (Renderable facet in scene) { facet.Draw(); }
         }
         public static void Render(List<GenRend> scene)
         {
-            foreach (GenRend facet in scene) { Render(facet); }
+            foreach (GenRend facet in scene) { facet.Draw(); }
         }
         public static void _draw(int count)
         {

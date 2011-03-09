@@ -17,6 +17,7 @@ namespace Learning
         public Matrix rotation;
         public float xRotation;
         public float yRotation;
+        public Actor.Actor actor = new Actor.Actor(0);
         public Ray lookAt = new Ray();
         public World world;
 
@@ -27,6 +28,7 @@ namespace Learning
 
         public Player()
         {
+            this.actor.location = new Vector3(0, 20, 0);
             IsStatic = false;
             Enabled = false;
             this.inventory = new Inventory();

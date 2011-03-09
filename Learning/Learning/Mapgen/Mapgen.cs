@@ -11,7 +11,7 @@ namespace Learning.Mapgen
     {
         private World _world;
         public float[,] landHeight;
-        public float[,] highResLandHeight;
+        public int landType;
         public static Random rand = new Random();
         public List<MapgenAgent> currentAgents = new List<MapgenAgent>();
         public List<Vector2> coastLine = new List<Vector2>();
@@ -43,8 +43,9 @@ namespace Learning.Mapgen
 
         VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
         };
-        public Mapgen(World world,int size,Vector3 location)
+        public Mapgen(World world,int size,Vector3 location, int type)
         {
+            landType = type;
             _world = world;
             this.size = size+1;
             this.location = location;
@@ -213,6 +214,9 @@ namespace Learning.Mapgen
             }
             return toReturn;
         }
+        public void generateLand(){
+            generateLand((int)(MathHelper.Clamp(1.0f - Math.Abs(6f-landType) / 14f, .3f, 1) * size * size * .6f));
+        }
         public void generateLand(int tokens)
         {
             currentAgents = new List<MapgenAgent>();
@@ -289,6 +293,10 @@ namespace Learning.Mapgen
                 }
             }
         }
+        /*public void generateLand()
+        {
+            generateLand((int)(MathHelper.Clamp(1 - Math.Abs(5 - landType / 5f), 0, 1) * size * size * .9f));
+        }*/
         public void generateMountain(int number, int tokens)
         {
             findLand();

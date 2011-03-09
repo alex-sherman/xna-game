@@ -4,20 +4,16 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace Learning
 {
-    abstract class ModelRend : GenRend
+    abstract class ModelRend : GenRend, Renderable
     {
         public Model model;
         override public void Draw()
         {
-            GraphicsEngine.Render(this as Renderable);
-        }
-        public ModelRend(Model model)
-        {
-            this.model = model;
-            this.location = new Vector3(0, 0, 0);
+            GraphicsEngine.Draw(this);
         }
         public override Matrix getWorld()
         {
