@@ -13,6 +13,7 @@ namespace Learning
         public float[,] heightMap;
         public World _world;
         public int size;
+        public int landType;
         VertexBuffer vBuffer;
         IndexBuffer iBuffer;
         public Landchunk(World world, Vector3 location, int _size)
@@ -20,9 +21,10 @@ namespace Learning
             _world = world;
             this.location = location;
             this.size = _size/4;
-            this.generator = new Mapgen.Mapgen(world, size, location);
-            generator.generateLand(size*size*6/10);
-            generator.generateMountain(size / 50, 20);
+            this.landType = Mapgen.Mapgen.rand.Next(20);
+            this.generator = new Mapgen.Mapgen(world, size, location,landType);
+            generator.generateLand();
+            generator.generateMountain(size / 10, 20);
             heightMap = generator.landHeight;
         }
         public void resetBuffers()
@@ -32,7 +34,6 @@ namespace Learning
         }
         override public VertexBuffer getVbuffer() { return vBuffer; }
         override public IndexBuffer getIbuffer() { return iBuffer; }
-        //override public Matrix getWorld() { return Matrix.CreateTranslation(location); }
         
     }
 }

@@ -127,7 +127,7 @@ namespace Learning
         public void Draw()
         {
             
-            GraphicsEngine.DrawWorld(new List<GenRend>(new GenRend[] {chunk,chunk2,chunk3, chunk4}), new List<GenRend>(new GenRend[] {water}));
+            GraphicsEngine.DrawWorld(new List<GenRend>(new GenRend[] {chunk,chunk2,chunk3, chunk4,players[0].actor}), new List<GenRend>(new GenRend[] {water}));
             Item.Draw(this);
         }
 

@@ -35,7 +35,7 @@ namespace Learning
         {
             if (Content == null)
                 Content = new ContentManager(ScreenManager.Game.Services, "Content");
-            
+            Actor.Actor.LoadContent(Content);
             EnemyAgent.model = Content.Load<Model>("models/ship");
 
             GraphicsEngine.Initialize(ScreenManager,Content);

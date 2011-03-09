@@ -61,8 +61,6 @@ namespace Learning.Mapgen
             }
             float highestScore = score(possiblePoints[0]);
             Vector2 highestPoint = possiblePoints[0];
-            float lowestScore = score(possiblePoints[0]);
-            Vector2 lowestPoint = possiblePoints[0];
             foreach (Vector2 point in possiblePoints)
             {
                 if (score(point) > highestScore)
