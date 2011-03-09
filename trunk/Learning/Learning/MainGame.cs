@@ -103,6 +103,17 @@ namespace Learning
             {
                 newWorld.merge();
             }
+            if (input.IsNewKeyPress(Keys.O))
+            {
+                Graphics.Settings.enableWater = !Graphics.Settings.enableWater;
+            }
+            if(input.IsNewKeyPress(Keys.F12)){
+                if (Graphics.Settings.waterQuality > 1)
+                {
+                    Graphics.Settings.setWaterQuality(Graphics.Settings.waterQuality - 1);
+                }
+                else { Graphics.Settings.setWaterQuality(5); }
+            }
             // noclip
             if (input.IsNewKeyPress(Keys.N))
             {
