@@ -11,6 +11,8 @@ namespace Learning.Graphics
     class Settings
     {
         public static Matrix projection;
+        public static bool enableWater = true;
+        public static int waterQuality = 5;
         public const String SandTexture = @"Textures\sand";
         public const String GrassTexture = @"Textures\grass";
         public const String RockTexture = @"Textures\rock";
@@ -23,6 +25,12 @@ namespace Learning.Graphics
                 (float)device.Viewport.Width /
                 (float)device.Viewport.Height,
                 1f, 800);
+            Water.ResetTargets(waterQuality);
+        }
+        public static void setWaterQuality(int quality)
+        {
+            waterQuality = quality;
+            Water.ResetTargets(quality);
         }
         
     }

@@ -27,8 +27,11 @@ namespace Learning.Graphics
                 new VertexPositionTexture(new Vector3(size*a,waterHeight,size*a), new Vector2(1,1))
                     });
 
-            refractionRenderTarget = new RenderTarget2D(GraphicsEngine.device, GraphicsEngine.device.Viewport.Width, GraphicsEngine.device.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
-            reflectionRenderTarget = new RenderTarget2D(GraphicsEngine.device, GraphicsEngine.device.Viewport.Width, GraphicsEngine.device.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+        }
+        public static void ResetTargets(int quality)
+        {
+            refractionRenderTarget = new RenderTarget2D(GraphicsEngine.device, (int)(GraphicsEngine.device.Viewport.Width * quality/5f), (int)(GraphicsEngine.device.Viewport.Height * quality/5f), false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            reflectionRenderTarget = new RenderTarget2D(GraphicsEngine.device, (int)(GraphicsEngine.device.Viewport.Width * quality/5f), (int)(GraphicsEngine.device.Viewport.Height * quality/5f), false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
         }
         public void save()
         {

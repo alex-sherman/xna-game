@@ -18,6 +18,7 @@ namespace Learning
 
         public static void Initialize(ScreenManager screen, ContentManager Content)
         {
+            GraphicsEngine.device = screen.GraphicsDevice;
             Graphics.Settings.Init(screen.GraphicsDevice);
 
             effect = Content.Load<Effect>("LightAndTextureEffect");
@@ -32,7 +33,6 @@ namespace Learning
             effect.Parameters["specularPower"].SetValue(12f);
             effect.Parameters["specularIntensity"].SetValue(.5f);
 
-            GraphicsEngine.device = screen.GraphicsDevice;
             effect.Parameters["UserTextureA"].SetValue(Content.Load<Texture2D>(Graphics.Settings.SandTexture));
             effect.Parameters["UserTextureB"].SetValue(Content.Load<Texture2D>(Graphics.Settings.GrassTexture));
             effect.Parameters["UserTextureC"].SetValue(Content.Load<Texture2D>(Graphics.Settings.RockTexture));
@@ -54,13 +54,22 @@ namespace Learning
             Color poopy = Color.CornflowerBlue;
             poopy.A = (byte).01f;
 
-
-            UpdateWater(Graphics.Water.reflectionRenderTarget, Graphics.Water.refractionRenderTarget, scene);
-            GraphicsEngine.device.Clear(poopy);
-            effect.Parameters["view"].SetValue(world.view);
-            effect.CurrentTechnique = effect.Techniques["MultiTexture"];
-            Render(scene);
-            Render(water);
+            if (Graphics.Settings.enableWater)
+            {
+                UpdateWater(Graphics.Water.reflectionRenderTarget, Graphics.Water.refractionRenderTarget, scene);
+                GraphicsEngine.device.Clear(poopy);
+                effect.Parameters["view"].SetValue(world.view);
+                effect.CurrentTechnique = effect.Techniques["MultiTexture"];
+                Render(scene);
+                Render(water);
+            }
+            else
+            {
+                effect.Parameters["view"].SetValue(world.view);
+                effect.CurrentTechnique = effect.Techniques["MultiTexture"];
+                GraphicsEngine.device.Clear(poopy); 
+                Render(scene);
+            }
         }
         public static void setBuffers(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
