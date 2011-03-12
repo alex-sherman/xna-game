@@ -126,6 +126,7 @@
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Mapgen\CoastAgent.cs" />
+    <Compile Include="Mapgen\Heightmap.cs" />
     <Compile Include="Mapgen\Mapgen.cs" />
     <Compile Include="Mapgen\MapgenAgent.cs" />
     <Compile Include="Mapgen\RockAgent.cs" />

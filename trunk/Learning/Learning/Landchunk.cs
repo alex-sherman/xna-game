@@ -10,30 +10,33 @@ namespace Learning
     class Landchunk : GenRend
     {
         public Mapgen.Mapgen generator;
-        public float[,] heightMap;
+        public Mapgen.Heightmap heightMap;
         public World _world;
         public int size;
         public int landType;
-        VertexBuffer vBuffer;
-        IndexBuffer iBuffer;
         public Landchunk(World world, Vector3 location, int _size)
         {
             _world = world;
             this.location = location;
-            this.size = _size/4;
+            this.size = _size/8;
             this.landType = Mapgen.Mapgen.rand.Next(20);
             this.generator = new Mapgen.Mapgen(world, size, location,landType);
             generator.generateLand();
-            generator.generateMountain(size / 10, 20);
-            heightMap = generator.landHeight;
+            generator.generateMountain(size / 30, 20);
         }
-        public void resetBuffers()
+        public Landchunk(World world, Vector3 location, float[] _heightMap)
         {
-            generator.getVertices();
-            generator.setBuffers(out vBuffer, out iBuffer);
+            _world = world;
+            this.location = location;
+            this.size = 599;
+            this.landType = Mapgen.Mapgen.rand.Next(20);
+            this.generator = new Mapgen.Mapgen(world, size, location, landType);
+            heightMap = new Mapgen.Heightmap(_heightMap);
         }
-        override public VertexBuffer getVbuffer() { return vBuffer; }
-        override public IndexBuffer getIbuffer() { return iBuffer; }
+        public override void Draw()
+        {
+            heightMap.Draw();
+        }
         
     }
 }

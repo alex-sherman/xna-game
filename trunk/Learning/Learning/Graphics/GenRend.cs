@@ -10,8 +10,10 @@ namespace Learning
     abstract class GenRend : Renderable
     {
         public Vector3 location = new Vector3(0,0,0);
-        virtual public VertexBuffer getVbuffer() { return null; }
-        virtual public IndexBuffer getIbuffer() { return null; }
+        public VertexBuffer vBuffer = null;
+        public IndexBuffer iBuffer = null;
+        virtual public VertexBuffer getVbuffer() { return vBuffer; }
+        virtual public IndexBuffer getIbuffer() { return iBuffer; }
         virtual public Matrix getWorld() { return Matrix.CreateTranslation(location); }
         virtual public void Draw()
         {

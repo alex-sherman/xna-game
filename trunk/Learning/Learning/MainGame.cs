@@ -44,7 +44,8 @@ namespace Learning
             newWorld.addPlayer(player);
             GUI.Init(this);
             GraphicsEngine.world = newWorld;
-
+            
+            newWorld.chunk = new Landchunk(newWorld,new Vector3(0,0,0),Content.Load<float[]>("Textures\\heightmap"));
             base.LoadContent();
         }
 

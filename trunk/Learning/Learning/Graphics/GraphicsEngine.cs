@@ -14,6 +14,7 @@ namespace Learning
         public static GraphicsDevice device;
         public static World world;
         public static float time;
+        public static float darkness = 1f;
         public static bool wireFrame = false;
 
         public static void Initialize(ScreenManager screen, ContentManager Content)
@@ -32,7 +33,6 @@ namespace Learning
                     new Vector3(0f, 10f, 10f));
             effect.Parameters["specularPower"].SetValue(12f);
             effect.Parameters["specularIntensity"].SetValue(.5f);
-
             effect.Parameters["UserTextureA"].SetValue(Content.Load<Texture2D>(Graphics.Settings.SandTexture));
             effect.Parameters["UserTextureB"].SetValue(Content.Load<Texture2D>(Graphics.Settings.GrassTexture));
             effect.Parameters["UserTextureC"].SetValue(Content.Load<Texture2D>(Graphics.Settings.RockTexture));
@@ -57,7 +57,7 @@ namespace Learning
             if (Graphics.Settings.enableWater)
             {
                 UpdateWater(Graphics.Water.reflectionRenderTarget, Graphics.Water.refractionRenderTarget, scene);
-                GraphicsEngine.device.Clear(poopy);
+                GraphicsEngine.device.Clear(poopy * darkness);
                 effect.Parameters["view"].SetValue(world.view);
                 effect.CurrentTechnique = effect.Techniques["MultiTexture"];
                 Render(scene);
@@ -67,7 +67,7 @@ namespace Learning
             {
                 effect.Parameters["view"].SetValue(world.view);
                 effect.CurrentTechnique = effect.Techniques["MultiTexture"];
-                GraphicsEngine.device.Clear(poopy); 
+                GraphicsEngine.device.Clear(poopy * darkness); 
                 Render(scene);
             }
         }
@@ -96,7 +96,7 @@ namespace Learning
         public static void DrawWater(Graphics.Water water)
         {
             setBuffers(water.waterV, null);
-            SetWorld(Matrix.CreateTranslation(new Vector3(-800, 0, -800)));
+            SetWorld(Matrix.CreateTranslation(water.location));
             effect.Parameters["aboveWater"].SetValue(world.players[0].Position.Y > Graphics.Water.waterHeight);
             effect.Parameters["cameraPosition"].SetValue(world.players[0].Position);
             effect.Parameters["view"].SetValue(world.view);
@@ -118,12 +118,12 @@ namespace Learning
             else
                 effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, 1, 0, -Graphics.Water.waterHeight));
             device.SetRenderTarget(refraction);
-            GraphicsEngine.device.Clear(poopy);
+            GraphicsEngine.device.Clear(poopy*darkness);
             Render(scene);
             effect.Parameters["view"].SetValue(world.reflectionView);
             effect.Parameters["ClipPlane1"].SetValue(new Vector4(0, 1, 0, -Graphics.Water.waterHeight));
             device.SetRenderTarget(reflection);
-            GraphicsEngine.device.Clear(poopy);
+            GraphicsEngine.device.Clear(poopy * darkness);
             Render(scene);
             device.SetRenderTarget(null);
         }
@@ -143,7 +143,8 @@ namespace Learning
             int IndexCount = device.Indices.IndexCount;
             if (IndexCount>0)
             {
-                effect.Parameters["proj"].SetValue(Graphics.Settings.projection);               
+                effect.Parameters["proj"].SetValue(Graphics.Settings.projection);
+                effect.Parameters["darkness"].SetValue(darkness);              
                 effect.CurrentTechnique.Passes[0].Apply();
 
                 for (int j = 0; j <= IndexCount / 3000000; j += 1)
@@ -185,6 +186,7 @@ namespace Learning
         public static void _draw(int count)
         {
             effect.Parameters["proj"].SetValue(Graphics.Settings.projection);
+            effect.Parameters["darkness"].SetValue(darkness);
             effect.CurrentTechnique.Passes[0].Apply();
             device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, count);
             

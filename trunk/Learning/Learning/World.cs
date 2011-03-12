@@ -43,32 +43,14 @@ namespace Learning
             Crafting.addRecipe(req3, new Item(9, 1));
             Crafting.addRecipe(req4, new Item(10, 1));
             OctreeNode.world = this;
-            water = new Graphics.Water(400, this);
-            chunk = new Landchunk(this, new Vector3(-400, 0, -400), 800);
-            chunk2 = new Landchunk(this, new Vector3(-400, 0, 400), 800);
-            chunk3 = new Landchunk(this, new Vector3(400, 0, 400), 800);
-            chunk4 = new Landchunk(this, new Vector3(400, 0, -400), 800);
-            chunk.resetBuffers();
-            chunk2.resetBuffers();
-            chunk3.resetBuffers();
-            chunk4.resetBuffers();
+            water = new Graphics.Water(3200, this);
             aiManager = new AIManager(this);
             
         }
         public void merge()
         {
-            chunk.generator.smoothMap(ref chunk.generator.landHeight, chunk.generator.size);
-            chunk2.generator.smoothMap(ref chunk2.generator.landHeight, chunk2.generator.size);
-            chunk3.generator.smoothMap(ref chunk3.generator.landHeight, chunk3.generator.size);
-            chunk4.generator.smoothMap(ref chunk4.generator.landHeight, chunk4.generator.size);
-            chunk.generator.merge(ref chunk2.generator.landHeight, -chunk2.location + chunk.location);
-            chunk2.generator.merge(ref chunk3.generator.landHeight, -chunk3.location + chunk2.location);
-            chunk3.generator.merge(ref chunk4.generator.landHeight, -chunk4.location + chunk3.location);
-            chunk4.generator.merge(ref chunk.generator.landHeight, -chunk.location + chunk4.location);
-            chunk.resetBuffers();
-            chunk2.resetBuffers();
-            chunk3.resetBuffers();
-            chunk4.resetBuffers();
+            //chunk.generator.smoothMap(ref chunk.generator.landHeight, chunk.generator.size);
+            //chunk.resetBuffers();
         }
         public void saveGame(String location)
         {
@@ -120,6 +102,16 @@ namespace Learning
             {
                 this.reflectionView = players[0].getReflectionMatrix();
             }
+
+            /*GraphicsEngine.darkness = (float)Math.Pow(MathHelper.Clamp(1.6f - Math.Abs(players[0].Position.LengthSquared()) / (1400 * 1400f), 0, 1f),7);
+            if (GraphicsEngine.darkness < .05f)
+            {
+                players[0].Position = new Vector3(0, 40, 1300);
+                players[0].xRotation = 0;
+                players[0].yRotation = 0;
+                chunk = new Landchunk(this, new Vector3(-1600, 0, -1600), 3200);
+                chunk.resetBuffers();
+            }*/
             viewFrustrum = new BoundingFrustum(view * Graphics.Settings.projection);
 
         }
@@ -127,7 +119,7 @@ namespace Learning
         public void Draw()
         {
             
-            GraphicsEngine.DrawWorld(new List<GenRend>(new GenRend[] {chunk,chunk2,chunk3, chunk4,players[0].actor}), new List<GenRend>(new GenRend[] {water}));
+            GraphicsEngine.DrawWorld(new List<GenRend>(new GenRend[] {chunk,players[0].actor}), new List<GenRend>(new GenRend[] {water}));
             Item.Draw(this);
         }
 
