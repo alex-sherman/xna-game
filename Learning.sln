@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learning", "Learning\Learning\Learning.csproj", "{C8D6C394-F613-44A0-AE78-77C2FD4D2D61}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "LearningContent", "Learning\LearningContent\LearningContent.contentproj", "{EC142E9F-F7C9-4F0F-A63D-5CBF3E950537}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningContent", "Learning\LearningContent\LearningContent.contentproj", "{EC142E9F-F7C9-4F0F-A63D-5CBF3E950537}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentPipeline", "ContentPipeline\ContentPipeline.csproj", "{52928BBB-13A4-4565-AF0E-E42E24D00ABA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +19,10 @@ Global
 		{C8D6C394-F613-44A0-AE78-77C2FD4D2D61}.Release|x86.Build.0 = Release|x86
 		{EC142E9F-F7C9-4F0F-A63D-5CBF3E950537}.Debug|x86.ActiveCfg = Debug|x86
 		{EC142E9F-F7C9-4F0F-A63D-5CBF3E950537}.Release|x86.ActiveCfg = Release|x86
+		{52928BBB-13A4-4565-AF0E-E42E24D00ABA}.Debug|x86.ActiveCfg = Debug|x86
+		{52928BBB-13A4-4565-AF0E-E42E24D00ABA}.Debug|x86.Build.0 = Debug|x86
+		{52928BBB-13A4-4565-AF0E-E42E24D00ABA}.Release|x86.ActiveCfg = Debug|x86
+		{52928BBB-13A4-4565-AF0E-E42E24D00ABA}.Release|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

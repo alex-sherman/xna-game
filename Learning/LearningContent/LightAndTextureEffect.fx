@@ -17,6 +17,7 @@ float4x4 view;
 float4x4 reflView;
 float4x4 proj;
 //light properties
+float darkness;
 float3 lightPosition;
 float4 ambientLightColor;
 float4 diffuseLightColor;
@@ -220,7 +221,7 @@ float4 ApplyMultiTexture(VS_OUTPUT vsout) : COLOR
 	color += tex2D(grass, vsout.textureCoordinate).rgba*vsout.blend.y;
 	color += tex2D(rock, vsout.textureCoordinate).rgba*vsout.blend.z;
 	color += tex2D(rock, vsout.textureCoordinate).rgba*vsout.blend.w;
-    return color;
+    return color*darkness;
 }
 float4 ApplyMultiAndClip(VS_OUTPUT vsout) : COLOR
 {
@@ -229,7 +230,7 @@ float4 ApplyMultiAndClip(VS_OUTPUT vsout) : COLOR
 	color += tex2D(grass, vsout.textureCoordinate).rgba*vsout.blend.y;
 	color += tex2D(rock, vsout.textureCoordinate).rgba*vsout.blend.z;
 	color += tex2D(rock, vsout.textureCoordinate).rgba*vsout.blend.w;
-    return color;
+    return color*darkness;
 
 }
 

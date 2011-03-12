@@ -1,8 +1,7 @@
 Content\GUIFont.xnb
-Content\LightAndTextureEffect.xnb
 Content\menufont.xnb
+Content\LightAndTextureEffect.xnb
 Content\Models\ship.xnb
-Content\Models\carriertextures_0.xnb
 Content\Textures\blank.xnb
 Content\Textures\CombinedTextures.xnb
 Content\Textures\CraftingTable.xnb
@@ -26,3 +25,5 @@ Content\Textures\grass.xnb
 Content\Textures\sand.xnb
 Content\Textures\rock.xnb
 Content\Textures\waterbump.xnb
+Content\Textures\heightmap.xnb
+Content\Models\carriertextures_0.xnb

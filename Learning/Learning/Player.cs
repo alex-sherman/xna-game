@@ -37,6 +37,7 @@ namespace Learning
 
         public void Update(GameTime gameTime)
         {
+            GUI.print(this.Position.ToString());
             hitBox.Max = Position + GameConstants.PlayerSize;
             hitBox.Min = Position - GameConstants.PlayerSize;
             // now account for the higher location of the camera

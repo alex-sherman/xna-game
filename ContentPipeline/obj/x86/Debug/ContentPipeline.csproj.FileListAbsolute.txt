@@ -1,0 +1,5 @@
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\ContentPipeline\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\ContentPipeline\bin\x86\Debug\ContentPipeline.dll
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\ContentPipeline\bin\x86\Debug\ContentPipeline.pdb
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\ContentPipeline\obj\x86\Debug\ContentPipeline.dll
+C:\Users\N3cr0s1s57\Documents\Visual Studio 2010\Projects\xna-game\ContentPipeline\obj\x86\Debug\ContentPipeline.pdb

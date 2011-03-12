@@ -72,15 +72,15 @@ namespace Learning.Mapgen
         public void getVertices()
         {
             vertices = new List<MultiTex>();
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < size; i+=2)
             {
-                for (int k = 0; k < size; k++)
+                for (int k = 0; k < size; k+=2)
                 {
                     vertices.AddRange(getVertices(i, k ));
                 }
             }
 
-            indices = new List<int>(getIndices(0, size));
+            indices = new List<int>(getIndices(0, size/2));
         }
 
         public List<MultiTex> getVertices(int x, int y)
@@ -95,7 +95,7 @@ namespace Learning.Mapgen
             Vector2 currentPoint = new Vector2(x, y);
             Vector2 heightPoint = new Vector2(x, y);
             float height = landHeight[x1, y1];
-            MultiTex vertex = new MultiTex(new Vector3((x * a), height*1.6f, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
+            MultiTex vertex = new MultiTex(new Vector3((x * a), height*3.2f, (y * a)), Vector3.Zero, new Vector2(((x * b)) / 10f, ((y * b)) / 10f), new Vector4(0, 0, 0, 0));
             vertex.BlendWeight.X = MathHelper.Clamp(1.0f - Math.Abs(height) / 10.0f, 0, 1);
             vertex.BlendWeight.Y = MathHelper.Clamp(1.0f - Math.Abs(height - 20) / 15.0f, 0, 1);
             vertex.BlendWeight.Z = MathHelper.Clamp(1.0f - Math.Abs(height - 50) / 20.0f, 0, 1);

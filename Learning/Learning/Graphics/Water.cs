@@ -18,14 +18,14 @@ namespace Learning.Graphics
         public Water(int size,World world)
         {
             _world = world;
-            int a = 20;
             waterV = new VertexBuffer(GraphicsEngine.device, VertexPositionTexture.VertexDeclaration, 4, BufferUsage.WriteOnly);
             waterV.SetData(new VertexPositionTexture[] {
-                new VertexPositionTexture(new Vector3(0,waterHeight,0), new Vector2(0,0)),
-                new VertexPositionTexture(new Vector3(size*a,waterHeight,0), new Vector2(1,0)),
-                new VertexPositionTexture(new Vector3(0,waterHeight,size*a), new Vector2(0,1)),
-                new VertexPositionTexture(new Vector3(size*a,waterHeight,size*a), new Vector2(1,1))
+                new VertexPositionTexture(new Vector3(-0,waterHeight,-0), new Vector2(0,0)),
+                new VertexPositionTexture(new Vector3(size,waterHeight,-0), new Vector2(1,0)),
+                new VertexPositionTexture(new Vector3(-0,waterHeight,size), new Vector2(0,1)),
+                new VertexPositionTexture(new Vector3(size,waterHeight,size), new Vector2(1,1))
                     });
+            this.location = new Vector3(-size / 2f, 0, -size / 2f);
 
         }
         public static void ResetTargets(int quality)
